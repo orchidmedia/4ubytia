@@ -1,0 +1,257 @@
+{% assign showspacing = section.settings.showspacing %}
+<div class="heading-text-full " style="{%if showspacing %} margin: 80px 0 80px;  {% endif %}background-color: {{section.settings.bg_color}}; background: url({{ section.settings.backgroundimage | img_url: 'master'}}) no-repeat center center; color: {{section.settings.text_color}}; ">
+  <div class="sf-custom__grid flex flex-wrap justify-center items-center">
+        <div class="sf-custom__block-inner w-full text-center">
+            {% if section.settings.title != blank %}
+                <h2 class="content__heading pb-2" style="color: {{ section.settings.text_color }};">{{ section.settings.title | strip_html }}</h2>
+            {% endif %}
+        
+            {% if section.settings.text != blank %}
+            <p class="block lg:w-1/2 w-11/12" style="color: {{ section.settings.text_color }};">{{ section.settings.text  | strip_html }}</p>
+            {% endif %}
+        </div>
+        <div class="heading-text-full-bottom flex flex-wrap w-full justify-start items-center">
+            <div class="no-filler-no-junk"><h3>{{section.settings.bottomheading}}</h3></div>
+            <div class="flex flex-wrap justify-start items-center no-filler-icons">
+                {%- for block in section.blocks -%}
+                    {% if block.settings.iconimage_svg != blank %}
+                        <div class="btm-icon-img flex flex-wrap justify-start items-center lg:pr-10 "><img src="{{block.settings.iconimage_svg }}" width="90px" /> <p>{{block.settings.iconpara}}</p></div>
+                    {% else %}
+                        <div class="btm-icon-img flex flex-wrap justify-start items-center lg:pr-10 "><img src="{{block.settings.iconimage | img_url: 'master'}}" /> <p>{{block.settings.iconpara}}</p></div>
+                    {% endif %}
+                {%- endfor -%}
+            </div>
+        </div>
+  </div>
+</div>
+
+<style>
+
+    .heading-text-full{
+        text-align: center;
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+
+    .heading-text-full-bottom{
+        margin-top: 150px;
+        padding-left: 20px;
+        padding-right: 2px;
+        margin-bottom: 20px;
+    }
+
+    .btm-icon-img img{
+        margin-right: 20px;
+    }
+
+    .no-filler-no-junk{
+        width: 470px;
+    }
+    /* extra media quries to fix NO filler No Junk Section */
+    @media (max-width: 1550px){
+        .no-filler-no-junk{
+            width: 30%;
+        }
+
+        .no-filler-icons{
+            width: 70%;
+        }
+
+        .heading-text-full-bottom h3{
+            margin-right: 0;
+        }
+    }
+
+    @media (max-width: 1450px){
+        .btm-icon-img p{
+            padding-right: 20px;
+        }
+    }
+
+    @media (max-width: 1300px){
+        .no-filler-icons .btm-icon-img {
+            width: 50%;
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+    }
+
+    /*====*/
+
+    @media(min-width: 950px){
+        .heading-text-full {
+            background-size: 200%;
+        }
+        .heading-text-full-bottom{
+            padding-left: 65px;
+            padding-right: 65px;
+        }
+    }
+
+    @media (max-width: 1024px){
+        .heading-text-full{
+            background-position: top !important;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
+
+        .heading-text-full-bottom{
+            margin-top: 40px;
+            justify-content: flex-start;
+            padding-left: 0;
+        }
+
+        .heading-text-full-bottom > div{
+            width: 100%;
+        }
+
+        .heading-text-full h2{
+            margin-top: 0;
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .heading-text-full-bottom h3{
+            margin-right: 0px;
+        }
+
+        .heading-text-full p{
+            font-size: 16px;
+        }
+
+        .btm-icon-img{
+            padding-right: 0px;
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .btm-icon-img img {
+            margin-right: 0px;
+            margin-top: 20px;
+        }
+
+        .heading-text-full-bottom h3, .heading-text-full-bottom h3 p{
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .heading-text-full-bottom .btm-icon-img {
+            flex-direction: column;
+            width: 50%;
+        }
+
+        .heading-text-full-bottom .btm-icon-img img{
+            margin-bottom: 10px;
+        }
+        
+        .heading-text-full-bottom .btm-icon-img p{
+            padding-right: 0;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 748px) {
+        .heading-text-full-bottom h3{
+            padding-bottom: 46px;
+            padding-top: 30px;
+        }
+    }
+
+</style>
+
+{% schema %}
+{
+  "name": "Heading and Text Full",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#202020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#F8F1E0"
+    },
+    {
+      "type": "image_picker",
+      "id": "backgroundimage",
+      "label": "Background Image"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "richtext",
+      "id": "bottomheading",
+      "label": "Main Bottom Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "showspacing",
+      "label": "Show Spacing Top Bottom",
+      "default": false
+    }
+
+  ],
+
+  "blocks": [
+    {
+    "name": "Bottom Icon with Text",
+    "type": "icon_tag",
+    
+    "settings": [
+        {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background Color",
+        "default": "#202020"
+        },
+        {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default": "#F8F1E0"
+        },
+        {
+        "type": "text",
+        "id": "iconimage_svg",
+        "label": "Icon Image (SVG)",
+        "info": "Upload your SVG to [Files](/admin/settings/files) to get the URL."
+        },
+        {
+        "type": "header",
+        "content": "Upload SVG or pick Image below"
+        },
+        {
+        "type": "image_picker",
+        "id": "iconimage",
+        "label": "Icon Image"
+        },
+        {
+        "type": "richtext",
+        "id": "iconpara",
+        "label": "Icon Heading"
+        }
+    ]
+    }
+    ],
+    "presets": [
+      {
+        "name": "Clean Ingredients"
+      }
+    ]
+}
+{% endschema %}
+

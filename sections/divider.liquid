@@ -1,0 +1,67 @@
+{% if section.settings.enable_strip %}
+    <div class="color-strip-{{ section.id }}"></div>
+{% endif %}
+
+{%- style -%}
+    {% if section.settings.enable_strip %}
+        .color-strip-{{ section.id }}{
+            width:102%;
+            height:{{ section.settings.height }}px;
+            background: url({{ section.settings.strip_svg }}) repeat left center;
+            background-size:cover;
+            margin-left: -3px;
+        }
+        @media (max-width:1023px){
+            .color-strip-{{ section.id }}{
+                height:{{ section.settings.height_mobile }}px;
+            }
+        } 
+    {% endif %}
+{%- endstyle -%}
+
+{% schema %}
+{
+  "name": "Color Divider",
+  "tag": "section",
+  "settings": [
+    {
+        "type": "checkbox",
+        "id": "enable_strip",
+        "label": "Enable strip",
+        "default": true
+    },
+    {
+        "type": "text",
+        "id": "strip_svg",
+        "label": "Strip SVG",
+        "info": "Upload your SVG to [Files](/admin/settings/files) to get the URL.",
+        "default": "https://cdn.shopify.com/s/files/1/0652/8774/9852/files/header_underline.svg?v=1661366844"
+    },
+    {
+        "type": "range",
+        "id": "height",
+        "label": "Height",
+        "unit": "px",
+        "min": 1,
+        "max": 15,
+        "step": 1,
+        "default": 8
+    },
+    {
+        "type": "range",
+        "id": "height_mobile",
+        "label": "Height - Mobile",
+        "unit": "px",
+        "min": 1,
+        "max": 15,
+        "step": 1,
+        "default": 4
+    }
+  ],
+  "presets": [
+      {
+        "name": "Color Divider"
+      }
+  ]
+}
+{% endschema %}

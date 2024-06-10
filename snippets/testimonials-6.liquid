@@ -1,0 +1,79 @@
+{% assign min = 1 %}
+{% assign max = 100 %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+{% assign swiper_control_name = "swiper-testimonial-6-control-" | append: randomNumber %}
+
+<div class="sf-testimonials__inner -mx-3">
+    <div class="swiper-container swiper-testimonial-6-{{randomNumber}} swiper--equal-height">
+        <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+                <div class="swiper-slide px-3" {{ block.shopify_attributes }} data-index={{ forloop.index0 }}>
+                    <div class="bg-white p-6 pb-0 flex rounded-[5px] h-full testimonial__item flex flex-col">
+                        <div class="testimonial__item-content flex flex-1 pb-5">
+                            <div class="flex-1">
+                                <div class="not-change testimonial__author font-medium tes-author">{{ block.settings.footer }}</div>
+                                {% if section.settings.show_stars %}
+                                    <div class="stars flex mb-4 mt-2">
+                                        {%- render 'testimonials__stars' -%}
+                                    </div>
+                                {% endif %}
+                                {% render 'heading-tag' 
+                                    heading: block.settings.title_tag,
+                                    content: block.settings.title
+                                %}
+                                <div class="text-color-subtext rte not-change text-base leading-[28px] tes-desc">{{ block.settings.description }}</div>
+                            </div>
+                            {% if block.settings.image != blank %}
+                                <div class="flex-shrink-0 ml-6 w-[90px] 2xl:w-[128px] testimonial__item-thumb">
+                                    {% render 'responsive-image', image: block.settings.image %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if block.settings.product != blank %}
+                        <div class="testimonial__item-footer border-t py-3 h-[75px]">
+                            {%- assign product = all_products[block.settings.product] -%}
+                            <a class="testimonial__item-product flex items-center" href="{{ product.url }}" target="_blank">
+                                {% render 'responsive-image', image: product.featured_image, wrapper_class: 'w-[42px] h-[50px] mr-4' %}
+                                <p class="m-0">{{ product.title }}</p>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var isContainer = false;
+        if ('{{container_type}}' === 'container') {
+            isContainer = true;
+        }
+        var swiper = new Swiper('.swiper-testimonial-6-{{randomNumber}}', {
+            slidesPerView: 1,
+            loop: true,
+            navigation: { 
+                nextEl: document.querySelector('.sf-slider__controls-next.swiper-testimonial-6-control-{{randomNumber}}'),
+                prevEl: document.querySelector('.sf-slider__controls-prev.swiper-testimonial-6-control-{{randomNumber}}')
+            },
+            pagination: {
+                el: document.querySelector('.swiper-pagination.swiper-testimonial-6-control-{{randomNumber}}'),
+                clickable: true
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2
+                },
+                1366: {
+                    slidesPerView: isContainer ? 2 : 3
+                },
+                1600: {
+                    slidesPerView: isContainer ? 2 : 4
+                }
+          }
+        });
+    }, false);
+</script>

@@ -1,0 +1,203 @@
+{% if blocks.size > 0 %}
+    {% assign st = section.settings %}
+    <div class="{% if bordered %} lg:border-b lg:border-color-border{% endif %} sf__footer-middle">
+        <div class="{{ container }}{% if container == 'w-full' %} px-4{% endif %}">
+            {% capture footer_block_vars %}
+                --footer-border-style: {{ st.border_top_style }};
+                --footer-border-width: {{ st.border_top_width }}px;
+                --footer-border-padding: {{ st.border_top_padding }}px;
+                {% if st.border_top_color != blank or st.border_top_color != 'rgba(0,0,0,0)' %}--footer-border-color: {{ st.border_top_color }};{% endif %}
+            {% endcapture %}
+            <div class="sf-footer__accordion flex flex-wrap {% if bordered %}lg:-mx-8{% endif %}" 
+                style="{% if block.settings.title != blank %}gap: {{ section.settings.gap }}px;{% endif %} {{ footer_block_vars }}"
+            >
+                {% for block in blocks %}
+                    {% case block.settings.width %}
+                        {% when '5%' %}
+                            {%- assign block_width = 'lg:w-1/20' -%}
+                        {% when '10%' %}
+                            {%- assign block_width = 'lg:w-10' -%}
+                        {% when '15%' %}
+                            {%- assign block_width = 'lg:w-15' -%}
+                        {% when '16%' %}
+                            {%- assign block_width = 'lg:w-1/6' -%}
+                        {% when '20%' %}
+                            {%- assign block_width = 'lg:w-1/5' -%}
+                        {% when '25%' %}
+                            {%- assign block_width = 'lg:w-1/4' -%}
+                        {% when '33%' %}
+                            {%- assign block_width = 'lg:w-1/3' -%}
+                        {% when '50%' %}
+                            {%- assign block_width = 'lg:w-1/2' -%}
+                        {% when '66%' %}
+                            {%- assign block_width = 'lg:w-2/3' -%}
+                        {% when '75%' %}
+                            {%- assign block_width = 'lg:w-3/4' -%}
+                        {% when '83%' %}
+                            {%- assign block_width = 'lg:w-10/12' -%}
+                        {% when '100%' %}
+                            {%- assign block_width = 'lg:w-full' -%}
+                        {% when 'auto' %}
+                            {%- assign block_width = 'lg:w-auto' -%}
+                    {% endcase %}
+
+                    {%- assign block_title = block.settings.title -%}
+                    {% if block.type == 'menu' and block_title == blank %}
+                        {% assign block_title = linklists[block.settings.menu].title %}
+                    {% endif %}
+
+        
+                    {% capture block_title_classes %}
+
+                        {% if block.settings.disable_accordion == false or block.settings.disable_accordion == nil %}sf__accordion-button{% endif %} w-full
+                    {% endcapture %}
+
+                    {% capture block_title_tag %}
+                        {% if block_title != blank %}
+                            {% render 'heading-tag' 
+                                heading: block.settings.heading_size,
+                                content: block_title,
+                                custom_classes: block_title_classes
+                            %}
+                        {% endif %}
+                    {% endcapture %}
+
+                        {% capture footer_block_classes %}
+                            {{ block.settings.block_custom_class }}
+                            {% if block_title != blank and block.settings.hide_mobile != true %}sf__accordion-item {% if block.settings.open_default %}open{% endif %}{% endif %}
+                            sf__footer-block-{{ block.type }} w-full {{ block_width }}
+                            {% if bordered and forloop.last != true %} lg:border-r lg:border-color-border{% endif %}
+                            mobile-order-{{ block.settings.flex_order }}
+                            {% if block.settings.hide_mobile %}hide-mobile{% endif %}
+                        {% endcapture %}
+                    
+                    <div class="sf-footer__block relative {{ footer_block_classes }} {% if block.settings.hide_mobile %} hide-mobile{% endif %}{% if block.settings.hide_tablet %} hide-tablet{% endif %}{% if block.settings.hide_desktop %} hide-desktop{% endif %}">
+                        <div class="sf-footer__block-inner grid{% if st.border_top_mobile %} border-top{% endif %}{% if bordered %} lg:mx-8{% endif %} {{block.type}}"
+                            style="gap: 0.5rem;"
+                        >
+                            {% case block.type %}
+                                {% when 'menu' %}
+                                    {{ block_title_tag }}
+                                    {% render 'footer-block__menu', block: block, block_title: block_title %}
+                                {% when 'our_store' %}
+                                    {{ block_title_tag }}
+                                    {% render 'footer-block__our-stores', block: block %}
+                                {% when 'newsletter' %}
+                                    {{ block_title_tag }}
+                                    {% render 'footer-block__newsletter', block: block %}
+                                {% when 'custom_text' %}
+                                    {{ block_title_tag }}
+                                    {% render 'footer-block__text', block: block %}
+                                {% when 'custom_html' %}
+                                    {{ block_title_tag }}
+                                    {% render 'footer-block__html', block: block %}
+                                {% when 'image_card' %}
+                                    {% render 'image-card', block: block, grid_columns: 'w-full', 
+                                        stack_on_mobile: block.settings.scroll_mobile
+                                    %}
+                                {% when 'social' %}
+                                    {% liquid 
+                                        assign classes = 'flex ' | append: block.settings.disposition
+                                        assign classes = classes | append: ' ' | append: block.settings.justify
+                                        if block.settings.mb_disposition != 'default'
+                                            assign classes = classes | append: ' mb:' | append: block.settings.mb_disposition
+                                        endif
+                                        if block.settings.mb_justify != 'default'
+                                            assign classes = classes | append: ' mb:' | append: block.settings.mb_justify
+                                        endif
+                                    %}
+                                    <div class="{{ classes }}" style="gap: {{ block.settings.gap }}px;">
+                                        {% if block.settings.heading != blank %}
+                                            {% render 'heading-tag' 
+                                                heading: block.settings.heading_size,
+                                                content: block.settings.heading
+                                            %}
+                                        {% endif %}
+                                        {% render 'social-media-links' 
+                                            show_mobile: block.settings.show_mobile, 
+                                            extra_classes: 'footer-social-media',
+                                            size: block.settings.icon_size,
+                                            size_mobile: block.settings.icon_size_mobile,
+                                            icon_select: block.settings.icon_select,
+                                            icon_size_override: block.settings.icon_size_override
+                                        %}
+                                    </div>
+                                    {% if block.settings.enable_copyright %}
+                                        <div id="nav_menu-{{ block.id }}" class="ft_block_item flex menuhr justify-center absolute bottom-8 hide-mobile">
+                                            <ul class="horLinks">
+                                            <li>
+                                                {% render 'heading-tag' 
+                                                    heading: block.settings.copy_heading_size,
+                                                    content: block.settings.copy_title
+                                                  %}
+                                            </li>
+                                            {% for link in linklists[block.settings.copy_menulinks].links %}
+                                                <li>
+                                                <a href="{{ link.url }}"
+                                                    {% if link.title contains '[new]' %}target="_blank"{% endif %}
+                                                >
+                                                    {% render 'heading-tag' 
+                                                    heading: block.settings.copy_heading_size,
+                                                    content: link.title | split: '[' | first
+                                                    %}
+                                                </a>
+                                                </li>
+                                            {% endfor %}
+                                            </ul>
+                                        </div>
+                                {% endif %}                            
+                                {% when 'horizontal_menu' %}
+                                    {% render 'horizontal_menu', block: block %}
+                                {% else %}
+                            {% endcase %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% style %}
+        .sf-footer__accordion {
+            gap: {{ section.settings.gap }}px;
+        }
+        @media screen and (max-width: {{ settings.section_mobile_view }}px) {
+            .sf-footer__accordion {
+                gap: {{ section.settings.gap_mb }}px !important;
+            }
+        }
+
+        .open .sf__accordion-content {
+                display: contents !important;
+        }
+
+        .sf-footer__block:nth-last-child(2) {
+            flex-basis: 57%;
+        }
+
+        @media (min-width: 1030px) and (max-width: 1283px) {
+            .sf-footer__block:nth-last-child(2) {
+                flex-basis: 55.5%;
+            }
+        }
+
+        @media (min-width: 1284px) and (max-width: 1668px) {
+            .sf-footer__block:nth-last-child(2) {
+                flex-basis: 54.5%;
+            }
+        }
+
+        @media (min-width: 1566px) and (max-width: 1668px) {
+            .sf-footer__block:nth-last-child(2) {
+                flex-basis: 54.5%;
+            }
+        }
+
+        @media (min-width: 1669px) {
+            .sf-footer__block:nth-last-child(2) {
+                flex-basis: 54.5%;
+            }
+        }
+    {% endstyle %}
+{% endif %}
+

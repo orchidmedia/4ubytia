@@ -1,0 +1,185 @@
+{% if variant == blank %}
+  {% assign variant = product.selected_or_first_available_variant %}
+{% endif %}
+
+{%- assign justify_price = 'start' -%}
+{%- case settings.pcard_alignment -%}
+  {%- when 'left' -%}
+    {%- assign justify_price = 'start' -%}
+  {%- when 'center' -%}
+    {%- assign justify_price = 'center' -%}
+  {%- when 'right' -%}
+    {%- assign justify_price = 'end' -%}
+{%- endcase -%}
+
+{% if price_tag != nil %}
+    {% assign price_tag = price_tag %}
+{% else %}
+  {% assign price_tag = 'span' %}
+{% endif %}
+
+{% assign product_price = variant.price | money %}
+{% assign original_price = variant.compare_at_price | money %}
+
+{% assign p_color = section.settings.title_color %}
+
+{%- capture cp_classes -%}
+  {{- compare_price_class -}} {% unless variant.compare_at_price > variant.price %} hidden{% endunless %} {% if template.name != 'collection'%}prod__compare_price{% endif %} text-color-secondary
+{%- endcapture -%}
+
+
+<div class="product-prices {{class}}{% if variant.available and variant.compare_at_price > variant.price %} flex items-center price--on-sale{% endif %}{% if variant.available and variant.unit_price_measurement %} price--unit-available{% endif %}">
+  
+{% assign compare_at_price = variant.compare_at_price | money %}
+{%- capture custom_discount_styles -%}
+{% if template.name == 'product' %}font-size: 24px;{% endif %}
+color: {{settings.prod_sale_price_color}};
+{%- endcapture -%}
+
+<{{price_tag}} class="{{cp_classes}} {% if price_tag contains 'h' %}line-through{% endif %}" style="{{custom_discount_styles}}">
+  <span class="sr-only">Original price: </span>
+  {% render 'heading-tag' 
+    heading: 'p-medium',
+    content: compare_at_price,
+    custom_classes: 'line-through'
+  %}
+</{{price_tag}}> 
+
+<div class="product-prices__unit{% unless variant.unit_price_measurement %} hidden{% endunless %}">
+  <span class="visually-hidden visually-hidden--inline">{{ 'products.product.unit_price_label' | t }}</span>
+  <div class="price-unit-price">
+    {%- capture unit_price_separator -%}
+      <span aria-hidden="true">/</span><span class="visually-hidden">{{ 'general.accessibility.unit_price_separator' | t }}&nbsp;</span>
+    {%- endcapture -%}
+    {%- capture unit_price_base_unit -%}
+      <span data-unit-price-base-unit>
+        {%- if variant.unit_price_measurement -%}
+          {%- if variant.unit_price_measurement.reference_value != 1 -%}
+            {{- variant.unit_price_measurement.reference_value -}}
+          {%- endif -%}
+          {{ variant.unit_price_measurement.reference_unit }}
+        {%- endif -%}
+      </span>
+    {%- endcapture -%}
+    <span data-unit-price>{{ variant.unit_price | money }}</span>{{- unit_price_separator -}}{{- unit_price_base_unit -}}
+  </div>
+</div>
+
+
+  <{{price_tag}} class="prod__price {% if variant.compare_at_price > variant.price %}pl-2{% else %}pl-0{% endif %} text-color-regular-price justify-{{ justify_price }} {{ price_class }}">
+    {%- capture custom_styles -%}
+    {%- if p_color !='rgba(0,0,0,0)' and p_color != blank -%}
+        color:{{ p_color }};
+    {%- endif -%}
+    {%- endcapture -%}
+    {% if template.name == 'collection' or template.name == 'index' %}
+      {% if product.has_only_default_variant == true %}
+        {% render 'heading-tag' 
+          heading: 'p-medium',
+          content: product_price,
+          custom_styles: custom_styles
+        %}
+      {% else %}
+
+        {% assign min_price = product.price_min | money %}
+        {% assign max_price = product.price_max | money %}
+        <span class="sr-only">Current price: </span>
+
+        {% render 'heading-tag' 
+        heading: 'p-medium',
+        content: min_price,
+        custom_styles: custom_styles
+        %}
+
+        {% unless min_price == max_price %}
+          <span class="collection-price-separator"> - </span>
+          {% render 'heading-tag' 
+            heading: 'p-medium',
+            content: max_price,
+            custom_styles: custom_styles
+          %}
+        {% endunless %}
+      {% endif%}
+    {% else %}
+  
+    {% render 'heading-tag' 
+        heading: section.settings.price_tag,
+        content: product_price,
+        custom_styles: custom_styles
+    %}
+
+    {% assign min_price = product.price_min | money %}
+    {% assign max_price = product.price_max | money %}
+
+    {% unless min_price == max_price %}
+
+      {% render 'heading-tag' 
+        heading: 'p-medium',
+        content: min_price,
+        custom_styles: custom_styles,
+        custom_classes: 'hide-tablet'
+      %}
+      {% render 'heading-tag' 
+        heading: 'p-medium',
+        content: min_price,
+        custom_styles: custom_styles,
+        custom_classes: 'hide-desktop'
+      %}
+
+      <span class="collection-price-separator"> - </span>
+      {% render 'heading-tag' 
+        heading: 'p-medium',
+        content: max_price,
+        custom_styles: custom_styles,
+        custom_classes: 'hide-tablet'
+      %}
+      {% render 'heading-tag' 
+        heading: 'p-medium',
+        content: max_price,
+        custom_styles: custom_styles,
+        custom_classes: 'hide-desktop'
+      %}
+    {% endunless %}
+    {% endif %}
+  </{{price_tag}}>
+</div>
+
+{%- style -%}
+
+  {% if product.has_only_default_variant == false %}
+    .sf__collection-wrapper .product-form[data-product-id="{{product.id}}"] .prod__compare_price {
+      display: none;
+    }
+
+    .sf__featured-collection .product-form[data-product-id="{{product.id}}"] .prod__compare_price {
+      display: none;
+    }
+  {% endif %}
+
+  {% if product.variants.size == 1 %}
+
+    .product-prices {
+      display: flex; 
+      align-items: center;
+    }
+
+    .sf__collection-wrapper .product-form[data-product-id="{{product.id}}"] .prod__compare_price {
+      display: block;
+    }
+
+    .sf__featured-collection .product-form[data-product-id="{{product.id}}"] .prod__compare_price {
+      display: block;
+    }
+  {% endif %}
+
+
+  {% unless min_price == max_price %}
+    .sf__featured-collection .product-form[data-product-id="{{product.id}}"] .prod__price h5:first-child {
+      display: none;
+    }
+  {% endunless %}
+
+  .sticky_prices .prod__price h5, .sticky_prices .prod__price .collection-price-separator {
+    display: none !important;
+}
+{%- endstyle -%}

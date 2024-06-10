@@ -1,0 +1,139 @@
+{%- comment -%}
+    It creates a select tag with an overlay attached to the body.
+    Accepts:
+    - options: {String[]} with the select options.
+    - wrapper_class: {String} class name of the <div> wrapper.
+    - classes: {String} classes to add to the select element.
+    - id: {String} id attribute.
+    - name: {String} name attribute.
+    - value: {String} initial value for the select.
+    - custom_styles: {String} style attribute value.
+    - custom_attributes: {String} custom attributes to add to the element.
+    - aria_label: {String} aria-label text value.
+
+    Usage:
+    In your liquid template file, copy the following line
+    - {% render 'overlay-select', wrapper_class: "atc-qty-input-sele", options: "1,2,3,4,5", classes: "quantity-input__element w-10 productQuantity text-center flex-grow flex-shrink appearance-none", id="item-quantity_sticky", name: "quantity", custom_styles: "background:none", aria_label: "{{ 'products.product.product_quantity' | t }}", custom_attributes: 'data-quantity-input data-product-id="{{ product.id }}"' %}
+{%- endcomment -%}
+
+{% assign select_options = options | split: "," %}
+
+{% if value == blank %}
+    {% assign initialValue = options[0] %}
+{% else %}
+    {% assign initialValue = value %}
+{% endif %}
+
+<select
+    class="{{classes}}"
+    name="{{name}}"
+    id="{{id}}"
+    aria-label="{{aria_label}}"
+    
+    style="{{custom_styles}}"
+    value="{{ initialValue }}"
+    {{custom_attributes}}
+  >
+    {% for option in select_options %}
+        <option value="{{ option }}">{{ option }}</option>
+    {% endfor %}
+  </select>
+
+<script>
+    (function(){
+        var x, i, j, l, ll, selElmnt, a, b, c;
+        /*look for any elements with the class "custom-select":*/
+        x = document.getElementsByClassName("{{ wrapper_class }}");
+        l = x.length;
+        for (i = 0; i < l; i++) {
+        selElmnt = x[i].getElementsByTagName("select")[0];
+        ll = selElmnt.length;
+        /*for each element, create a new DIV that will act as the selected item:*/
+        a = document.createElement("DIV");
+        a.setAttribute("class", "select-selected");
+        a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+        x[i].appendChild(a);
+        /*for each element, create a new DIV that will contain the option list:*/
+        b = document.createElement("DIV");
+        b.setAttribute("class", "overlay-select-items select-hide");
+        b.setAttribute("data-element", "{{ wrapper_class }}-items")
+        for (j = 0; j < ll; j++) {
+            /*for each option in the original select element,
+            create a new DIV that will act as an option item:*/
+            c = document.createElement("DIV");
+            c.innerHTML = selElmnt.options[j].innerHTML;
+            c.addEventListener("click", function(e) {
+                /*when an item is clicked, update the original select box,
+                and the selected item:*/
+                var y, i, k, s, h, sl, yl;
+                s = document.querySelector(".{{wrapper_class}} select");
+                sl = s.length;
+                h = document.querySelector(".{{wrapper_class}} .select-selected");
+                for (i = 0; i < sl; i++) {
+                    if (s.options[i].innerHTML == this.innerHTML) {
+                        s.selectedIndex = i;
+                        s.dispatchEvent(new Event('change', { bubbles: true }));
+                        h.innerHTML = this.innerHTML;
+                        y = this.parentNode.getElementsByClassName("same-as-selected");
+                        yl = y.length;
+                        for (k = 0; k < yl; k++) {
+                        y[k].removeAttribute("class");
+                        }
+                        this.setAttribute("class", "same-as-selected");
+                        break;
+                    }
+                }
+                h.click();
+            });
+            b.appendChild(c);
+        }
+
+        {% if attach_body == true%}
+            document.body.appendChild(b);
+        {% else %}
+            x[i].appendChild(b);
+        {% endif %}
+        
+            a.addEventListener("click", function(e) {
+                e.stopPropagation();
+                {% if attach_body == true %}
+                    const selectItemsElement = document.querySelector('[data-element="{{ wrapper_class }}-items"]');
+                    const parent = document.querySelector(".{{ wrapper_class }}");
+                    const parentPosition = parent.getBoundingClientRect();
+                    const positioning = {
+                        x: parentPosition.x + window.pageXOffset,
+                        y: parentPosition.y + parentPosition.height + window.pageYOffset
+                    }
+
+                    selectItemsElement.style.left = positioning.x + "px";
+                    selectItemsElement.style.top = positioning.y + "px";
+                    selectItemsElement.classList.toggle("select-hide");
+
+                    document.addEventListener("scroll", closeAllSelect, { passive: true });
+                {% else %}
+                    this.nextSibling.classList.toggle("select-hide");
+                {% endif %}
+                
+                this.classList.toggle("select-arrow-active");
+            });
+        }
+
+        function closeAllSelect(elmnt) {
+            /*a function that will close all select boxes in the document,
+            except the current select box:*/
+            var x, y, i;
+            x = document.getElementsByClassName("overlay-select-items");
+            y = document.getElementsByClassName("select-selected");
+            for (i = 0; i < y.length; i++) {
+                if (elmnt !== y[i]) {
+                    y[i].classList.remove("select-arrow-active");
+                    x[i].classList.add("select-hide");
+                }
+            }
+            document.removeEventListener("scroll", closeAllSelect, { passive: true });
+        }
+        /*if the user clicks anywhere outside the select box,
+        then close all select boxes:*/
+        document.addEventListener("click", closeAllSelect);
+    })()
+</script>

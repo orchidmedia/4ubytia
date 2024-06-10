@@ -1,0 +1,68 @@
+{%- assign product = all_products[block.settings.product] -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{% if product == empty %}
+  {%- assign section_onboarding = true -%}
+{% endif %}
+{% capture class %}
+  {% if block.settings.show_quantity_selector %}show_quantity_selector{% else %}hide_quantity_selector{% endif %}
+  {% if block.settings.enable_payment_button %}enable_payment_button{% endif %}
+  {% if block.settings.show_add_to_cart %}enable_cart_button{% else %}hide_cart_button{% endif %}
+{% endcapture %}
+{% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+<div class="sf-prod__block sf-prod__info-wrapper h-full relative {{ class }}"
+  style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+  <div class="sf-prod__info">
+    {% if block.settings.show_vendor %}
+      <span class="prod__vendor block mb-4">{{ product.vendor }}</span>
+    {% endif %}
+    <a class="prod__title text-2xl md:text-3xl leading-10 font-medium mt-5 {% if block.settings.show_price %}mb-2{% else %}mb-10{% endif %}"
+      href="{{ product.url }}">
+      {% unless section_onboarding %}
+        {{ product.title }}
+      {% else %}
+        {{ 'homepage.onboarding.product_title' | t }}
+      {% endunless %}
+    </a>
+    {% if block.settings.show_price %}
+      <div class="prod_prices mt-2 mb-8 flex items-center">
+        {% unless section_onboarding %}
+          {% render 'product-prices', product: product, price_class: 'text-xl' %}
+        {% else %}
+          <span class="text-xl prod__price sf-currency">
+            {{ 1999 | money }}
+          </span>
+        {% endunless %}
+      </div>
+    {% endif %}
+    {% if block.settings.show_product_review %}
+      <div class="prod__reviews_count mt-8 mb-4">
+        {% render 'product-reviews-app__badge' %}
+      </div>
+    {% endif %}
+    {% unless section_onboarding %}
+      <div class="prod__description leading-7 text-base mt-4 mb-8">{{ product.description | strip_html | truncatewords: 100 }}</div>
+    {% else %}
+      <div class="prod__description leading-7 text-base mt-4 mb-8">{{ 'homepage.onboarding.product_description' | t }}</div>
+    {% endunless %}
+    {% unless section_onboarding %}
+      {% render 'product-form',
+        section_id: block.id,
+        product: product,
+        section: block,
+        current_variant: current_variant,
+        enable_dynamic_checkout: block.settings.enable_payment_button,
+        show_quantity_selector: block.settings.show_quantity_selector,
+        enableCardButton: block.settings.show_add_to_cart
+      %}
+    {% else %}
+      <div class="flex flex-wrap mb-5">
+        <button type="submit" class="add-to-cart sf__btn sf__btn-primary flex-grow flex-shrink relative">
+          <span>{{ 'products.product.add_to_cart' | t }}</span>
+        </button>
+      </div>
+    {% endunless %}
+  </div>
+</div>

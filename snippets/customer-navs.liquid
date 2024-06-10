@@ -1,0 +1,39 @@
+<div class="md:px-4 xl:px-16 w-1/6 sf-customer__nav hidden md:flex flex-col border-r border-color-border">
+    <a
+        href="{{ routes.account_url }}"
+        class="{% if request.path == routes.account_url %} active {% endif %}"
+    >
+        {{ 'customer.account.dashboard' | t }}
+    </a>
+    <a
+        href="{{ routes.account_addresses_url }}"
+        class="{% if request.path == routes.account_addresses_url %} active {% endif %}"
+    >
+        {{ 'customer.account.addresses' | t }}
+    </a>
+    {% if settings.wishlist_page != blank %}
+    <a href="{{ pages[settings.wishlist_page].url }}">
+        {{ 'customer.account.wishlist' | t }}
+    </a>
+    {% endif %}
+    <a href='/pages/profile/profileDetails'>
+        {{ 'livestream.personal_details.title' | t }}
+    </a>
+    {%- if customer.metafields.account.groups contains 'influencer' -%}
+        <a href='/pages/profile/livestreams'>
+            {{ 'livestream.livestreams.title' | t }}
+        </a>
+        <a href='/pages/profile/channelSettings'>
+            {{ 'livestream.channel_settings.title' | t }}
+        </a>
+        <a href='/pages/profile/channelPreview'>
+            {{ 'channel_preview.title' | t }}
+        </a>
+    {%- endif -%}
+    <a href="/pages/myaccount?operation=changePassword">
+        Change password
+    </a>
+    <a href="/pages/myaccount?operation=signOut">
+        {{ 'customer.account.log_out' | t }}
+    </a>
+</div>

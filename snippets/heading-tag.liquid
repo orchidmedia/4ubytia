@@ -1,0 +1,39 @@
+{%- comment -%}
+  Snippet to display heading tags.
+  Accepts:
+    - heading*: {String} heading tag
+    - content*: {Object} heading content
+    - custom_classes: {String}
+    - custom_styles: {String}
+    - custom_attributes: {String}
+  Usage:
+    In your liquid template file, copy the following line
+    {% render 'heading-tag' 
+      heading: heading_tag,
+      content: content,
+      custom_classes: custom_classes,
+      custom_styles: custom_styles
+    %}
+{%- endcomment -%}
+
+{%- if content -%}
+  {% liquid
+    assign tag = 'p'
+    if heading != blank
+      if heading contains "custom-"
+        assign tag = heading | replace:  "custom-", ""
+        assign custom_classes = custom_classes | append: " " | append: heading
+      else
+        assign tag = heading
+      endif
+    endif
+  %}
+
+  <{{ tag }}
+    class="{{ custom_classes }}"
+    {% if custom_styles != blank %}style="{{ custom_styles }}"{% endif %}
+    {% if custom_attributes != blank %}{{ custom_attributes }}{% endif %}
+  >
+    {{ content }}
+  </{{ tag }}>
+{%- endif -%}

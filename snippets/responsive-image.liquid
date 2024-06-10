@@ -1,0 +1,99 @@
+{%- comment -%}
+    It creates a style tag and it restricts an image from growing larger than its max resolution.
+    Accepts:
+    - max_width: {Number} Max width of the image container
+    - max_height: {Number} Max height of the image container
+    - image: {Object} Image object
+    - image_class: {String} class name of the <img />
+    - image_attributes: {String}  additional HTML attributes of the <img />
+    - wrapper_class: {String} class name of the <div> wrapper
+    - wrapper_attributes: {String} additional HTML attributes of the <div> wrapper
+    - outer_style: {String} additional CSS styles of the <div> wrapper
+    - preload: {Boolean} disables lazy load and sets fetch priority to high.
+
+    Usage:
+    In your liquid template file, copy the following line
+    - {% include 'responsive-image' with image: featured_image, image_class: "css-class", wrapper_class: "wrapper-css-class", max_width: 700, max_height: 800 %}
+{%- endcomment -%}
+
+{%- comment -%} Added incremental number to avoid conflict styling code when the same images are using this snippet {%- endcomment -%}
+
+
+{%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+
+{% if preload == blank %}
+  {%- assign preload_img = false -%}
+{% else %}
+  {%- assign preload_img = preload -%}
+{% endif %}
+
+{%- comment -%} Limit image widths to valid options based on image.width {%- endcomment -%}
+{%- assign image_widths = '180,360,540,720,900,1080,1296,1512,1728,1944,2160,2376,2592,2808,3024' | split: ',' -%}
+{%- capture image_widths -%}
+  {%- for width in image_widths -%}
+    {%- comment -%} Check if image width is less or equal to width {%- endcomment -%}
+    {%- assign width_num = width | plus: 0 | round -%}
+    {%- if image.width >= width_num -%}{{ width_num }},{%- endif -%}
+  {%- endfor -%}
+  {{ image.width }}
+{%- endcapture -%}
+{%- assign image_widths = image_widths | strip -%}
+
+{%- capture style -%}
+  {% assign asp_rat = aspect_ratio | default: image.aspect_ratio %}
+  {% if asp_rat == 'original' %}
+    --aspect-ratio: {{ image.aspect_ratio }};
+  {% else %}
+    --aspect-ratio: {{ asp_rat }};
+  {% endif %}
+  {% if max_width > 0%}
+    --ri-max-width: {{ max_width | append: 'px' }};
+  {% endif %}
+  {% if max_height > 0%}
+    --ri-max-height: {{ max_height | append: 'px' }};
+  {% endif %}
+{%- endcapture -%}
+
+<div style="{{ outer_style | strip | strip_newlines }}">
+  <div data-image-id="{{ image.id }}" class="sf-image {{ wrapper_class }}" {% if template contains 'collection' %}{% if productOrderNumber <= 4 or has_banner_image_mobile or has_banner_image %} {% else %} lazyload {% endif %} {% else %}{% if image.position != 1 and preload_img == false %} data-image-wrapper data-image-loading {% endif %}{% endif %} {{ wrapper_attributes }} style="{{ style | strip | strip_newlines }}">
+    <img
+        height="var(--ri-max-height)"
+        width="var(--ri-max-width)"
+        class="{% if template contains 'collection' %}{% if productOrderNumber <= 4 or has_banner_image_mobile or has_banner_image %} {% else %} lazyload {% endif %} {% else %}{% if image.position != 1 and preload_img == false %} lazyload {% endif %}{% endif %}  {{ image_class }}"
+        {% comment %}
+          src="{{ image | img_url: '100x' }}"
+        {% endcomment %}
+        {% if template contains 'collection' %}
+            {% if productOrderNumber <= 4 or has_banner_image_mobile or has_banner_image %}
+              data-forloop="{{ productOrderNumber }}"
+              fetchpriority='high' 
+              src="{{ image | img_url: 'large' }}"
+            {% else %}
+              fetchpriority='auto' 
+            {% endif %}
+        {% else %}
+          {% if image.position == 1 or preload_img == true %}
+            fetchpriority='high' 
+            src="{{ image | img_url: 'original' }}"
+          {% else %}
+            {% if fetchPriority == 'low'%}
+              fetchpriority='low' 
+            {% else %}
+              fetchpriority='auto' 
+            {% endif %}
+          {% endif %}
+        {% endif %}
+        data-src="{{ img_url }}"
+        data-widths="[{{ image_widths }}]"
+        data-aspectratio="{{ image.aspect_ratio }}"
+        data-sizes="auto"
+        alt="{{ alt | default: image.alt | escape }}"
+        {{ image_attributes }}
+        data-image
+        style="width: var(--ri-max-width, 100%);height: var(--ri-max-height, 100%);"
+    >
+    <noscript>
+      <img class="{{ image_class }}" src="{{ image | img_url: '2048x2048' }}" alt="{{ alt | default: image.alt | escape }}">
+    </noscript>
+  </div>
+</div>

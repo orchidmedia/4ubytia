@@ -1,0 +1,748 @@
+{%- assign st = section.settings -%}
+
+<!-- #region Setup -->
+{% liquid
+    case section.settings.bg_color_selector
+        when 'color_section1_bg'
+            assign bg_color = settings.color_section1_bg
+        when 'color_section2_bg'
+            assign bg_color = settings.color_section2_bg
+        when 'color_section3_bg'
+            assign bg_color = settings.color_section3_bg
+        when 'color_section4_bg'
+            assign bg_color = settings.color_section4_bg
+        when 'color_section5_bg'
+            assign bg_color = settings.color_section5_bg
+        when 'color_section6_bg'
+            assign bg_color = settings.color_section6_bg
+        else
+            assign bg_color = settings.color_section1_bg
+    endcase
+
+    if section.settings.bg_color_override
+        assign bg_color = section.settings.background_color
+    endif
+
+    assign has_bg = false
+    unless bg_color == "rgba(0,0,0,0)" or bg_color == blank
+        assign has_bg = true
+    endunless
+
+    assign container = section.settings.container
+
+    assign blocks = section.blocks
+    assign card_style = st.card_style
+    assign card_classes = 'flex-col'
+
+    if card_style == 'horizontal'
+        assign card_classes = 'items-start flex-row flex-nowrap'
+        assign alignment = ''
+    else
+        assign icon_classes = 'items-' | append: st.content_alignment
+        assign alignment = 'items-' | append: st.content_alignment
+    endif
+
+    assign hover = ''
+    case section.settings.hover_effect
+        when 'scaling-up'
+            assign hover = 'sf__hover-scale-up'
+    endcase
+%}
+<!-- #endregion -->
+
+<!-- #region Styles -->
+{% style %}
+    .grid-gap {
+        gap: var(--column-gap);
+    }
+
+    .grid-child-gap {
+        gap: var(--column-child-gap);
+    }
+
+    .copy-gap{
+        margin-top: var(--copy-gap);
+    }
+
+    @media screen and (max-width: {{ settings.section_mobile_view }}px) {
+        .grid-gap {
+            gap: var(--column-gap-mobile);
+        }
+
+        .grid-child-gap {
+            gap: var(--column-child-gap-mobile);
+        }
+
+        .copy-gap{
+            margin-top: var(--copy-gap-mobile);
+        }
+    }
+{% endstyle %}
+<!-- #endregion -->
+
+<section
+    id="sf__icon-box-{{ section.id }}"
+    class="sf-icon-box section-pv-{{ section.settings.margin_vertical }} {{ section.settings.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}"
+    data-section-type="proposition-banner"
+    data-section-id="{{ section.id }}"
+    {% if has_bg %}
+        data-bg="{{ bg_color | color_to_hsl }}"
+    {% endif %}
+    style="background-color: {{ bg_color }};"
+>
+    <div class="{{ container }}" 
+        style="--column-gap: {{ section.settings.item_gap }}px; --column-gap-mobile: {{ section.settings.item_gap_mobile }}px; --row-gap: {{ section.settings.item_gap | plus: 10 }}px; --row-gap-mobile: 30px; --items: {{ section.settings.item_per_row }};"
+    >
+
+        {% render 'index-section-header', section_settings: section.settings %}
+        
+        {% if section.settings.use_grid_column_mb %}
+            {% capture grid_two_column_mb %} grid grid-cols-2{% endcapture %}
+        {% endif %}
+        <div 
+            class="grid grid-gap md:grid-cols-2 lg:grid-cols-{{ section.settings.item_per_row }} {{ grid_two_column_mb }}"
+        >
+            {% for block in blocks %}
+                {% assign bs = block.settings %}
+                <div {{ block.shopify_attributes }} class="{% if bs.hide_mobile %} hide-mobile{% endif %}{% if bs.hide_tablet %} hide-tablet{% endif %}{% if bs.hide_desktop %} hide-desktop{% endif %}">
+                    <div class="sf-icon-box sf-icon-box--{{ card_style }} {{ hover }}">
+                        <div class="sf-icon-box__inner flex {{ card_classes }} {{ alignment }} grid-child-gap" style="--column-child-gap: {{ bs.item_gap }}px; --column-child-gap-mobile: {{ bs.item_gap_mobile }}px;">
+                            {% if block.settings.link != blank %}
+                                {%- assign tag = 'a' -%}
+                            {% else %}
+                                {%- assign tag = 'div' -%}
+                            {% endif %}
+                            <{{ tag }}
+                                {% if block.settings.link != blank %}
+                                    href="{{ block.settings.link }}"
+                                {% endif %}
+                                class="sf-icon-box__icon w-full flex justify-center align-self-{{bs.image_align}} max-w-full {{ icon_classes }}"
+                                {% capture max_width %}
+                                
+                                    {% if bs.image_max_width != blank %}{{ bs.image_max_width }}
+                                    {% elsif st.image_max_width != blank %}{{ st.image_max_width }}{% endif %}
+                                {% endcapture %}
+
+                                {% capture max_height %}
+                                
+                                    {% if bs.image_max_height != blank %}{{ bs.image_max_height }}
+                                    {% elsif st.image_max_height != blank %}{{ st.image_max_height }}{% endif %}
+                                {% endcapture %}
+                            >
+                                {% if bs.image != blank or bs.image_svg != blank or bs.image_svg_code != blank %}
+                                    {% render 'simple-image', 
+                                        svg: bs.image_svg,
+                                        svg_code: bs.image_svg_code,
+                                        svg_text: bs.svg_alt_text,
+                                        image: bs.image,
+                                        max_width: max_width,
+                                        max_height: max_height
+                                    %}
+                                {% endif %}
+                                {% if bs.image == blank and bs.image_svg == blank and bs.image_svg_code == blank and request.design_mode %}
+                                    <div class="sf-image--loaded">
+                                        {{ 'product-1' | placeholder_svg_tag: 'sf__placeholder-svg w-full' }}
+                                    </div>
+                                {% endif %}
+                            </{{ tag }}>
+                        {% if bs.heading != blank or bs.description != blank or bs.button_label != blank %}
+                            <div 
+                                class="{% if card_style == 'vertical' %}md:mt-1 {% endif %}sf-icon-box__text flex-1 align-self-{{ bs.vertical_alignment }} text-{{ bs.text_alignment }}" style="--copy-gap: {{ bs.copy_gap }}px; --copy-gap-mobile: {{ bs.copy_gap_mobile }}px;"
+                            >
+                                {% if bs.heading != blank %}
+                                    {%- capture custom_styles -%}
+                                        {%- if bs.heading_color !='rgba(0,0,0,0)' and bs.heading_color != blank -%}
+                                            color:{{ bs.heading_color }};
+                                        {%- endif -%}
+                                    {%- endcapture -%}
+                        
+                                    {% render 'heading-tag' 
+                                        heading: bs.heading_tag,
+                                        content: bs.heading,
+                                        custom_styles: custom_styles
+                                    %}
+                                {% endif %}
+                                {% if bs.description != blank %}
+                                    {%- capture custom_styles -%}
+                                        {%- if bs.description_color !='rgba(0,0,0,0)' and bs.description_color != blank -%}
+                                            color:{{ bs.description_color }};
+                                        {%- endif -%}
+                                    {%- endcapture -%}
+                        
+                                    {% render 'heading-tag' 
+                                        heading: bs.description_tag,
+                                        content: bs.description,
+                                        custom_classes: 'block copy-gap',
+                                        custom_styles: custom_styles
+                                    %}
+                                {% endif %}
+                                {% if bs.button_label != blank %}
+                                    <a href="{{ bs.button_link | default: "#" }}" class="button {{ bs.button_style }} mt-3 copy-gap">{{ bs.button_label }}</a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+{% schema %}
+{
+    "name": "Proposition Banner",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "hide_desktop",
+            "label": "Hide on Desktop",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_tablet",
+            "label": "Hide on Tablet",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_mobile",
+            "label": "Hide on Mobile",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "Section header"
+        },
+        {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Heading color"
+        },
+        {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Sub heading color"
+        },
+        {
+            "type": "color",
+            "id": "description_color",
+            "label": "Description color"
+        },
+        {
+            "type": "select",
+            "id": "heading_tag",
+            "label": "Heading tag",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ],
+            "default": "h1"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Designed for Your Comfort"
+        },
+        {
+            "type": "select",
+            "id": "subheading_tag",
+            "label": "Subheading tag",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ],
+            "default": "h3"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading"
+        },
+        {
+            "type": "select",
+            "id": "description_tag",
+            "label": "Description tag",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ],
+            "default": "p-medium"
+        },
+        {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description"
+        },
+        {
+            "type": "select",
+            "id": "header_alignment",
+            "label": "Text alignment",
+            "default": "center",
+            "options": [
+                { "value": "left", "label": "Left" },
+                { "value": "center", "label": "Center" },
+                { "value": "right", "label": "Right" }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "Container type",
+            "default": "container-fluid",
+            "options": [
+                { "value": "container-fluid", "label": "Default" },
+                { "value": "w-full", "label": "Full width" },
+                { "value": "container", "label": "Use container box" }
+            ]
+        },
+        {
+          "type": "select",
+          "id": "bg_color_selector",
+          "label": "Section Background",
+          "default": "color_section1_bg",
+          "options": [
+            { "value": "color_section1_bg", "label": "Section 1" },
+            { "value": "color_section2_bg", "label": "Section 2" },
+            { "value": "color_section3_bg", "label": "Section 3" },
+            { "value": "color_section4_bg", "label": "Section 4" },
+            { "value": "color_section5_bg", "label": "Section 5" },
+            { "value": "color_section6_bg", "label": "Section 6" }
+          ]
+        },
+        {
+            "type": "select",
+            "id": "margin_vertical",
+            "label": "Section margin (vertical)",
+            "default": "none",
+            "options": [
+                { "value": "none", "label": "None" },
+                { "value": "sm", "label": "Small" },
+                { "value": "md", "label": "Medium" },
+                { "value": "lg", "label": "Large" }
+            ]
+        },
+        {
+          "type": "checkbox",
+          "id": "bg_color_override",
+          "label": "Override Background",
+          "default": false
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color"
+        },
+        {
+            "type": "range",
+            "id": "item_per_row",
+            "label": "Columns per row",
+            "min": 2,
+            "max": 8,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "range",
+            "id": "item_gap",
+            "label": "Column gap",
+            "min": 0,
+            "max": 250,
+            "step": 10,
+            "default": 50,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "item_gap_mobile",
+            "label": "Column gap on mobile",
+            "min": 0,
+            "max": 250,
+            "step": 10,
+            "default": 50,
+            "unit": "px"
+        },
+        {
+          "type": "header",
+          "content": "Card settings"
+        },
+        {
+          "type": "select",
+          "id": "card_style",
+          "label": "Card layout",
+          "default": "vertical",
+          "options": [
+            { "label": "Vertical", "value": "vertical" },
+            { "label": "Horizontal", "value": "horizontal" }
+          ]
+        },
+        {
+          "type": "number",
+          "id": "image_max_width",
+          "label": "Image width"
+        },
+        {
+          "type": "number",
+          "id": "image_max_height",
+          "label": "Image height"
+        },
+        {
+          "type": "select",
+          "id": "content_alignment",
+          "label": "Content alignment",
+          "default": "center",
+          "options": [
+            { "label": "Left", "value": "start" },
+            { "label": "Center", "value": "center" },
+            { "label": "Right", "value": "end" }
+          ]
+        },
+        {
+            "type": "select",
+            "id": "hover_effect",
+            "label": "Hover effect",
+            "default": "scaling-up",
+            "options": [
+                { "value": "none", "label": "None" },
+                { "value": "scaling-up", "label": "Style 1" }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "Mobile Settings"
+        },
+        {
+            "type": "checkbox",
+            "id": "use_grid_column_mb",
+            "label": "Use grid 2 columns",
+            "default": false
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "Custom classes"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "iconbox",
+            "name": "Card",
+            "settings": [
+                {
+                    "type": "checkbox",
+                    "id": "hide_desktop",
+                    "label": "Hide on Desktop",
+                    "default": false
+                },
+                {
+                    "type": "checkbox",
+                    "id": "hide_tablet",
+                    "label": "Hide on Tablet",
+                    "default": false
+                },
+                {
+                    "type": "checkbox",
+                    "id": "hide_mobile",
+                    "label": "Hide on Mobile",
+                    "default": false
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "text",
+                    "id": "image_svg",
+                    "label": "Image - SVG",
+                    "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image unless svg code is available."
+                },
+                {
+                    "type": "textarea",
+                    "id": "image_svg_code",
+                    "label": "Default Image - SVG Code",
+                    "info": "This code will be used as default image if available."
+                },
+                {
+                    "type": "text",
+                    "id": "svg_alt_text",
+                    "label": "Svg Alt Text"
+                },
+                {
+                "type": "number",
+                "id": "image_max_width",
+                "label": "Image width"
+                },
+                {
+                "type": "number",
+                "id": "image_max_height",
+                "label": "Image height"
+                },
+                {
+                  "type": "select",
+                  "id": "image_align",
+                  "label": "Image vertical alignment",
+                  "default": "start",
+                  "options": [
+                    { "label": "Top", "value": "start" },
+                    { "label": "Middle", "value": "center" },
+                    { "label": "Bottom", "value": "end" }
+                  ]
+                },
+                {
+                    "type": "color",
+                    "id": "heading_color",
+                    "label": "Heading color"
+                },
+                {
+                    "type": "color",
+                    "id": "description_color",
+                    "label": "Description color"
+                },
+                {
+                    "type": "select",
+                    "id": "heading_tag",
+                    "label": "Heading tag",
+                    "options": [
+                        { "value": "p", "label": "Paragraph" },
+                        { "value": "heading-1-seo", "label": "SEO H1" },
+                        { "value": "h1", "label": "H1" },
+                        { "value": "h2", "label": "H2" },
+                        { "value": "h3", "label": "H3" },
+                        { "value": "h4", "label": "H4" },
+                        { "value": "h5", "label": "H5" },
+                        { "value": "h6", "label": "H6" },
+                        { "value": "p-xsmall", "label": "Extra small paragraph" },
+                        { "value": "p-small", "label": "Small paragraph" },
+                        { "value": "p-medium", "label": "Medium paragraph" },
+                        { "value": "p-large", "label": "Large paragraph" },
+                        { "value": "p-xlarge", "label": "Extra large paragraph" },
+                        { "value": "quote-1", "label": "Quote 1" },
+                        { "value": "quote-2", "label": "Quote 2" },
+                        { "value": "quote-3", "label": "Quote 3" }
+                    ],
+                    "default": "h1"
+                },
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "Heading",
+                    "default": "This is heading text"
+                },
+                {
+                    "type": "select",
+                    "id": "description_tag",
+                    "label": "Description tag",
+                    "options": [
+                        { "value": "p", "label": "Paragraph" },
+                        { "value": "heading-1-seo", "label": "SEO H1" },
+                        { "value": "h1", "label": "H1" },
+                        { "value": "h2", "label": "H2" },
+                        { "value": "h3", "label": "H3" },
+                        { "value": "h4", "label": "H4" },
+                        { "value": "h5", "label": "H5" },
+                        { "value": "h6", "label": "H6" },
+                        { "value": "p-xsmall", "label": "Extra small paragraph" },
+                        { "value": "p-small", "label": "Small paragraph" },
+                        { "value": "p-medium", "label": "Medium paragraph" },
+                        { "value": "p-large", "label": "Large paragraph" },
+                        { "value": "p-xlarge", "label": "Extra large paragraph" },
+                        { "value": "quote-1", "label": "Quote 1" },
+                        { "value": "quote-2", "label": "Quote 2" },
+                        { "value": "quote-3", "label": "Quote 3" }
+                    ],
+                    "default": "p-medium"
+                },
+                {
+                    "type": "richtext",
+                    "id": "description",
+                    "label": "Description",
+                    "default":"<p>Tell about your service.</p>"
+                },
+                {
+                  "type": "select",
+                  "id": "text_alignment",
+                  "label": "Text alignment",
+                  "default": "center",
+                  "options": [
+                    { "label": "Left", "value": "left" },
+                    { "label": "Center", "value": "center" },
+                    { "label": "Right", "value": "right" }
+                  ]
+                },
+                {
+                  "type": "select",
+                  "id": "vertical_alignment",
+                  "label": "Vertical alignment",
+                  "default": "center",
+                  "options": [
+                    { "label": "Start", "value": "start" },
+                    { "label": "Center", "value": "center" },
+                    { "label": "End", "value": "end" }
+                  ]
+                },
+                {
+                    "type": "range",
+                    "id": "item_gap",
+                    "label": "Column gap",
+                    "min": 0,
+                    "max": 250,
+                    "step": 10,
+                    "default": 40,
+                    "unit": "px"
+                },
+                {
+                    "type": "range",
+                    "id": "item_gap_mobile",
+                    "label": "Column gap on mobile",
+                    "min": 0,
+                    "max": 250,
+                    "step": 10,
+                    "default": 40,
+                    "unit": "px"
+                },
+                {
+                    "type": "range",
+                    "id": "copy_gap",
+                    "label": "Copy gap",
+                    "min": 0,
+                    "max": 250,
+                    "step": 10,
+                    "default": 10,
+                    "unit": "px"
+                },
+                {
+                    "type": "range",
+                    "id": "copy_gap_mobile",
+                    "label": "Copy gap",
+                    "min": 0,
+                    "max": 250,
+                    "step": 10,
+                    "default": 10,
+                    "unit": "px"
+                },
+                {
+                  "type": "url",
+                  "id": "link",
+                  "label": "Image link"
+                },
+                {
+                    "content": "Button settings",
+                    "type": "header"
+                },
+                {
+                    "type": "text",
+                    "id": "button_label",
+                    "label": "Button label"
+                },
+                {
+                    "type": "url",
+                    "id": "button_link",
+                    "label": "Button link"
+                },
+                {
+                    "type": "select",
+                    "id": "button_style",
+                    "label": "Button style",
+                    "options": [
+                        { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                        { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                        { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                        { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                        { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                        { "value": "button-1", "label": "Button 1" },
+                        { "value": "button-2", "label": "Button 2" },
+                        { "value": "button-3", "label": "Button 3" },
+                        { "value": "button-4", "label": "Button 4" },
+                        { "value": "button-5", "label": "Button 5" },
+                        { "value": "button-6", "label": "Button 6" },
+                        { "value": "button-7", "label": "Button 7" }
+                    ],
+                    "default": "sf__btn sf__btn-primary"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Proposition Banner",
+            "category": "Promotional",
+            "settings": {
+              "item_per_row": 3
+            },
+            "blocks": [
+                {
+                    "type": "iconbox",
+                    "settings": {
+                      "heading": "Standard Shipping Worldwide",
+                      "description": "<p>Tell about your service.</p>"
+                    }
+                },
+                {
+                    "type": "iconbox",
+                    "settings": {
+                      "heading": "100% Safe & Secure Checkout",
+                      "description": "<p>Tell about your service.</p>"
+                    }
+                },
+                {
+                    "type": "iconbox",
+                    "settings": {
+                      "heading": "24/7 online support",
+                      "description": "<p>Tell about your service.</p>"
+                    }
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

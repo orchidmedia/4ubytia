@@ -1,0 +1,64 @@
+{%- comment -%}
+    prod: current product
+    gwp: whether this should be considered to be a GWP
+{%- endcomment -%}
+{
+    id: {{ prod.id }},
+    name: {{ prod.title | json }},
+    handle: {{ prod.handle | json }},
+    priceCents: {{ prod.price }},
+    compareAtPriceCents: {{ prod.compare_at_price | default: prod.price }},
+    options: {{ prod.options | json }},
+    {%- if gwp -%}
+    gwp: true,
+    {%- endif -%}
+    {%- assign img = prod.featured_image -%}
+    {%- if img -%}
+        img: {
+            {%- comment -%}
+                Chose 320 because few if not zero devices have a pixel ratio
+                greater than 4, and because we display these images at 80x80
+            {%- endcomment -%}
+            src: {{ img.src | img_url: '320x320' | json }},
+            alt: {{ img.alt | json }},
+        },
+    {%- endif -%}
+    variants: [
+        {%- assign first_variant = true -%}
+        {%- for prod_variant in prod.variants -%}
+        {%- liquid
+            assign valid = true
+        -%}
+        {%- if valid -%}
+        {
+            id: {{ prod_variant.id }},
+            name: {{ prod_variant.title | json }},
+            priceCents: {{ prod_variant.price }},
+            compareAtPriceCents: {{ prod_variant.compare_at_price | default: prod_variant.price }},
+            options: {{ prod_variant.options | json }},
+            sku: {{ prod_variant.sku | json }},
+            inventory: {{ prod_variant.inventory_quantity }},
+            inventoryPolicy: {{ prod_variant.inventory_policy | json }},
+            inventoryManagement: {{ prod_variant.inventory_management | json }},
+            {%- assign img = prod_variant.image -%}
+            {%- unless img -%}
+                {%- assign img = prod.featured_image -%}
+            {%- endunless -%}
+            {%- if img -%}
+                img: {
+                    src: {{ img.src | img_url: '320x320' | json }},
+                    alt: {{ img.alt | json }},
+                },
+            {%- endif -%}
+        }
+            {%- if forloop.last != true -%}
+                ,
+            {%- endif -%}
+        {%- endif -%}
+        {%- assign first_variant = false -%}
+        {%- endfor -%}
+    ],
+    details: [{
+        html: {{ prod.description | json }}
+    }]
+}

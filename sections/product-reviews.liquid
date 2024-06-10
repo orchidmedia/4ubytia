@@ -1,0 +1,203 @@
+{%- assign st = section.settings -%}
+{% case section.settings.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+{%- if section.settings.bg_color_override -%}
+  {%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+
+<div class="sf-product-reviews sf-product__section section-pv-{{ section.settings.margin_vertical }} {% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}" 
+  style="background-color:{{ bg_color }};">
+  <div class="{{ section.settings.container }}">
+    {%- if section.settings.heading != blank -%}
+      {% render 'heading-tag' 
+        heading: section.settings.heading_tag,
+        content: section.settings.heading,
+        custom_classes: "sf-product__section-heading"
+      %}
+    {%- endif -%}
+    {% render 'product-reviews-app__snippet', custom_liquid: section.settings.custom_liquid %}
+  </div>
+</div>
+
+{% schema %}
+    {
+        "name": "Product reviews",
+        "settings": [
+            {
+              "type": "header",
+              "content": "Requirements",
+              "info": "This section requires a product reviews app to work. Such as Shopify product reviews, Bazaarvoice, etc."
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "Container type",
+                "default": "container",
+                "options": [
+                    {
+                        "value": "container",
+                        "label": "Fixed width"
+                    },
+                    {
+                        "value": "container-fluid",
+                        "label": "Stretched width"
+                    },
+                    {
+                        "value": "container-narrow",
+                        "label": "Narrow width"
+                    }
+                ]
+            },
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Reviews",
+                "placeholder": "Reviews"
+            },
+            {
+                "type": "select",
+                "id": "heading_tag",
+                "label": "Heading tag",
+                "default": "h3",
+                "options": [
+                  { "value": "p", "label": "Paragraph" },
+                  { "value": "heading-1-seo", "label": "SEO H1" },
+                  { "value": "h1", "label": "H1" },
+                  { "value": "h2", "label": "H2" },
+                  { "value": "h3", "label": "H3" },
+                  { "value": "h4", "label": "H4" },
+                  { "value": "h5", "label": "H5" },
+                  { "value": "h6", "label": "H6" },
+                  { "value": "p-xsmall", "label": "Extra small paragraph" },
+                  { "value": "p-small", "label": "Small paragraph" },
+                  { "value": "p-medium", "label": "Medium paragraph" },
+                  { "value": "p-large", "label": "Large paragraph" },
+                  { "value": "p-xlarge", "label": "Extra large paragraph" },
+                  { "value": "quote-1", "label": "Quote 1" },
+                  { "value": "quote-2", "label": "Quote 2" },
+                  { "value": "quote-3", "label": "Quote 3" }
+                ]
+            },
+            {
+                "type": "header",
+                "content": "Other review app"
+            },
+            {
+                "type": "liquid",
+                "id": "custom_liquid",
+                "label": "Custom liquid",
+                "info": "Paste the liquid code of the app review here"
+            },
+            {
+                "type": "header",
+                "content": "General"
+            },
+            {
+              "type": "checkbox",
+              "id": "hide_desktop",
+              "label": "Hide on Desktop",
+              "default": false
+            },
+            {
+              "type": "checkbox",
+              "id": "hide_tablet",
+              "label": "Hide on Tablet",
+              "default": false
+            },
+            {
+              "type": "checkbox",
+              "id": "hide_mobile",
+              "label": "Hide on Mobile",
+              "default": false
+            },
+            {
+              "type": "select",
+              "id": "margin_vertical",
+              "label": "Section margin (vertical)",
+              "default": "none",
+              "options": [
+                {
+                  "value": "none",
+                  "label": "None"
+                },
+                {
+                  "value": "sm",
+                  "label": "Small"
+                },
+                {
+                  "value": "md",
+                  "label": "Medium"
+                },
+                {
+                  "value": "lg",
+                  "label": "Large"
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "id": "bg_color_selector",
+              "label": "Section Background",
+              "default": "color_section1_bg",
+              "options": [
+                {
+                  "value": "color_section1_bg",
+                  "label": "Section 1"
+                },
+                {
+                  "value": "color_section2_bg",
+                  "label": "Section 2"
+                },
+                {
+                  "value": "color_section3_bg",
+                  "label": "Section 3"
+                },
+                {
+                  "value": "color_section4_bg",
+                  "label": "Section 4"
+                },
+                {
+                  "value": "color_section5_bg",
+                  "label": "Section 5"
+                },
+                {
+                  "value": "color_section6_bg",
+                  "label": "Section 6"
+                }
+              ]
+            },
+            {
+              "type": "checkbox",
+              "id": "bg_color_override",
+              "label": "Override Background",
+              "default": false
+            },
+            {
+              "type": "color",
+              "id": "background_color",
+              "label": "Background Color"
+            }
+        ],
+        "templates": ["product"],
+        "presets": [
+          {
+            "name": "Product reviews"
+          }
+        ]
+    }
+{% endschema %}

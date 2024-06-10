@@ -1,0 +1,45 @@
+{% for variant in product.variants %}
+    {% if variant.metafields.badge.text != blank %}
+        {% assign badge_text = variant.metafields.badge.text | limit: 1 %}
+        {% assign background_color = variant.metafields.badge.bg_color | default: "#700000" %}
+        {% assign text_color = variant.metafields.badge.text_color | default: "white" %}
+        {% assign badge_width = variant.metafields.badge.badge_width | default: "105px" %}
+        {% assign badge_height = variant.metafields.badge.badge_height | default: "25px" %}
+    {% elsif product.metafields.badge.text != blank %}
+        {% assign badge_text = product.metafields.badge.text %}
+        {% assign background_color = product.metafields.badge.bg_color | default: "#700000" %}
+        {% assign text_color = product.metafields.badge.text_color | default: "white" %}
+        {% assign badge_width = product.metafields.badge.badge_width | default: "105px" %}
+        {% assign badge_height = product.metafields.badge.badge_height | default: "25px" %}     
+    {% endif %}   
+{% endfor %}
+
+{% if badge_text == nil %}
+    {% assign badge_text = "" %}
+{% endif %}
+
+{% if badge_width == nil %}
+    {% assign badge_width = "53px" %}
+{% endif %}
+
+{% if badge_height == nil %}
+    {% assign badge_height = "12px" %}
+{% endif %}
+
+{% capture custom_classes %} prod-badge flex absolute {{settings.badge_align_vertical}} {{settings.badge_align_horizontal}} p-2 z-50 {% endcapture %}
+{% capture custom_styles %} background: {{background_color}}; color: {{text_color}}; line-height: 1; 
+    margin: {{settings.badge_mt}}px {{settings.badge_mr}}px {{settings.badge_mb}}px {{settings.badge_ml}}px; 
+    border-top-right-radius: {{settings.badge_top_right_radius}}px; border-top-left-radius: {{settings.badge_top_left_radius}}px;
+    border-bottom-right-radius: {{settings.badge_bottom_right_radius}}px;border-bottom-left-radius: {{settings.badge_bottom_left_radius}}px;
+    width: {{badge_width}};height: {{badge_height}};justify-content: center; align-items: center;text-align: center;{% endcapture %}
+
+{% if settings.enable_product_badge and badge_text %}
+    <div class="product-badge-wrapper">
+        {% render 'heading-tag'
+            heading: settings.product_badge_text_tag,
+            content: badge_text,
+            custom_classes: custom_classes,
+            custom_styles: custom_styles
+        %} 
+    </div>
+{% endif %}

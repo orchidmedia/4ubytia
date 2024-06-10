@@ -1,0 +1,63 @@
+{% assign st = block.settings %}
+{% capture hide_section %}
+    {% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}
+{% endcapture %}
+
+{% if block.settings.image != blank %}
+  {% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+  {% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+  {% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+  {% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+  {%- liquid
+    case block.settings.image_animation
+      when 'scale-up'
+        assign image_animation = 'sf__hover-scale-up'
+      when 'scale-down'
+        assign image_animation = 'sf__hover-scale-down'
+      when 'zoom-in'
+        assign image_animation = 'sf__hover-zoom-in'
+      else
+        assign image_animation = ''
+    endcase
+  -%}
+
+  <{% if block.settings.link %}a{% else %}div{% endif %}{% if block.settings.link %} href="{{ block.settings.link }}"{% endif %} 
+    class="{{ image_animation }} {{hide_section }}"
+    style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}; {% if block.settings.image_overlay != blank %}position: relative;{% endif %}">
+    
+    {% if block.settings.image_overlay != blank %}<div class="sf-custom__image--overlay"><img src="{{block.settings.image_overlay}}" alt=""></div>{% endif %}
+    
+    {% if block.settings.image_overlay != blank %}<div style="position: relative;">{% endif %}
+    {% render 'responsive-image',
+      image: block.settings.image,
+      max_width: block.settings.image_max_w,
+      max_height: block.settings.image_max_h,
+      preload: block.settings.section_preload
+    %}
+
+    {% if block.settings.image_overlay != blank %}</div>{% endif %}
+  </{% if block.settings.link %}a{% else %}div{% endif %}>
+{% else %}
+  {{ 'image' | placeholder_svg_tag: 'placeholder-svg sf__placeholder-svg sf__placeholder-svg-no-border' }}
+{% endif %}
+
+{% if block.settings.image_overlay != blank %}
+<style>
+  .sf-custom__image--overlay {
+    position: absolute; 
+    z-index: 2; 
+    left: 0; 
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .sf-custom__image--overlay img {
+    height: {{block.settings.overlay_size}};
+    {% if block.settings.overlay_position == 'left' %}
+      margin-right: auto;
+    {% else %}
+      margin-left: auto;
+    {% endif %}
+  }
+</style>
+{% endif %}

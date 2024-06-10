@@ -1,0 +1,60 @@
+{% if section_settings.heading != blank or section_settings.subheading != blank or section_settings.description != blank %}
+    {% liquid
+        assign h_color = section_settings.heading_color
+        assign sh_color = section_settings.subheading_color
+        assign d_color = section_settings.description_color
+        assign h_padding = section_settings.heading_padding
+        assign sh_padding = section_settings.subheading_padding
+        assign d_padding = section_settings.text_padding
+    %}
+    <div class="section__header text-{{ section_settings.header_alignment }}{% if section_settings.container == 'w-full' %} px-5{% endif %}">
+        {% if section_settings.subheading != blank %}
+            {%- capture custom_styles -%}
+                {%- if sh_color !='rgba(0,0,0,0)' and sh_color != blank -%}
+                    color:{{ sh_color }};
+                {%- endif -%}
+                {% if sh_padding > 0 %}
+                    padding:{{sh_padding}}px;
+                {%- endif -%}
+            {%- endcapture -%}
+
+            {% render 'heading-tag' 
+                heading: section_settings.subheading_tag,
+                content: section_settings.subheading,
+                custom_styles: custom_styles
+            %}
+        {% endif %}
+        {% if section_settings.heading != blank %}
+            {%- capture custom_styles -%}
+              {%- if h_color !='rgba(0,0,0,0)' and h_color != blank -%}
+                color:{{ h_color }};
+              {%- endif -%}
+              {% if h_padding > 0 %}
+                padding:{{h_padding}}px;
+            {%- endif -%}
+            {%- endcapture -%}
+
+            {% render 'heading-tag' 
+                heading: section_settings.heading_tag,
+                content: section_settings.heading,
+                custom_styles: custom_styles
+            %}
+        {% endif %}
+        {% if section_settings.description != blank %}
+            {%- capture custom_styles -%}
+                {%- if h_color !='rgba(0,0,0,0)' and d_color != blank -%}
+                color:{{ d_color }};
+                {%- endif -%}
+                {% if d_padding > 0 %}
+                    padding:{{d_padding}}px;
+                {%- endif -%}
+            {%- endcapture -%}
+
+            {% render 'heading-tag' 
+                heading: section_settings.description_tag,
+                content: section_settings.description,
+                custom_styles: custom_styles
+            %}
+        {% endif %}
+    </div>
+{% endif %}

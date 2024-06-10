@@ -1,0 +1,322 @@
+
+
+{%- assign st = section.settings -%}
+
+<section
+    data-section-id="{{ section.id }}"
+    data-section-type="custom-menu" 
+    id="sf-custom-menu-{{ section.id }}"
+    class="sf-custom-menu swiper mySwiperCustomMenu{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}" 
+    style="--pd-top: {{ section.settings.pd_top }}px; --pd-right: {{ section.settings.pd_right }}px; --pd-bottom: {{ section.settings.pd_bottom }}px; --pd-left: {{ section.settings.pd_left }}px; --pd-top-mobile: {{ section.settings.pd_top_mb }}px; --pd-right-mobile: {{ section.settings.pd_right_mb }}px; --pd-bottom-mobile: {{ section.settings.pd_bottom_mb }}px; --pd-left-mobile: {{ section.settings.pd_left_mb }}px;"
+    >
+    <div class="{{ container }} relative swiper-wrapper">
+        {% render 'page-menu', section: section %}
+    </div>
+    <div class="swiper-scrollbar"></div>
+</section>
+
+{%- style -%}
+
+.sf-custom-menu[data-section-id="{{ section.id }}"] {
+    margin: var(--pd-top) var(--pd-right) var(--pd-bottom) var(--pd-left);
+}
+   
+.sf-custom-menu[data-section-id="{{ section.id }}"] .sf-nav {
+    gap: {{st.buttons_gap}}px;
+}
+
+@media screen and (max-width: 991px) {
+    .sf-custom-menu[data-section-id="{{ section.id }}"] {
+        margin: var(--pd-top-mobile) var(--pd-right-mobile) var(--pd-bottom-mobile) var(--pd-left-mobile);
+    }
+
+    .sf-custom-menu[data-section-id="{{ section.id }}"] .sf-nav {
+        gap: {{st.buttons_gap_mb}}px;
+        padding-bottom: {{st.scrollbar_gap}}px;
+    }
+
+    {% if st.hide_scrollbar %}
+    .sf-custom-menu[data-section-id="{{ section.id }}"] .swiper-scrollbar {
+        display: none;
+    }
+
+    @media screen and (max-width: 991px) {
+        .sf-custom-menu[data-section-id="{{ section.id }}"] .swiper-wrapper {
+            margin-bottom: 0 !important;
+        }
+    }
+    {% endif %}
+}
+{%- endstyle -%}
+
+
+<!-- Initialize Swiper -->
+<script>
+
+    const customMenuSwiper = document.querySelector('#sf-custom-menu-{{ section.id }}.mySwiperCustomMenu');
+    const customMenuScrollbar = customMenuSwiper.querySelector('.swiper-scrollbar');
+
+    new Swiper(customMenuSwiper, {
+    direction: "horizontal",
+    slidesPerView: "auto",
+    freeMode: true,
+    scrollbar: {
+        el: customMenuScrollbar,
+        draggable: true,
+        hide: false,
+        snapOnRelease: false
+    },
+    mousewheel: {
+      forceToAxis: true,
+    },
+    a11y: false,
+  });
+</script>  
+
+{% schema %}
+	{
+        "name": "Custom menu",
+        "settings": [
+            {
+                "type": "checkbox",
+                "id": "hide_desktop",
+                "label": "Hide on Desktop",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_tablet",
+                "label": "Hide on Tablet",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_mobile",
+                "label": "Hide on Mobile",
+                "default": false
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "Container type",
+                "default": "container-fluid",
+                "options": [
+                    {
+                        "value": "container-fluid",
+                        "label": "Default"
+                    },
+                    {
+                        "value": "w-full",
+                        "label": "Full width"
+                    },
+                    {
+                        "value": "container",
+                        "label": "Use container box"
+                    }
+                ]
+            },
+            {
+                "type": "header",
+                "content": "Menu"
+            },
+            {
+                "type": "link_list",
+                "id": "main_menu",
+                "label": "Menu",
+                "default": "main-menu"
+            },
+            {
+                "type": "select",
+                "id": "menu_align",
+                "label": "Menu Aligment",
+                "options": [
+                    {
+                        "value": "center",
+                        "label": "Center"
+                    },
+                    {
+                        "value": "end",
+                        "label": "Right"
+                    },
+                    {
+                        "value": "start",
+                        "label": "Left"
+                    }
+                ],
+                "default": "center"
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_scrollbar",
+                "label": "Hide scrollbar mobile",
+                "default": false
+            },
+            {
+                "type": "range",
+                "id": "scrollbar_gap",
+                "min": 0,
+                "max": 50,
+                "step": 1,
+                "unit": "px",
+                "label": "Scrollbar padding mobile",
+                "default": 20
+            },
+            {
+                "type": "header",
+                "content": "Buttons"
+            },
+            {
+                "type": "range",
+                "id": "buttons_gap",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "px",
+                "label": "Buttons gap",
+                "default": 8
+            },
+            {
+                "type": "range",
+                "id": "buttons_gap_mb",
+                "min": 0,
+                "max": 50,
+                "step": 1,
+                "unit": "px",
+                "label": "Buttons gap mobile",
+                "default": 8
+            },
+            {
+                "type": "select",
+                "id": "button_style",
+                "label": "Button style",
+                "options": [
+                    { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                    { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                    { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                    { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                    { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                    { "value": "sf__btn-underline-2", "label": "Underline 2" },
+                    { "value": "sf__btn-underline-3", "label": "Underline 3" },
+                    { "value": "button-1", "label": "Button 1" },
+                    { "value": "button-2", "label": "Button 2" },
+                    { "value": "button-3", "label": "Button 3" },
+                    { "value": "button-4", "label": "Button 4" },
+                    { "value": "button-5", "label": "Button 5" },
+                    { "value": "button-6", "label": "Button 6" },
+                    { "value": "button-7", "label": "Button 7" }
+                ],
+                "default": "button-7" 
+            },
+            {
+                "type": "select",
+                "id": "button_style_active",
+                "label": "Button style active",
+                "options": [
+                    { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                    { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                    { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                    { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                    { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                    { "value": "sf__btn-underline-2", "label": "Underline 2" },
+                    { "value": "sf__btn-underline-3", "label": "Underline 3" },
+                    { "value": "button-1", "label": "Button 1" },
+                    { "value": "button-2", "label": "Button 2" },
+                    { "value": "button-3", "label": "Button 3" },
+                    { "value": "button-4", "label": "Button 4" },
+                    { "value": "button-5", "label": "Button 5" },
+                    { "value": "button-6", "label": "Button 6" },
+                    { "value": "button-7", "label": "Button 7" }
+                ],
+                "default": "button-6"
+            },
+            {
+                "type": "header",
+                "content": "Padding - Desktop"
+            },
+            {
+                "type": "range",
+                "id": "pd_top",
+                "label": "Top",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 32,
+                "unit": "px"
+            },
+            {
+                "type": "range",
+                "id": "pd_right",
+                "label": "Right",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0,
+                "unit": "px"
+            },
+            {
+                "type": "range",
+                "id": "pd_bottom",
+                "label": "Bottom",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 32,
+                "unit": "px"
+            },
+            {
+                "type": "range",
+                "id": "pd_left",
+                "label": "Top",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0,
+                "unit": "px"
+            },
+            {
+                "type": "header",
+                "content": "Padding - Mobile"
+            },
+            {
+                "type": "range",
+                "id": "pd_top_mb",
+                "label": "Top",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 25,
+                "unit": "px"
+            },
+            {
+                "type": "range",
+                "id": "pd_right_mb",
+                "label": "Right",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0,
+                "unit": "px"
+            },
+            {
+                "type": "range",
+                "id": "pd_bottom_mb",
+                "label": "Bottom",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 25,
+                "unit": "px"
+            },
+            {
+                "type": "range",
+                "id": "pd_left_mb",
+                "label": "Top",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0,
+                "unit": "px"
+            }
+        ]
+	}
+{% endschema %}

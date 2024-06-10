@@ -1,0 +1,49 @@
+{%- comment -%}
+    It creates a collapsible item.
+    Accepts:
+    - block: {Object} Parent's block
+    - custom_class: {String} Class name of the inner <div> wrapper for extra styling and js handling
+    - collapsible_title: {String} Title of the collapsible item
+    - collapsible_content: {Object} Content of the collapsible item
+    - collapsible_open: {Boolean} Sets the collapsible item to opened/closed by default
+    - justify_content (optional): {String} Position of the collapsible tab. Accepts: start - center - end. Default: start
+    - text_alignment (optional): {String} Text alignment of the collapsible tab. Accepts: left - center - right. Default: left
+
+    Usage:
+    In your liquid template file, copy the following line
+    - <div class="prod__accordion">
+        <div class="sf-collapsible" data-section-type="sf-collapsible" data-section-id="{{ block.id }}">
+          {% render 'collapsible-item',
+            block: block,
+            custom_class: block.settings.custom_class,
+            collapsible_title: block.settings.collapsible_title,
+            collapsible_content: block.settings.collapsible_content,
+            collapsible_open: block.settings.collapsible_open,
+            justify_content: block.settings.justify_content,
+            text_alignment: block.settings.text_alignment
+          %}
+        </div>
+      </div>
+{%- endcomment -%}
+
+{% if collapsible_title != blank and collapsible_content != blank %}
+  <div class="flex flex-col-reverse lg:flex-row justify-{{ justify_content | default: 'start' }} text-{{ text_alignment | default: 'left' }}">
+    <div class="sf__accordio-blocks {{ custom_class | default: ''}}">
+      <div
+        class="sf__accordion-item {% if collapsible_open %}open{% endif %}"
+        data-index="{{ forloop.index0 }}"
+        style="--content-max-height: {% if collapsible_open %}100%{% else %}0px{% endif %};"
+        {{ block.shopify_attributes }}
+      >
+        <div class="sf__accordion-button lg:text-[18px] pb-2.5 pr-4 border-b border-color-border">
+          {{ collapsible_title }}
+        </div>
+        <div class="sf__accordion-content text-color-secondary">
+          <div class="pt-5 pb-10 prose">
+            {{ collapsible_content }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

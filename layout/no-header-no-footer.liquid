@@ -1,0 +1,58 @@
+<!doctype html>
+<html
+  class="no-js supports-no-cookies {% if request.path == '/challenge' %} grow-full {% endif %}"
+  lang="{{ request.locale.iso_code }}" style="--sf-page-opacity: 0;"
+  data-template="{{template.name}}"
+>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="{{ settings.color_primary }}">
+  {% render 'preload' %}
+  {% render 'SEO' %}
+  {% render 'social-meta-tags' %}
+  {% render 'font-face' %}
+  {% render 'critical-css' %}
+  {% render 'critical-scripts' %}
+  {% render 'style-tags' %}
+  {% render 'custom-code-head' %}
+
+  {% comment %} {% render 'content_for_header' %} {% endcomment %}
+  {{ content_for_header }}
+</head>
+
+<body
+  id="sf-theme" style="opacity: 0;overflow-y: hidden;"
+  class="template-{{ template.name | handle }} {{ template.name }}-{{ template.suffix }} {{ template.name | append: '-' | append: handle }} relative min-h-screen {% if cart.item_count == 0 %}cart-empty{% endif %}"
+  {% if template.name == 'product' %}data-product-id="{{ product.id }}"{% endif %}
+>
+  {% render 'theme-data' %}
+  {%- comment -%}
+    {% section 'annoucement' %}
+    {% section 'header' %}
+  {%- endcomment -%}
+
+  <main role="main" id="MainContent">
+    <div id="scroll-to-top-target" class="w-0 h-0 invisible opacity-0"></div>
+
+    {{ content_for_layout }}
+    {% if settings.show_scroll_top_button %}
+      {% render 'scroll-top-button' %}
+    {% endif %}
+  </main>
+
+  {%- comment -%}
+    {% section 'footer' %}
+    {% section 'mobile-sticky-bar' %}
+  {%- endcomment -%}
+
+  {% if request.path == '/challenge' %}
+    {% render 'customer-challenge-style' %}
+  {% endif %}
+
+  {% render 'custom-code-body' %}
+  {% render 'beauty-messenger' %}
+  {% render 'script-tags' %}
+</body>
+</html>

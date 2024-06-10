@@ -1,0 +1,94 @@
+{% assign min = 1 %}
+{% assign max = 100 %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+{% assign swiper_control_name = "swiper-testimonial-9-control-" | append: randomNumber %}
+
+<div class="w-full" style="background: {{section.settings.background_color}}">
+    <div class="swiper-container swiper-testimonial-9-{{randomNumber}}">
+        <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+                <div class="swiper-slide sf-testimonials-9__block" {{ block.shopify_attributes }} data-index="{{ forloop.index0 }}">
+                    <div class="sf-testimonials-9__block-row">
+                        {% if block.settings.image_link != blank %}<a href="{{ block.settings.image_link | default: '#' }}">{% endif %}
+                                {% if block.settings.image == blank %}
+                                    {{ 'image' | placeholder_svg_tag: 'sf__placeholder-svg w-full h-full no-border' }}
+                                {% else %}
+                                    {% render 'responsive-image', image: block.settings.image %}
+                                {% endif %}
+                                {% if block.settings.image_text %}
+                                    <div class="mt-5 text-lg">
+                                        {{ block.settings.image_text }}
+                                    </div> 
+                                {% endif %}
+                            {% if block.settings.image_link != blank %}</a>{% endif %}                     
+                    </div>
+                    <div class="sf-testimonials-9__block-row flex flex-col justify-center">
+                        {% if section.settings.show_stars %}
+                        <div class="stars flex mb-3 sm:mb-7">
+                            {%- render 'testimonials__stars' -%}
+                        </div>
+                        {% endif %}
+                        {% render 'heading-tag' 
+                            heading: block.settings.title_tag,
+                            content: block.settings.title, 
+                            custom_classes: 'tes-title text-center'
+                        %}
+
+                        {% render 'heading-tag' 
+                            heading: block.settings.description_tag,
+                            content: block.settings.description, 
+                            custom_classes: 'tes-desc mt-5 mb-8 text-left'
+                        %}
+
+                        {% render 'heading-tag' 
+                            heading: block.settings.footer_tag,
+                            content: block.settings.footer, 
+                            custom_classes: 'tes-author uppercase align-self-center'
+                        %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+            {% render 'slider-controls', show_nav: false, show_pagination: true, swiper_control_name: swiper_control_name %}
+</div>
+
+<style>
+    .testimonials-9 > .w-full {
+        height: -webkit-max-content;
+    }
+    @media screen and (max-width: 769px) {
+        .testimonials-9 .sf-slider__controls {
+            margin-top: 10px;
+        }
+    }
+
+    .swiper-pagination.swiper-testimonial-9-control-{{randomNumber}}.w-full.sm\:mt-6.swiper-pagination-clickable.swiper-pagination-bullets.swiper-pagination-horizontal {
+        margin-bottom: 20px;
+    }
+</style>
+
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var loopBoolean = true
+        if (document.querySelectorAll('.testimonials-9 .swiper-slide').length == 1) {
+          document.querySelector('.testimonials-9 .sf-slider__controls').style.margin = "0";
+          loopBoolean = false
+        }
+
+        var swiper = new Swiper('.swiper-testimonial-9-{{randomNumber}}', {
+            loop: loopBoolean,
+            slidesPerView: 1,
+            autoplay: false,
+            navigation: { 
+                nextEl: document.querySelector('.sf-slider__controls-next.swiper-testimonial-9-control-{{randomNumber}}'),
+                prevEl: document.querySelector('.sf-slider__controls-prev.swiper-testimonial-9-control-{{randomNumber}}')
+            },
+            pagination: {
+                el: document.querySelector('.swiper-pagination.swiper-testimonial-9-control-{{randomNumber}}'),
+                clickable: true
+            }
+        });
+    }, false);
+</script>

@@ -1,0 +1,37 @@
+{%- comment -%}
+    It creates a collapsible item.
+    Accepts:
+    - block: {Object} Parent's block
+    - custom_classes: {String} Classes of inner <div> wrapper for extra styling and js handling
+    - text_alignment (optional): {String} Text alignment of the collapsible tab. Accepts: left - center - right. Default: left
+    - justify_content (optional): {String} Position of the collapsible tab. Accepts: start - center - end. Default: start
+    - list_icon_size: {String} Size of the icon. Accepts: sm - md - lg. Default: md
+    - list_icon_library: {String} Icon library
+    - list_icon: {String} Sets the collapsible item to opened/closed by default
+    - list_icon_color: {String} Sets the collapsible item to opened/closed by default
+    - list_text: {String} Sets the collapsible item to opened/closed by default
+
+    Usage:
+    In your liquid template file, copy the following line
+    - {% render 'list-item',
+        block: block,
+        text_alignment: block.settings.text_alignment,
+        justify_content: block.settings.justify_content,
+        list_icon_size: block.settings.list_icon_size_,
+        list_icon_library: block.settings.list_icon_library,
+        list_icon: block.settings.list_icon,
+        list_icon_color: block.settings.list_icon_color,
+        list_text: block.settings.list_text,
+        custom_classes: "py-2"
+      %}
+{%- endcomment -%}
+
+<div class="flex flex-row w-full text-{{ text_alignment }} justify-{{ justify_content }} items-center {{ custom_classes }}">
+  <span class="icon icon-{{ list_icon_size }}">
+    {%- case list_icon_library -%}
+      {%- when 'default' -%}
+        {%- render 'default-icon-library', list_icon: list_icon, list_icon_color: list_icon_color -%}
+    {%- endcase -%}
+  </span>
+  <p>{{ list_text }}</p>
+</div>

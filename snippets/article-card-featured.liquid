@@ -1,0 +1,120 @@
+{% if content_align == nil %}
+    {% assign content_align = settings.article_align_content %}
+{% endif %}
+{% if article_show_date == nil %}
+    {% assign article_show_date = section.settings.show_date %}
+{% endif %}
+{% if article_blog_name == nil %}
+    {% assign article_blog_name = section.settings.show_blog_name %}
+{% endif %}
+{% if article_show_tags == nil %}
+    {% assign article_show_tags = section.settings.show_tags %}
+{% endif %}
+{% if article_show_excerpt == nil %}
+    {%- assign article_show_excerpt = section.settings.show_excerpts -%}    
+{% endif %}
+{% if article_show_button == nil %}
+    {% assign article_show_button = section.settings.article_show_button %}
+{% endif %}
+{% if article_show_author == nil %}
+    {% assign article_show_author = section.settings.show_author %}
+{% endif %}
+{% capture date %}{{ article.published_at | time_tag: format: 'month_day_year' }}{% endcapture %}
+<div class="sf__blog-card sf__view-{{ view }} {{ blog_class }}">
+    <a href="{{ article.url }}">
+        <div class="sf__blog-cardImage" {% if settings.article_image_aspect_ratio != 'original' %}style="--aspect-ratio: {{ settings.article_image_aspect_ratio }}"{% endif %}>
+            {% render 'responsive-image', image: article.image, aspect_ratio: settings.article_image_aspect_ratio, image_class: 'w-full h-full' %}
+        </div>
+    </a>
+    <div class="sf__blog-cardContent {{ content_align }}">
+        {%- capture custom_styles -%}
+            {%- if section.settings.topic_color !='rgba(0,0,0,0)' and section.settings.topic_color != blank -%}
+                color:{{ section.settings.topic_color }};
+            {%- endif -%}
+        {%- endcapture -%}
+        {%- if article.tags.size > 0 and article_show_tags -%}
+            {%- if request.page_type == 'page' -%}
+                {%- assign blog_path = blog_url -%}
+            {%- else -%}
+                {%- assign blog_path = blog.url -%}
+            {%- endif -%}
+
+            <p-large class="card-tags flex flex-row flex-wrap uppercase" style="line-height: {{ tag_line_height }}px;{{ custom_styles }}">
+                {%- for tag in article.tags -%}
+                 <a href="{{- blog_path -}}/tagged/{{ tag | handle }}" class="link-5">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
+                {%- endfor -%}
+            </p-large>
+        {%- endif -%}
+
+        {%- if article_blog_name -%}
+            {% assign blog_path = article.handle | split: '/' %}
+            <p-large class="card-tags flex flex-row flex-wrap uppercase" style="line-height: {{ tag_line_height }}px;{{ custom_styles }}">
+               
+                 <a href="/blogs/{{ blog_path.first }}" class="link-5">{{ blog_path.first | replace: '-', ' ' | capitalize }}</a>
+            </p-large>
+
+        {%- endif -%}
+
+        {%- if article_show_date -%}
+            <span class="sf__blog-cardDate">{{ date }}</span>
+        {%- endif -%}
+        <a href="{{ article.url }}" class="sf__blog-cardTitle">
+            {%- capture custom_styles -%}
+            {%- if section.settings.article_title_color !='rgba(0,0,0,0)' and section.settings.article_title_color != blank -%}
+                color:{{ section.settings.article_title_color }};
+            {%- endif -%}
+            {%- endcapture -%}
+            {% render 'heading-tag'
+            heading: section.settings.article_title_tag,
+            content: article.title,
+            custom_classes: custom_classes
+            custom_styles: custom_styles
+            %}
+        </a>
+        <div class="mt-4 sep">{% render 'separator' style: section.settings.separator_style %}</div>
+        {%- if article_show_excerpt -%}
+            <div class="sf__blog-cardExcerpt">
+                {%- if article.excerpt.size > 0 -%}
+                    {% assign article_excerpt = article.excerpt | strip_html | truncatewords: 24, '...' %}
+                {%- else -%}
+                    {% assign article_excerpt = article.content | strip_html | truncatewords: 18, '...' %}
+                {%- endif -%}
+                {% if section.settings.article_excerpt_tag == 'excerpt-custom' %}
+                    <span class="excerpt-custom" style="color: {{section.settings.article_excerpt_color}};">{{article_excerpt}}</span>
+                {% else %}
+                    {%- capture custom_styles -%}
+                    {%- if section.settings.article_excerpt_color !='rgba(0,0,0,0)' and section.settings.article_excerpt_color != blank -%}
+                        color:{{ section.settings.article_excerpt_color }};
+                    {%- endif -%}
+                    {%- endcapture -%}
+                    {% render 'heading-tag'
+                    heading: section.settings.article_excerpt_tag,
+                    content: article_excerpt,
+                    custom_classes: custom_classes
+                    custom_styles: custom_styles
+                    %}
+                {% endif %}
+            </div>
+        {%- endif -%}
+        {%- if article_show_button -%}
+            <a class="sf__blog-cardReadmore sf__btn sf__btn-link" href="{{ article.url }}">{{ 'blogs.article.read_more' | t }}</a>
+        {%- endif -%}
+        {%- if article_show_author -%}
+        <div class="mt-3 author">
+            {%- capture custom_styles -%}
+            {%- if section.settings.article_author_color !='rgba(0,0,0,0)' and section.settings.article_author_color != blank -%}
+                color:{{ section.settings.article_author_color }};
+            {%- endif -%}
+            {%- endcapture -%}
+
+            {% assign aa = article.author %}
+            {% render 'heading-tag'
+            heading: section.settings.article_author_tag,
+            content: aa,
+            custom_classes: custom_classes
+            custom_styles: custom_styles
+            %}
+        </div>
+    {%- endif -%}
+    </div>
+</div>

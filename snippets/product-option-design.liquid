@@ -1,0 +1,195 @@
+{%- assign values_limit = settings.pcard_limit_values_number -%}
+{%- assign rest_values = 0 -%}
+
+{%- if values_limit == 0 or is_product_card != true -%}
+  {%- assign values_limit = 99 -%}
+{%- elsif option.values.size > values_limit -%}
+  {%- assign rest_values = option.values.size | minus: values_limit -%}
+{%- endif -%}
+
+
+{% if product.variants.size == 1 %}
+  {%- for option in product.options_with_values -%}
+    <div class="prod__option prod__option--{{ design }} flex items-center flex-wrap justify-between">
+      <span class="prod__option-single product-option-item" 
+        data-option-position="{{ option.position }}" 
+        data-option-type="{{ design }}" 
+        data-notify-me="{{settings.enable_klaviyo_notify_me}}" 
+        data-variant-id="{% for variant in product.variants %}{{variant.id}}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+        data-atc-text="{% for variant in product.variants %}{% if variant.available == false or product.available == false %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.btn_coming_soon }}{% else %}{{ settings.btn_sold_out }}{% endif %}{% else %}{{ settings.btn_single_product }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+        data-notify-text="{% for variant in product.variants %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.notify_me_coming_soon }}{% else %}{{ settings.notify_me_sold_out }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+        data-badges="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text}}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text}}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+        data-badges-background="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.bg_color | default: "#700000" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.bg_color | default: "#700000" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+        data-badges-text="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text_color | default: "white" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text_color | default: "white" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"         
+data-selected="true">{{ option.selected_value }}</span>
+    </div>
+  {%- endfor -%}
+{% else %}
+  {%- case design -%}
+    {%- when 'dropdown' -%}
+      <div class="inline-flex flex-wrap w-full">
+        <label for="{{ option.name }} {{ option.position }}"></label>
+        <div class="sf__select-bordered w-full">
+          <select {% comment %}id="{{ option.name }} {{ option.position }}"{% endcomment %}
+            class="sf-product-variant-option-dropdown h-11 border border-color-border rounded w-full pl-4 pr-10 cursor-pointer">
+            {% for value in option.values %}
+              <option {% if option.selected_value == value %}selected{% endif %}class="product-option-item" 
+                data-option-position="{{ option.position }}" 
+                data-notify-me="{{settings.enable_klaviyo_notify_me}}" 
+                data-variant-id="{% for variant in product.variants %}{{variant.id}}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+                data-atc-text="{% for variant in product.variants %}{% if variant.available == false or product.available == false %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.btn_coming_soon }}{% else %}{{ settings.btn_sold_out }}{% endif %}{% else %}{{ settings.btn_single_product }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                data-notify-text="{% for variant in product.variants %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.notify_me_coming_soon }}{% else %}{{ settings.notify_me_sold_out }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                data-badges="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text}}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text}}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                data-badges-background="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.bg_color | default: "#700000" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.bg_color | default: "#700000" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+                data-badges-text="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text_color | default: "white" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text_color | default: "white" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"         
+                data-value="{{- value | escape -}}">
+                {{- value -}}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    {% when 'image' %}
+      <div class="inline-flex flex-wrap">
+        {% for value in option.values %}
+          {%- if forloop.index0 < values_limit -%}
+            <div {% if option.selected_value == value %}data-selected="true"{% endif %}
+              class="product-option-item border border-color-border w-16 h-16 flex items-center justify-center mr-2 mb-2 cursor-pointer" 
+              data-option-position="{{ option.position }}" 
+              data-option-type="image" 
+              data-notify-me="{{settings.enable_klaviyo_notify_me}}" 
+              data-variant-id="{% for variant in product.variants %}{{variant.id}}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+              data-atc-text="{% for variant in product.variants %}{% if variant.available == false or product.available == false %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.btn_coming_soon }}{% else %}{{ settings.btn_sold_out }}{% endif %}{% else %}{{ settings.btn_single_product }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-notify-text="{% for variant in product.variants %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.notify_me_coming_soon }}{% else %}{{ settings.notify_me_sold_out }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-badges="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text}}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text}}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-badges-background="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.bg_color | default: "#700000" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.bg_color | default: "#700000" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+              data-badges-text="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text_color | default: "white" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text_color | default: "white" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"         
+              data-value="{{- value | escape -}}">
+              {{- value -}}
+            </div>
+          {%- endif -%}
+        {% endfor %}
+        {% render 'product-option-rest-values',
+           class: 'sf-po__option-button',
+           product_handle: product_handle,
+           rest_values: rest_values
+         %}
+      </div>
+    {% when 'color' %}
+      <div class="inline-flex flex-wrap">
+        {% for value in option.values %}
+          {%- if forloop.index0 < values_limit -%}
+            <div class="sf__tooltip-item sf__tooltip-top">
+              <div class="sf__variant-swatch flex justify-center items-center">
+                <div {% if option.selected_value == value %}data-selected="true"{% endif %}
+                  class="product-option-item flex items-center justify-center cursor-pointer text-white" 
+                  data-option-position="{{ option.position }}" 
+                  data-option-type="color" 
+                  data-notify-me="{{settings.enable_klaviyo_notify_me}}" 
+                  data-variant-id="{% for variant in product.variants %}{{variant.id}}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+                  data-atc-text="{% for variant in product.variants %}{% if variant.available == false or product.available == false %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.btn_coming_soon }}{% else %}{{ settings.btn_sold_out }}{% endif %}{% else %}{{ settings.btn_single_product }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                  data-notify-text="{% for variant in product.variants %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.notify_me_coming_soon }}{% else %}{{ settings.notify_me_sold_out }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                  data-badges="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text}}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text}}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                  data-badges-background="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.bg_color | default: "#700000" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.bg_color | default: "#700000" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+                  data-badges-text="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text_color | default: "white" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text_color | default: "white" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"         
+                  data-value="{{- value | escape -}}">
+                  {{- value -}}
+                </div>
+              </div>
+              <span class="sf__tooltip-content capitalize">{{- value -}}
+              </span>
+            </div>
+          {%- endif -%}
+        {% endfor %}
+        {% render 'product-option-rest-values',
+           class: 'color-design',
+           product_handle: product_handle,
+           rest_values: rest_values
+         %}
+      </div>
+    {% when 'button' %}
+      <div class="inline-flex flex-wrap{% if is_size %} mr-4{% endif %}">
+        {% for value in option.values %}
+          {%- if forloop.index0 < values_limit -%}
+            <div {% if option.selected_value == value %}data-selected="true"{% endif %}
+              class="product-option-item sf-po__option-button" 
+              data-option-position="{{ option.position }}" 
+              data-option-type="{{ design }}" 
+              data-notify-me="{{settings.enable_klaviyo_notify_me}}" 
+              data-variant-id="{% for variant in product.variants %}{{variant.id}}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+              data-atc-text="{% for variant in product.variants %}{% if variant.available == false or product.available == false %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.btn_coming_soon }}{% else %}{{ settings.btn_sold_out }}{% endif %}{% else %}{{ settings.btn_single_product }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-notify-text="{% for variant in product.variants %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.notify_me_coming_soon }}{% else %}{{ settings.notify_me_sold_out }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-badges="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text}}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text}}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-badges-background="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.bg_color | default: "#700000" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.bg_color | default: "#700000" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+              data-badges-text="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text_color | default: "white" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text_color | default: "white" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"         
+              data-value="{{- value | escape -}}">
+              {{- value -}}
+            </div>
+          {%- endif -%}
+        {% endfor %}
+        {% render 'product-option-rest-values',
+           class: 'sf-po__option-button',
+           product_handle: product_handle,
+           rest_values: rest_values
+         %}
+      </div>
+    {% when 'radio' %}
+      <div style="gap:10px" class="inline-flex  radio-variant-group flex-wrap{% if is_size %} mr-4{% endif %}">
+        {% for value in option.values %}
+          {%- if forloop.index0 < values_limit -%}
+            <div class="radio-variant">
+              <input {% if option.selected_value == value %}checked="true"{% endif %}
+                class="product-option-item sf-po__option-radio" 
+                data-option-position="{{ option.position }}" 
+                data-option-type="{{ design }}" 
+                data-notify-me="{{settings.enable_klaviyo_notify_me}}" 
+                data-variant-id="{% for variant in product.variants %}{{variant.id}}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+                data-atc-text="{% for variant in product.variants %}{% if variant.available == false or product.available == false %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.btn_coming_soon }}{% else %}{{ settings.btn_sold_out }}{% endif %}{% else %}{{ settings.btn_single_product }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                data-notify-text="{% for variant in product.variants %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.notify_me_coming_soon }}{% else %}{{ settings.notify_me_sold_out }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                data-badges="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text}}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text}}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+                data-badges-background="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.bg_color | default: "#700000" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.bg_color | default: "#700000" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+                data-badges-text="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text_color | default: "white" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text_color | default: "white" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"         
+                data-value="{{- value | escape -}}" 
+                type="radio" id="{{ value }}" 
+                name="{{ option.name}}" 
+                value="{{ value }}">
+
+              <label for="{{- value -}}">{{- value -}}
+              </label>
+            </div>
+          {%- endif -%}
+        {% endfor %}
+        {% render 'product-option-rest-values',
+           class: 'sf-po__option-button',
+           product_handle: product_handle,
+           rest_values: rest_values
+         %}
+      </div>
+    {%- else -%}
+      <div class="inline-flex flex-wrap{% if is_size %} mr-4{% endif %}" style="margin: 0 -5px;">
+        {% for value in option.values %}
+          {%- if forloop.index0 < values_limit -%}
+            <div {% if option.selected_value == value %}data-selected="true"{% endif %}
+              class="product-option-item sf-po__option-button rounded" 
+              data-option-position="{{ option.position }}" 
+              data-option-type="default" 
+              data-notify-me="{{settings.enable_klaviyo_notify_me}}" 
+              data-variant-id="{% for variant in product.variants %}{{variant.id}}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+              data-atc-text="{% for variant in product.variants %}{% if variant.available == false or product.available == false %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.btn_coming_soon }}{% else %}{{ settings.btn_sold_out }}{% endif %}{% else %}{{ settings.btn_single_product }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-notify-text="{% for variant in product.variants %}{% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon %}{{ settings.notify_me_coming_soon }}{% else %}{{ settings.notify_me_sold_out }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-badges="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text}}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text}}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}" 
+              data-badges-background="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.bg_color | default: "#700000" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.bg_color | default: "#700000" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+              data-badges-text="{% for variant in product.variants %}{% if variant.metafields.badge.text != blank %}{{variant.metafields.badge.text_color | default: "white" }}{% elsif product.metafields.badge.text != blank %}{{product.metafields.badge.text_color | default: "white" }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}"         
+              data-value="{{- value | escape -}}">
+              {{- value -}}
+            </div>
+          {%- endif -%}
+        {% endfor %}
+        {% render 'product-option-rest-values',
+           class: 'sf-po__option-button default-design',
+           product_handle: product_handle,
+           rest_values: rest_values
+         %}
+      </div>
+  {%- endcase -%}
+{% endif %}

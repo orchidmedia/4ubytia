@@ -1,0 +1,949 @@
+{%- assign st = section.settings -%}
+{%- assign blog_to_show = st.limit | default: 5 -%}
+{%- assign use_scroll_mobile = st.use_scroll_mobile -%}
+
+{%- liquid
+    for blog_page in blogs
+        if blog_page.url == request.path
+            assign blog = blog_page
+        endif
+    endfor
+
+    if st.blog != nil
+        assign blog = blogs[st.blog]
+    endif
+-%}
+
+{% case st.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+
+{%- if st.bg_color_override -%}
+  {%- assign bg_color = st.background_color -%}
+{%- endif -%}
+
+{% capture container %}
+    {{ st.container }}
+{% endcapture %}
+
+{%- paginate blog.articles by st.limit -%}
+
+    <section id="sf__blog-post-{{ section.id }}" 
+        class="sf__blog-post section-pv-{{ st.margin_vertical }} {{ st.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}" 
+        style="background-color: {{ bg_color }};" data-section-id="{{section.id}}">
+        <div class="{{ container }}" style="--column-gap: {{ st.column_gap }}px; --column-gap-mobile: {{ st.mobile_gap }}px; --row-gap: {{ st.column_gap | plus: 10 }}px;">
+            {% render 'index-section-header', section_settings: st %}
+
+            {% if use_scroll_mobile %}<div class="sf__ms">{% endif %}
+                {% assign grid_classes = grid_classes %}
+                {% liquid
+                    assign grid_cols = ''
+                    assign grid_rows = ''
+                    assign extra_style = ''
+                    case st.layout
+                        when 'default'
+                            assign grid_cols = 'lg:grid-cols-4'
+                        when 'layout_1'
+                            assign grid_cols = 'lg:grid-cols-4'
+                        when 'layout_2'
+                            assign grid_cols = 'lg:grid-cols-4 layout-2-margin'
+                            assign margin_top = 'margin-top:' | append: st.layout_2_top_margin | append: 'px;'
+                            assign margin_bottom = 'margin-bottom:' | append: st.layout_2_bottom_margin | append: 'px;'
+                        when 'layout_3'
+                            assign grid_cols = 'lg:grid-cols-4'
+                            assign grid_rows = 'grid-rows-3'
+                        when 'layout_4'
+                            assign grid_cols = 'lg:grid-cols-4'
+                            assign grid_rows = 'grid-rows-2'
+                    endcase
+
+                    assign grid_classes = "grid " | append: grid_cols | append: ' ' | append: grid_rows | append: ' sm:grid-cols-2 grid-cols-1'
+                %}
+
+                {% if st.layout == 'layout_2' and st.layout_2_title_enable %}
+                    <div class="flex layout-2__heading justify-{{ st.layout_2_title_align }}">
+                      {% if blog.metafields.custom.subtitle != blank %}
+                        {% assign custom_classes = "layout-2__border" %}
+                      {% endif %}
+                      {% render 'heading-tag'
+                          heading: st.layout_2_title_tag,
+                          content: blog.title,
+                          custom_classes: custom_classes
+                      %}
+
+                      {% if blog.metafields.custom.subtitle != blank %}
+                        {% render 'heading-tag'
+                            heading: st.layout_2_desc_tag,
+                            content: blog.metafields.custom.subtitle,
+                            custom_classes: "align-self-center"
+                        %}
+                      {% endif %}
+                    </div>
+                {% endif %}
+
+                <div id="grid-{{ section.id }}" 
+                    class="sf-grid-blog {{ grid_classes }} {% if st.layout == "layout_2"%}layout-2-margin{% endif %}"
+                    style="{{ extra_style }}"
+                    data-next-url="{{ paginate.next.url }}"
+                >
+                    {%- for article in blog.articles -%}
+                        
+                        {% assign grid__columns = 'sf-column ' %}
+                        {% case st.layout %}
+                            {% when 'layout_1' %}
+                                {% if forloop.first %}
+                                    {% assign grid__columns = grid__columns | append: 'sm:col-span-2 sm:row-span-2' %}
+                                {% endif %}
+                            {% when 'layout_2' %}
+                                {% if forloop.index == 2 %}
+                                    {% assign grid__columns = grid__columns | append: 'sm:row-span-2 sm:col-span-2 side-borders' %}
+                                {% endif %}
+                            {% when 'layout_3' %}
+                                {% if forloop.first %}
+                                    {% assign grid__columns = grid__columns | append: 'lg:col-span-2 lg:row-end-3 lg:row-start-1' %}
+                                {% elsif forloop.index == 4 %}
+                                    {% assign grid__columns = grid__columns | append: 'lg:col-span-2 lg:row-start-2 lg:row-end-4'%}
+                                {% elsif forloop.index == 5 %}
+                                    {% assign grid__columns = grid__columns | append: 'sm:col-span-2'%}
+                                {% endif %}
+                            {% when 'layout_4' %}
+                                {% if forloop.first %}
+                                    {% assign grid__columns = grid__columns | append: 'lg:col-span-2 lg:row-end-3 lg:row-start-1' %}
+                                {% elsif forloop.index == 2 or forloop.index == 3 %}
+                                    {% assign grid__columns = grid__columns | append: 'lg:col-span-2'%}
+            
+                                {% elsif forloop.index == 4 or forloop.index == 5 %}
+                                    {% assign grid__columns = grid__columns | append: 'lg:col-span-2 lg:row-start-3 lg:row-end-4'%}
+                                {% endif %}
+                        {% endcase %}
+                        
+                        <div class="{{ grid__columns }}">
+                            {% unless article == nil %}
+                                {% assign show_excerpt = true %}
+                                {% if st.layout == 'layout_2' and forloop.first or forloop.index == 3 or forloop.index == 4 or forloop.index == 5 %}
+                                    {% assign show_excerpt = false %}
+                                {% endif %}
+
+                                {% render 'article-card', 
+                                    article: article, 
+                                    view: 'grid',
+                                    article_show_excerpt: show_excerpt,
+                                    article_image_aspect_ratio: st.article_image_aspect_ratio,
+                                    article_show_tags: st.article_show_tags,
+                                    article_blog_name: st.show_blog_name
+                                %}
+                            {% endunless %}
+                        </div>
+                    {%- endfor -%}
+                </div>
+
+                {% if section.settings.button_text != blank %}
+                    {% if section.settings.redirect_to_page %}
+                        <div class="sf__blog-post-button w-full flex justify-center items-center mt-8 lg:mt-10 2xl:mt-15">
+                            {% render 'button-link'
+                                link: section.settings.button_link,
+                                style: section.settings.button_style,
+                                text: section.settings.button_text
+                            %}
+                        </div>
+                    {% elsif paginate.pages > 1 %}
+                        <div class="load-more text-center">
+                            <a class="load-more_btn text-center button {{ section.settings.button_style }}" 
+                                onclick="loadMoreBlogs()"
+                            >
+                                {{ section.settings.button_text }}
+                            </a>
+                            <div class="load-more_spinner hidden">
+                                <img
+                                    src="{{ 'loading-animation.svg' | asset_url }}"
+                                    alt="{{ 'accessibility.loading' | t }}"
+                                    class="bl-core-loading-animation__img"
+                                    width="50"
+                                />
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% if use_scroll_mobile %}</div>{% endif %}
+        </div>
+    </section>
+
+{% endpaginate %}
+
+{% unless st.redirect_to_page %}
+    <script>
+        const blogsOnPage = document.getElementById('grid-{{ section.id }}');
+        let nextUrl = blogsOnPage.dataset.nextUrl;
+    
+        const loadMoreBtn = document.getElementsByClassName('load-more_btn')[0];
+        const loadMoreSpinner = document.getElementsByClassName('load-more_spinner')[0];
+    
+        async function getNextPage() {
+            try {
+                let res = await fetch(nextUrl);
+                return await res.text();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    
+        async function loadMoreBlogs() {
+            loadMoreBtn.style.display = 'none';
+            loadMoreSpinner.style.display = 'block';
+            let nextPage = await getNextPage();
+    
+            const parser = new DOMParser();
+            const nextPageDoc = parser.parseFromString(nextPage, 'text/html');
+    
+            loadMoreSpinner.style.display = 'none';
+    
+            const blogsGrid = nextPageDoc.getElementById('grid-{{ section.id }}');
+            const newBlogs = blogsGrid.getElementsByClassName('sf-column');
+            const newUrl = blogsGrid.dataset.nextUrl;
+            if (newUrl) {
+                loadMoreBtn.style.display = 'block';
+            }
+            nextUrl = newUrl;
+            for (let i = 0; i < newBlogs.length; i++) {
+                blogsOnPage.appendChild(newBlogs[i]);
+            }
+        }
+    </script>
+{% endunless %}
+
+<style>
+    {% unless st.layout == 'default' or st.layout == 'layout_5' %}
+        #grid-{{ section.id }} .sf-column:nth-child(6), 
+        #grid-{{ section.id }} .sf-column:nth-child(7),
+        #grid-{{ section.id }} .sf-column:nth-child(8),
+        #grid-{{ section.id }} .sf-column:nth-child(9) {
+            margin-top: {{ st.gap_grid_more_articles }}px;
+        }
+    {% endunless %}
+
+    {% if st.layout == 'layout_2' and st.layout_2_custom_featured %}
+        #grid-{{ section.id }} .sf-column:nth-child(n):nth-child(-n+5) .sf__blog-cardContent .sf__blog-cardTitle h1,
+        #grid-{{ section.id }} .sf-column:nth-child(n):nth-child(-n+5) .sf__blog-cardContent .sf__blog-cardTitle h2,
+        #grid-{{ section.id }} .sf-column:nth-child(n):nth-child(-n+5) .sf__blog-cardContent .sf__blog-cardTitle h3,
+        #grid-{{ section.id }} .sf-column:nth-child(n):nth-child(-n+5) .sf__blog-cardContent .sf__blog-cardTitle h4,
+        #grid-{{ section.id }} .sf-column:nth-child(n):nth-child(-n+5) .sf__blog-cardContent .sf__blog-cardTitle h5,
+        #grid-{{ section.id }} .sf-column:nth-child(n):nth-child(-n+5) .sf__blog-cardContent .sf__blog-cardTitle h6 {
+            padding-bottom: 24px;
+        }
+
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle h1,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle h2,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle h3,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle h4,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle h5,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle h6 {
+            font-size: 40px;
+            line-height: 44px;
+            padding-bottom: 30px !important;
+        }
+
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle:after {
+            content: '';
+            width: 180px;
+            opacity: 1;
+            border-top: solid 1px #000;
+            position: absolute;
+        }
+
+        #grid-{{ section.id }} .sf-column:nth-child(1) .sf__blog-cardContent .sf__blog-cardTitle:after,
+        #grid-{{ section.id }} .sf-column:nth-child(3) .sf__blog-cardContent .sf__blog-cardTitle:after,
+        #grid-{{ section.id }} .sf-column:nth-child(4) .sf__blog-cardContent .sf__blog-cardTitle:after,
+        #grid-{{ section.id }} .sf-column:nth-child(5) .sf__blog-cardContent .sf__blog-cardTitle:after {
+            content: '';
+            width: 180px;
+            opacity: 0.25;
+            border-top: solid 1px #000;
+            position: absolute;
+        }
+        
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt p,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt p-xsmall,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt p-small,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt p-medium,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt p-large,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt p-xlarge,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt quote-1,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt quote-2,
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt quote-3 {
+            font-size: 24px;
+        }
+
+        #grid-{{ section.id }} .sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardExcerpt {
+            margin-top: 24px;
+        }
+
+        @media screen and (max-width: 991px) {
+            #grid-{{ section.id }} :not(.sf-column:nth-child(2)) {
+                order: 2;
+            }
+            #grid-{{ section.id }} .sf-column:nth-child(2) {
+                order: 0;
+            }
+
+            #grid-{{ section.id }} :not(.sf-column:nth-child(2) .sf__blog-cardContent .sf__blog-cardTitle):after {
+                display: none;
+            }
+        }
+    {% endif %}
+
+    .layout-2-margin {
+        margin-top: {{st.layout_2_top_margin}}px;
+        margin-bottom: {{st.layout_2_bottom_margin}}px;
+    }
+    .layout-2__heading {
+        margin-top: {{ st.layout_2_title_margin_top }}px;
+    }
+
+    @media screen and (max-width: 991px) {
+        .layout-2__heading {
+            margin-top: {{ st.layout_2_title_margin_top_mb }}px;
+        }
+    
+        .layout-2-margin {
+            margin-top: {{st.layout_2_top_margin_mb}}px;
+            margin-bottom: {{st.layout_2_bottom_margin_mb}}px;    
+        }
+    }
+</style>
+
+{% schema %}
+{
+    "name":"Blog posts",
+    "settings":[
+        {
+            "type": "header",
+            "content": "Section header"
+        },
+        {
+            "type": "select",
+            "id": "heading_tag",
+            "label": "Heading tag",
+            "default": "h3",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+			"type": "color",
+			"id": "heading_color",
+			"label": "Heading color",
+			"default": "#000000"
+        },
+        {
+			"type": "text",
+			"id": "heading",
+			"label": "Heading",
+			"default": "Blog Posts"
+      	},
+        {
+            "type": "select",
+            "id": "subheading_tag",
+            "label": "Subheading tag",
+            "default": "h3",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+			"type": "color",
+			"id": "subheading_color",
+			"label": "Subheading color",
+			"default": "#000000"
+        },
+        {
+            "type": "html",
+            "id": "subheading",
+            "label": "Subheading"
+        },
+        {
+            "type": "select",
+            "id": "description_tag",
+            "label": "Description tag",
+            "default": "p-small",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+			"type": "color",
+			"id": "description_color",
+			"label": "Description color",
+			"default": "#000000"
+        },
+        {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description"
+        },
+        {
+            "type": "select",
+            "id": "header_alignment",
+            "label": "Text alignment",
+            "default": "center",
+            "options": [
+                { "value": "left", "label": "Left" },
+                { "value": "center", "label": "Center" },
+                { "value": "start", "label": "Start" }
+            ]
+        },
+        {
+            "type":"header",
+            "content":"General"
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_desktop",
+            "label": "Hide on Desktop",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_tablet",
+            "label": "Hide on Tablet",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_mobile",
+            "label": "Hide on Mobile",
+            "default": false
+        },
+        {
+			"type": "select",
+			"id": "margin_vertical",
+			"label": "Section margin (vertical)",
+			"default": "none",
+			"options": [
+				{ "value": "none", "label": "None" },
+				{ "value": "sm", "label": "Small" },
+				{ "value": "md", "label": "Medium" },
+				{ "value": "lg", "label": "Large" }
+			]
+        },
+        {
+            "type":"select",
+            "id":"container",
+            "label":"Container type",
+            "default":"container-fluid",
+            "options": [
+                { "value":"container-fluid", "label":"Default" },
+                { "value":"w-full", "label":"Full width" },
+                { "value":"container", "label":"Use container box" }
+            ]
+        },
+        {
+			"type": "select",
+			"id": "bg_color_selector",
+			"label": "Section Background",
+			"default": "color_section1_bg",
+			"options": [
+				{ "value": "color_section1_bg", "label": "Section 1" },
+				{ "value": "color_section2_bg", "label": "Section 2" },
+				{ "value": "color_section3_bg", "label": "Section 3" },
+				{ "value": "color_section4_bg", "label": "Section 4" },
+				{ "value": "color_section5_bg", "label": "Section 5" },
+				{ "value": "color_section6_bg", "label": "Section 6" }
+			]
+        },
+		{
+			"type": "select",
+			"id": "layout",
+			"label": "Layout",
+			"options": [
+				{
+					"value": "default",
+					"label": "Default"
+				},
+				{
+					"value": "layout_1",
+					"label": "Grid layout 1"
+				},
+				{
+					"value": "layout_2",
+					"label": "Grid layout 2"
+				},
+				{
+					"value": "layout_3",
+					"label": "Grid layout 3"
+				},
+				{
+					"value": "layout_4",
+					"label": "Grid layout 4"
+				},
+				{
+					"value": "layout_5",
+					"label": "Grid layout 5"
+				}
+			]
+		},
+        {
+			"type": "checkbox",
+			"id": "bg_color_override",
+			"label": "Override Background",
+			"default": false
+        },
+        {
+            "type":"color",
+            "id":"background_color",
+            "label":"Background color",
+            "default":"rgba(0,0,0,0)"
+        },
+        {
+            "type":"header",
+            "content":"Content"
+        },
+        {
+            "id":"blog",
+            "type":"blog",
+            "label":"Blog"
+        },
+        {
+            "type": "range",
+            "id": "limit",
+            "label": "Posts to show",
+            "min": 1,
+            "max": 50,
+            "step": 1,
+            "default": 17
+        },
+        // {
+        //     "type":"range",
+        //     "id":"column",
+        //     "label":"Posts per row",
+        //     "min":2,
+        //     "max":6,
+        //     "step":1,
+        //     "default":4
+        // },
+        {
+            "type": "range",
+            "id": "column_gap",
+            "label": "Column gap",
+            "min": 0,
+            "max": 50,
+            "step": 2,
+            "default": 30,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "mobile_gap",
+            "label": "Column gap on mobile",
+            "min": 0,
+            "max": 30,
+            "step": 2,
+            "default": 10,
+            "unit": "px"
+        },
+        {
+            "type": "number",
+            "id": "gap_grid_more_articles",
+            "label": "Gap between main grid and more articles",
+            "info": "This is the gap between the main grid and other articles. This is disabled on Default and Grid Layout 5."
+        },
+        {
+            "type": "header",
+            "content": "Card settings"
+        },
+        {
+			"type": "color",
+			"id": "topic_color",
+			"label": "Tags color",
+			"default": "#356687"
+        },
+		{
+            "type": "select",
+            "id": "article_tags_tag",
+            "label": "Tags tag",
+            "default": "p-large",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+			"type": "color",
+			"id": "article_title_color",
+			"label": "Title color",
+			"default": "#000000"
+        },
+		{
+            "type": "select",
+            "id": "article_title_tag",
+            "label": "Title tag",
+            "default": "p-large",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+			"type": "color",
+			"id": "article_excerpt_color",
+			"label": "Excerpt color",
+			"default": "#333333"
+        },
+		{
+            "type": "select",
+            "id": "article_excerpt_tag",
+            "label": "Excerpt tag",
+            "default": "p-medium",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+			"type": "color",
+			"id": "article_author_color",
+			"label": "Tags color",
+			"default": "#666666"
+        },
+		{
+            "type": "select",
+            "id": "article_author_tag",
+            "label": "Author tag",
+            "default": "p-small",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "article_image_aspect_ratio",
+            "label": "Image aspect ratio",
+            "default": "16/9",
+            "options": [
+                { "value": "original", "label": "Original aspect ratio" },
+                { "value": "1/1", "label": "1:1" },
+                { "value": "3/4", "label": "3:4" },
+                { "value": "4/3", "label": "4:3" },
+                { "value": "16/9", "label": "16:9" }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "article_align_content",
+            "label": "Content alignment",
+            "default": "text-left",
+            "options": [
+                { "label": "Left", "value": "text-left" },
+                { "label": "Center", "value": "text-center" },
+                { "label": "Right", "value": "text-right" }
+            ]
+        },
+        {
+            "type": "checkbox",
+            "id": "article_show_tags",
+            "label": "Show tags",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_blog_name",
+            "label": "Show blog name",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "article_show_date",
+            "label": "Show publised date",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "article_show_excerpt",
+            "label": "Show excerpt",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "article_show_button",
+            "label": "Show read more link",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Button settings"
+        },
+        {
+            "type": "text",
+            "id": "button_text",
+            "label": "Button label",
+            "default": "View More",
+            "info": "Leave it blank to hide"
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+                { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                { "value": "button-1", "label": "Button 1" },
+                { "value": "button-2", "label": "Button 2" },
+                { "value": "button-3", "label": "Button 3" },
+                { "value": "button-4", "label": "Button 4" },
+                { "value": "button-5", "label": "Button 5" },
+                { "value": "button-6", "label": "Button 6" },
+                { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "sf__btn sf__btn-primary"
+        },
+        {
+            "type": "checkbox",
+            "id": "redirect_to_page",
+            "label": "Enable page redirection",
+            "default": false
+        },
+        {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button link"
+        },
+        {
+            "type": "header",
+            "content": "Mobile Settings"
+        },
+        {
+            "type": "checkbox",
+            "id": "use_scroll_mobile",
+            "label": "Enable horizontal scroll",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "Custom classes"
+        },
+        {
+            "type": "header",
+            "content": "Layout 2 settings"
+        },
+        {
+            "type": "number",
+            "id": "layout_2_top_margin",
+            "label": "Layout top margin",
+            "default": 0
+        },
+        {
+            "type": "number",
+            "id": "layout_2_bottom_margin",
+            "label": "Layout bottom margin",
+            "default": 0
+        },
+        {
+            "type": "number",
+            "id": "layout_2_top_margin_mb",
+            "label": "Layout top margin mobile",
+            "default": 0
+        },
+        {
+            "type": "number",
+            "id": "layout_2_bottom_margin_mb",
+            "label": "Layout bottom margin mobile",
+            "default": 0
+        },
+        {
+            "type": "checkbox",
+            "id": "layout_2_title_enable",
+            "label": "Enable heading",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "layout_2_title_tag",
+            "label": "Heading Tag",
+            "default": "h2",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "layout_2_desc_tag",
+            "label": "Description Tag",
+            "default": "p-medium",
+            "options": [
+				{ "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+				{ "value": "h1", "label": "H1" },
+				{ "value": "h2", "label": "H2" },
+				{ "value": "h3", "label": "H3" },
+				{ "value": "h4", "label": "H4" },
+				{ "value": "h5", "label": "H5" },
+				{ "value": "h6", "label": "H6" },
+				{ "value": "p-small", "label": "Small paragraph" },
+				{ "value": "p-medium", "label": "Medium paragraph" },
+				{ "value": "p-large", "label": "Large paragraph" },
+				{ "value": "quote-1", "label": "Quote 1" },
+				{ "value": "quote-2", "label": "Quote 2" },
+				{ "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "layout_2_title_align",
+            "label": "Heading align",
+            "options": [
+                { "value": "start", "label": "Left" },
+                { "value": "center", "label": "Center" },
+                { "value": "end", "label": "Right" }
+            ],
+            "default": "start"
+        },
+        {
+            "type":"range",
+            "id":"layout_2_title_margin_top",
+            "label":"Heading margin top",
+            "min": 0,
+            "max":100,
+            "step":1,
+            "default": 40
+        },
+        {
+            "type":"range",
+            "id":"layout_2_title_margin_top_mb",
+            "label":"Heading margin top mobile",
+            "min": 0,
+            "max":100,
+            "step":1,
+            "default": 24
+        },
+        {
+            "type": "checkbox",
+            "id": "layout_2_custom_featured",
+            "label": "Enable custom featured blog styles",
+            "default": true
+        }
+    ],
+    "presets":[
+        {
+            "name":"Blog posts",
+            "category":"Blog"
+        }
+    ]
+}
+{% endschema %}

@@ -1,0 +1,24 @@
+{%- assign product = all_products[block.settings.product] -%}
+{% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+<div style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+  {% if product.title.size > 0 %}
+    {% render 'product-card', product: product %}
+  {% else %}
+    {% comment %}
+    No product yet. Show onboarding one.
+    {% endcomment %}
+    <div class="sf__pcard text-{{ settings.pcard_alignment }}">
+      <div style="--aspect-ratio: 1/1;" class="bg-gray-100">
+        {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+        {{ 'collection-' | append: current | placeholder_svg_tag: 'object-cover w-full h-full transition-all duration-500 group-hover:scale-105' }}
+      </div>
+      <div class="block mb-2 sf__pcard-name mt-4 font-medium hover:text-color-secondary">{{ 'homepage.onboarding.product_title' | t }}</div>
+      <div class="mb-2.5 sf__pcard-price">
+        <p class="prod__price">$19.99</p>
+      </div>
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,53 @@
+
+<!-- <script src="{{ '2.0-filters.js' | asset_url }}" defer="defer"></script> -->
+<!-- {%- assign sort_by = collection.sort_by | default: 'best-selling' -%} -->
+<!-- 
+<collection-filters-form class="hide-desktop">
+<form id="CollectionFiltersForm">
+  
+<div class="sf-toolbar-sorting" data-toolbar-sorting>
+  <div class="sf__collection-sortmb">
+    <div class="sf__sortmb-wrapper">
+      <div class="relative sf__sortmb-list">
+        <a class="sf__hidden-sortmb absolute top-0 right-0">{% render 'icon', name: 'times', size: 'small' %}</a>
+        <span class="sf__sortmb-label">{{ 'collections.sorting.title' | t }}</span>
+        <div class="sf__custom-sort-by select-box">
+          <div class="select-box__current select-box-mobile__current" tabindex="1">
+           
+            {%- for option in collection.sort_options -%}
+            {% unless option.value == 'manual' or option.value == 'created-ascending' %}
+            <hr>
+            <div class="select-box__value">
+              <label for="Sort-by-{{ forloop.index0 }}" class="select-box__input-text">
+                {% if option.name == 'Alphabetically, A-Z' %}
+                From A to Z
+                {% elsif option.name == 'Alphabetically, Z-A' %}
+                From Z to A
+                {% elsif option.name == 'Price, low to high' %}
+                Price Low to High
+                {% elsif option.name == 'Price, high to low' %}
+                Price High to Low
+                {% elsif option.name == 'Date, new to old' %}
+                Newest
+                {% else %}
+                {{ option.name | escape }}
+                {% endif %}
+                
+              <input class="select-box__input" type="radio" id="Sort-by-{{ forloop.index0 }}" value="{{option.value | escape }}" name="sort_by" aria-describedby="a11y-refresh-page-message" 
+              {% if option.value == sort_by %} checked{% endif %} 
+              data-index="{{ forloop.index0 }}"
+              />
+            </label>
+            </div>
+            {% endunless %}
+            {%- endfor -%}
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</form>
+</collection-filters-form> -->

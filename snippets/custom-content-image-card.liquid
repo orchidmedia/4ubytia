@@ -1,0 +1,25 @@
+{% assign st = block.settings %}
+{% capture hide_section %}
+    {% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}
+{% endcapture %}
+
+{% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{%- liquid
+  case block.settings.image_animation
+    when 'scale-up'
+      assign image_animation = 'sf__hover-scale-up'
+    when 'scale-down'
+      assign image_animation = 'sf__hover-scale-down'
+    when 'zoom-in'
+      assign image_animation = 'sf__hover-zoom-in'
+    else
+      assign image_animation = ''
+  endcase
+-%}
+
+<div class="{{ block.settings.block_custom_class }} {{ hide_section }}" style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }};">
+  {% render 'image-card', block: block, grid_columns: 'w-full', stack_on_mobile: scrollMobile, image_card_class: image_animation %}
+</div>

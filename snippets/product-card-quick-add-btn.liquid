@@ -1,0 +1,29 @@
+{%- if settings.show_cart_button -%}
+  <div class="{% if product.variants.size == 1 %}sf__pcard-button{% else %}sf__pcard-quick-add {% endif %}">
+    {%- if product.has_only_default_variant -%}
+      {% render 'product-atc', product: product, class: section.settings.button_style, btn_text: settings.btn_single_product %}
+    {% else %}
+    {% if product.variants.size == 1 %}
+    {% render 'product-atc', product: product, class: section.settings.button_style, btn_text: settings.btn_single_product %}
+    {% else %}
+      {% if settings.select_option_button_action == 'popup' %}
+      <button class="sf-pqv__button {{section.settings.button_style}} hide-tablet-lg" data-product-handle="{{ product.handle }}">
+        {% render 'atc-spinner' %}
+        <span class="not-change atc-text">
+          {{settings.btn_multiple_product}}
+        </span>
+      </button>
+      <a class="button {{section.settings.button_style}} hide-desktop-lg" href="{{ product.url }}">
+        <span>
+          {{settings.btn_multiple_product}}
+        </span>
+      </a>
+      {% else %}
+        <a class="sf__btn {{section.settings.button_style}}" href="{{ product.url }}">
+          <span>{{settings.btn_multiple_product}}</span>
+        </a>
+      {% endif %}
+    {% endif %}
+    {% endif %}
+  </div> 
+{%- endif -%}

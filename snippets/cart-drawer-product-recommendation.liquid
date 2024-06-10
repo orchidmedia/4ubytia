@@ -1,0 +1,226 @@
+{% assign product_list = settings.cart_drawer_product_recommendation_list %}
+<div role="region" aria-label="Cart drawer Product Recommendation carousel" class="product-recommendation-slider swiper mySwiper">
+    <div class="swiper-wrapper">
+    {% for product in product_list %}
+        {% unless product.available == false %}
+            <div role="group" class="swiper-slide" >
+                {% render 'product-card', 
+                    product: product, 
+                    column_wrapper: true, 
+                    card_style: '5', 
+                    image_ratio: "1/1", 
+                    hide_title: hide_title 
+                %}
+            </div>
+        {% endunless %}
+    {% endfor %}
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<style>
+
+    .scd__recommendation-slider .mySwiper {
+        height: 305px;
+        margin-top: 10px;
+    }
+
+    .scd__recommendation-slider .mySwiper .swiper-scrollbar {
+        bottom: 15px;
+    }
+
+    .scd__recommendation-slider .mySwiper .swiper-scrollbar-drag {
+        background: var(--scrollbar-drag-color)!important;
+    }
+
+    .scd__recommendation-slider .swiper-slide {
+        width: 144px;
+    }
+
+    .scd__recommendation-slider .swiper-pagination {
+        width: 100%;
+        bottom: 15px;
+    } 
+
+    .scd__recommendation-slider .sf__pcard-name p{
+        font-size: 12px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.2;
+        letter-spacing: normal;
+        text-align: left;
+        color: #000;
+    }
+
+    .scd__recommendation-slider .sf__pcard-subtitle, 
+    .scd__recommendation-slider .sf__pcard-reviews,     
+    .scd__recommendation-slider .sf__tooltip-item,
+    .scd__recommendation-slider .product-badge-wrapper{
+        display: none;
+    }
+
+    {% for product in product_list %}
+        {% if product.variants.size > 1 %}
+            .scd__recommendation-slider form[data-product-id="{{product.id}}"] .prod__price p,
+            .scd__recommendation-slider form[data-product-id="{{product.id}}"] .prod__compare_price{
+                display: none;
+            }
+            .scd__recommendation-slider form[data-product-id="{{product.id}}"] .prod__price {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 5px 0 3px;
+            }
+        {% endif %}
+    {% endfor %}
+
+    .scd__recommendation-slider .sf__pcard-price h5, 
+    .scd__recommendation-slider .sf__pcard-price h4,
+    .scd__recommendation-slider .sf__pcard-price p {
+        font-family: 'Franklin Gothic Cond ITC';
+        font-size: 12px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        text-align: left;
+    }
+
+    .scd__recommendation-slider .prod__compare_price {
+        margin: 0 10px !important;
+    }
+
+    .scd__recommendation-slider .sf__pcard-button {
+        width: 100%;
+        margin: 0;
+    }
+
+    .scd__recommendation-slider .sf__pcard-button button, .scd__recommendation-slider .sf-pqv__button {
+        width: 100%;
+    }
+
+    .scd__recommendation-slider .swiper-pagination-bullet-active {
+        background-color: #000 !important;
+    }
+
+    .scd__recommendation-slider .swiper-pagination-bullet {
+        border: 2px solid;
+        border-color: #fff !important;
+    }
+
+
+    .scd__recommendation-title {
+        transition: 0.4s;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: left;
+        cursor: pointer;
+        width: 100%;
+    }
+      
+    .scd__recommendation-title:after {
+        content: "";
+        background: url('https://cdn.shopify.com/s/files/1/0655/9321/3168/files/right-arrow.svg?v=1676482720');
+        width: 13px;
+        height: 24px;
+        background-repeat: no-repeat;
+        transform: scaleY(-1);
+        float: right;
+        transform: rotate(90deg);
+        transition: transform 0.3s ease-out;
+        background-position: center;
+        margin: auto 0;
+    }
+    
+    .scd__recommendation-active:after {    
+        transform: rotateX(180deg);
+        transition: transform 0.3s ease-out;
+    }
+    
+    .scd__recommendation-slider {
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .scd__recommendation-active + .scd__recommendation-slider {
+        max-height: 330px;
+        transition: all 0.3s ease;
+    }
+
+    .scd__recommendation-slider .atc-text {
+        font-size: 14px;
+    }
+
+    {% comment %} cart resize  {% endcomment %}
+    .sf-cart-drawer  {
+        display: flex;
+        flex-flow: column;
+    }
+
+    .sf-cart-drawer form, .scd__body {
+        flex-basis: auto;
+    }
+
+    .sf-cart-drawer .scd__recommendation {
+        flex-basis: fit-content;
+    }
+
+    @media only screen and (max-width: 374px)  {
+      .scd__recommendation-slider .sf__pcard-name p {
+        font-size: 11px;
+      }
+    }
+
+</style>
+
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        //toggle accordion
+        let _acc = document.getElementsByClassName("scd__recommendation-title");
+        let _i;
+        for (_i = 0; _i < _acc.length; _i++) {
+            _acc[_i].addEventListener("click", function() {
+                this.classList.toggle("scd__recommendation-active");
+            });
+        }
+
+        //hide cart on click to quick shop 
+        let viewMoreButton = document.querySelectorAll('.scd__recommendation-slider .sf-pqv__button .atc-text');
+        let a;
+        for (a = 0; a < viewMoreButton.length; a++) {
+            if(viewMoreButton[a].innerHTML.includes('{{settings.btn_multiple_product}}')) {
+                let changButton = viewMoreButton[a].parentNode;
+                changButton.classList.add('button-4');
+                let changButtonMobile = viewMoreButton[a].parentNode.parentNode.childNodes[3];
+                changButtonMobile.classList.add('button-4');
+
+                viewMoreButton[a].addEventListener("click", function() {
+                    console.log(document.querySelector('.scd__close'));
+
+                    document.querySelector('.scd__close').click();
+                });
+            }
+        }
+
+        var swiperPagination = document.querySelector(".product-recommendation-slider .swiper-pagination");
+        if (swiperPagination && !swiperPagination.classList.contains("inited")) {
+            swiperPagination.innerHTML = '';  
+            var swiper = new Swiper(".product-recommendation-slider", {
+            slidesPerView: "2",
+            spaceBetween: 15,
+            pagination: {
+                el: swiperPagination,
+                clickable: true
+            },
+            a11y: {
+                slideLabelMessage: "product"
+            },
+            });
+            swiperPagination.classList.add("inited");
+        }
+
+    }, false);    
+</script>

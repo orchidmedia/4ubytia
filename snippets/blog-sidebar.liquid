@@ -1,0 +1,223 @@
+<hr class="sf-block-aside-first hide-desktop">
+
+{%- for block in section.blocks -%}
+  {%- assign b_s = block.settings -%}
+  {%- case block.type -%}
+    {%- when 'categories' -%}
+      {%- assign blogs_name = b_s.list_blog -%}
+      {%- if blog.articles != blank -%}
+        <div class="sf-block-aside">
+          <h4 class="sf-aside-title">{{ b_s.title }}</h4>
+          <hr>
+          <div class="sf-aside-content">
+            <ul class="sf-list-menu">
+              {%- if blogs_name == blank -%}
+              {%- for article in blog.articles limit: 5 -%}
+              <li>
+                <a href="{{ article.url }}" class="{{b_s.custom_links}}">
+                  <span class="sf__title-count">&#x2022; {{ article.title }}{{blog.articles.count}}
+                    <!-- <span class="sf__count-number">({{ blogs[article.handle].articles_count }})</span> -->
+                  </span>
+                </a>
+              </li>
+              {%- endfor -%}
+              {%- else -%}
+              {% for link in linklists[blogs_name].links %}
+                {% unless blog.handle == link.handle %}
+                {%- if blogs[link.handle] != blank -%}
+                  <li>
+                    <a href="{{ link.url }}" class="{{b_s.custom_links}}">
+                      <span class="sf__title-count">{{ link.title }}
+                        <span class="sf__count-number">({{ blogs[link.handle].articles_count }})</span>
+                      </span>
+                    </a>
+                  </li>
+                {%- else -%}
+                  <li>
+                    <a href="{{ link.url }}" class=" {{b_s.custom_links}}">
+                    <span class="sf__title-count">&#x2022; {{ link.title }}</span>
+                    </a>
+                  </li>
+                {%- endif -%}
+                {% endunless %}
+              {% endfor %}
+              {%- endif -%}
+            </ul>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- when 'tags' -%}
+      {%- if blog.all_tags != blank -%}
+      <div class="sf-block-aside">
+        {% if b_s.heading_tag != nil %}
+          {% assign heading_tag = b_s.heading_tag %}
+        {% else %}
+        {% assign heading_tag = 'h4' %}
+        {% endif %}
+
+        {% capture custom_classes %} 
+            sf-aside-title text-{{b_s.title_align_mb}} md:text-{{b_s.title_align}}
+        {% endcapture %}
+        {% render 'heading-tag'
+          heading: heading_tag,
+          content: b_s.title,
+          custom_classes: custom_classes,
+          custom_styles: custom_styles
+        %}
+        <hr>
+        {% if template contains 'blog' %}
+          {% assign tag_list = current_tags %}
+        {% else %}
+            {% assign tag_list = article.tags %}
+        {% endif %}
+        <div class="sf-aside-content sf-aside-tags text-{{b_s.tags_align_mb}} md:text-{{b_s.tags_align}}">
+          {%- for tag in blog.all_tags -%}
+            <a href="{{ blog.url }}/tagged/{{ tag | handle }}" role="button" class="{{b_s.button_style}} {% if tag_list contains tag %}active{% endif %}">{{ tag }}</a> 
+          {%- endfor -%}
+        </div>
+      </div>
+      {%- endif -%}
+    {%- when 'social' -%}
+      <div class="sf-block-aside">
+        {% if section.settings.design == "layout3" or blog.handle == "menoguides" %}
+          <h4>{{ b_s.title }}</h4>
+          <hr>
+        {% else %}
+          <h4 class="sf-aside-title">{{ b_s.title }}</h4>
+        {% endif %}
+        <div class="sf-aside-content">
+          {% render 'social-sharing', 
+            url: url, 
+            class: 'flex items-center', 
+            size: block.settings.icon_size, 
+            size_mobile: block.settings.icon_size_mobile, 
+            icon_size_override: block.settings.icon_size_override 
+        %}
+        </div>
+      </div>
+    {%- when 'recent_post' -%}
+
+      {% if b_s.sidebar_recent_blog_name == blank %}
+        {%- assign name_collection = blog.handle -%}
+      {% else %}
+        {%- assign name_collection = b_s.sidebar_recent_blog_name -%}
+      {% endif %}
+      {%- assign length = b_s.sidebar_recent_blog_count | plus: 0 -%}
+      {%- assign selected_blog = blogs[name_collection] -%}
+
+      {%- if name_collection != blank and selected_blog.articles.size > 1 -%}
+        <div class="sf-block-aside">
+
+          {% capture custom_classes %} 
+              sf-aside-title text-{{b_s.title_align_mb}} md:text-{{b_s.title_align}}
+          {% endcapture %}
+
+          {% render 'heading-tag'
+            heading: b_s.heading_tag,
+            content: b_s.title,
+            custom_classes: custom_classes,
+            custom_styles: custom_styles
+          %}
+
+          <hr>
+          <div class="sf-aside-content">
+            <div class="sf-aside-post">
+              {% assign currentID = article.id %}  
+              {%- for article in selected_blog.articles limit: length -%}
+                {%- if article.id != currentID -%}
+                  <div class="item">
+                    <div>
+                      <a href="{{ article.url }}">{% render 'responsive-image', image: article.image %}</a>
+                    </div>
+                    <div>
+                    {%- if article.tags.size > 0 and b_s.blog_show_tags -%}
+                      <div class="sf-tag">
+                        {%- for tag in article.tags limit: 1 -%}{{ tag | link_to_tag: tag }}{%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                      <div class="sf-tag">
+                        <a href="{{ blog.url }}" class="link-5">{{blog.title}}</a>
+                      </div>
+                      <a href="{{ article.url }}">
+                        <h5 class="sf-title">{{ article.title }}</h5>
+                        {%- if b_s.show_excerpt -%}
+                        <div class="sf-description">
+                            {%- if article.excerpt != blank -%}
+                              {{ article.excerpt | strip_html | truncatewords: b_s.truncate, b_s.truncate_last_symbols }}
+                            {%- elsif article.content != blank -%}
+                              {{ article.content | strip_html | truncatewords: b_s.truncate, b_s.truncate_last_symbols }}
+                            {%- endif -%}
+                        </div>
+                        {%- endif -%}
+                    </a>
+                      {%- if b_s.blog_show_author or b_s.blog_show_date -%}
+                      <div class="sf-info">
+                        {% if b_s.blog_show_author %}{{ 'blogs.article.by_author' | t }} <span>{{ article.author }}</span> {% endif %}{% if b_s.blog_show_date %}{{ 'blogs.article.posted_in' | t }} <span>{{ article.created_at | date: '%B' }} {{ article.created_at | date: '%d, %Y' }}</span>{% endif %}
+                      </div>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- when 'instagram' -%}
+      {%- if settings.instagram_token != blank -%}
+        <div class="sf-block-aside">
+          <h4 class="sf-aside-title">{{ b_s.title }}</h4>
+          <div class="sf-aside-content">
+            <div class="mt-5 sf__aside-instagram"
+                data-access-token="{{settings.instagram_token}}"
+                data-images-count="{{b_s.images_count}}">
+                <div class="instagram-images grid grid-cols-3 gap-1"></div>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- when 'banner' -%}
+        <div class="sf-block-aside flex {% if b_s.flip_content%}flex-col-reverse{%else%}flex-col{%endif%}">
+            <div class="sf-aside-content sf-aside-banner {{b_s.text_align}} {% if b_s.text_align == "text-center"%}items-center{% elsif  b_s.text_align == "text-left" %}items-start{% elsif  b_s.text_align == "text-right" %}items-end{% endif%}" style="background: {{b_s.bg_color}};">
+
+            {% if b_s.subheading != blank %}
+              {%- capture custom_styles -%}
+                {%- if b_s.subheading_color !='rgba(0,0,0,0)' and b_s.subheading_color != blank -%}
+                  color:{{ b_s.subheading_color }};
+                {%- endif -%}
+              {%- endcapture -%}
+
+              {% render 'heading-tag'
+                heading: b_s.subheading_tag,
+                content: b_s.subheading,
+                custom_styles: custom_styles
+              %}
+            {% endif %}
+
+            {% if b_s.description != blank %}
+              {%- capture custom_styles -%}
+                {%- if b_s.description_color !='rgba(0,0,0,0)' and b_s.description_color != blank -%}
+                  color:{{ b_s.description_color }};
+                {%- endif -%}
+              {%- endcapture -%}
+
+              {% render 'heading-tag'
+                heading: b_s.description_tag,
+                content: b_s.description,
+                custom_styles: custom_styles
+              %}
+            {% endif %}
+            {% if b_s.button_text != blank %}
+              <a href="{{ b_s.button_link}}" class="{{b_s.button_style}}">{{b_s.button_text}}</a>
+            {% endif %}
+          </div>
+
+          <div class="sf-aside-content">
+            {% render 'responsive-image',
+              image: b_s.image,
+            %}
+          </div>
+          
+        </div>
+  {%- endcase -%}
+{%- endfor -%}

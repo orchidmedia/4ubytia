@@ -1,0 +1,27 @@
+{% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+<div class="sf-custom__newsletter text-center px-4 md:px-14 pt-5 md:pt-0"
+  style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+  {% if block.settings.heading != blank %}
+    {% render 'heading-tag'
+      heading: block.settings.heading_tag,
+      content: block.settings.heading
+    %}
+  {% endif %}
+  {% if block.settings.description != blank %}
+    <div class="text-base mt-3 rte text-color-subtext">
+      {{ block.settings.description }}
+    </div>
+  {% endif %}
+  <div class="mt-8">
+    {% render 'newsletter-form',
+      form_layout: 'horizontal',
+      form_design: block.settings.form_design,
+      custom_id: block.id,
+      button_label: block.settings.submit_button,
+      placeholder: block.settings.placeholder
+    %}
+  </div>
+</div>

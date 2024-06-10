@@ -1,0 +1,793 @@
+{%- assign st = section.settings -%}
+{%- assign blocks = section.blocks -%}
+{% case section.settings.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+{%- if section.settings.bg_color_override -%}
+  {%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+{% assign has_bg = false %}
+
+{% unless bg_color == "rgba(0,0,0,0)" or bg_color == blank %}
+    {% assign has_bg = true %}
+{% endunless %}
+
+{% assign form_layout = section.settings.form_layout %}
+{% assign show_icon = section.settings.show_icon %}
+
+{% capture container %}
+    {{ section.settings.container }}
+{% endcapture %}
+
+<section
+    id="newsletter-{{ section.id }}"
+    data-section-type="newsletter"
+    data-section-id={{ section.id }}
+    class="sf__newsletter-section sf__newsletter-section-{{ section.id }} section-pv-{{ section.settings.margin_vertical }} {% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}"
+    style="background-color: {{ st.background_color }}; --margin: {{st.mr_top}}px {{st.mr_right}}px {{st.mr_bottom}}px {{st.mr_left}}px;"
+    {% if has_bg %}
+        data-bg="{{ bg_color | color_to_hsl }}"
+    {% endif %}
+    style="background-color: {{ bg_color }};"
+>
+    <div class="{{ container }}">
+        <div class="flex flex-wrap items-stretch">
+            {% if form_layout == 'with_image' %}
+                {% for block in blocks %}
+                    {%- assign bs = block.settings -%}
+
+                    {% if block.type == 'image' %}
+                        {% case bs.image_width %}
+                            {% when '16%' %}
+                                {%- assign block_width = 'w-full md:w-1/2 xl:w-1/6' -%}
+                                {%- assign form_width = 'w-full md:w-1/2 xl:w-5/6' -%}
+                            {% when '25%' %}
+                                {%- assign block_width = 'w-full md:w-1/2 xl:w-1/4' -%}
+                                {%- assign form_width = 'w-full md:w-1/2 xl:w-3/4' -%}
+                            {% when '33%' %}
+                                {%- assign block_width = 'w-full md:w-1/2 xl:w-1/3' -%}
+                                {%- assign form_width = 'w-full md:w-1/2 xl:w-2/3' -%}
+                            {% when '50%' %}
+                                {%- assign block_width = 'w-full md:w-1/2 xl:w-1/2' -%}
+                                {%- assign form_width = 'w-full md:w-1/2 xl:w-1/2' -%}
+                            {% when '66%' %}
+                                {%- assign block_width = 'w-full md:w-1/2 xl:w-2/3' -%}
+                                {%- assign form_width = 'w-full md:w-1/2 xl:w-1/3' -%}
+                            {% when '75%' %}
+                                {%- assign block_width = 'w-full md:w-1/2 xl:w-3/4' -%}
+                                {%- assign form_width = 'w-full md:w-1/2 xl:w-1/4' -%}
+                            {% when '83%' %}
+                                {%- assign block_width = 'w-full md:w-1/2 xl:w-10/12' -%}
+                                {%- assign form_width = 'w-full md:w-1/2 xl:w-2/12' -%}
+                            {% when '100%' %}
+                                {%- assign block_width = 'w-full' -%}
+                                {%- assign form_width = 'w-full' -%}
+                        {% endcase %}
+
+                        <div class="{{ block_width }} w-full relative">
+                            {% if bs.image != blank %}
+                                {% render 'responsive-image', image: bs.image, aspect_ratio: '21/9', wrapper_class: 'h-full' %}
+                            {% else %}
+                                {{ 'image' | placeholder_svg_tag: 'sf__placeholder-svg w-full lg:absolute h-full object-cover' }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <div class="{% if form_layout == 'with_image' %}{% if blocks.size <= 0 %}mx-auto lg:w-1/3 w-full {% endif %}{{ form_width }} xl:px-15 xl:px-16 {% if section.settings.container == 'container' %}xl:pt-16{% else %}xl:pt-32{% endif %} xl:pb-16 md:px-8 md:py-10 p-10{% else %}w-full{% endif %}">
+                <div class="sf__newsletter-content px-4 md:px-0 {% if form_layout == 'with_image' %} h-full flex flex-col justify-between{% endif %}{% if form_layout == 'horizontal' %} md:flex justify-between gap-x-8{% endif %}">
+                    <div class="newsletter__form-heading {% if form_layout == 'with_image' %}{% if section.settings.container == 'container' %}lg:mb-18{% else %}lg:mb-24{% endif %}{% endif %} flex flex-wrap items-center text-center{% if form_layout == 'horizontal' %} justify-center md:justify-start md:text-left w-full md:w-6/12{% else %} mb-6 md:mb-10 justify-center{% endif %}">
+                        {% if form_layout != 'horizontal' and show_icon %}
+                            {% if st.icon_img != blank %}
+                            <span class="mb-5" style="width: {{ st.icon_img_width }}px;">{% render 'responsive-image', image: st.icon_img %}</span>
+                            {% else %}
+                            <span class="text-{{ st.text_color }}">
+                                {% render 'icon', name: 'envelope', size: 'custom', fill: fill, class: 'w-16 h-10 mb-8' %}
+                            </span>
+                            {% endif %}
+                        {% endif %}
+                        {%- if st.heading != blank -%}
+                            {%- capture custom_styles -%}
+                                {%- if st.heading_color !='rgba(0,0,0,0)' and st.heading_color != blank -%}
+                                color:{{ st.heading_color }};
+                                {%- endif -%}
+                            {%- endcapture -%}
+                    
+                            {% render 'heading-tag'
+                                heading: st.heading_tag,
+                                content: st.heading,
+                                custom_styles: custom_styles
+                            %} 
+                        {%- endif -%}
+                        {%- if st.description_text != blank -%}
+                            <div class="mt-3 w-full text-{{ st.text_color }} opacity-40 rte">{{ st.description_text }}</div>
+                        {%- endif -%}
+                    </div>
+
+                    {% assign form = st.form_func %}
+                    {% case form %}
+                    {% when "klaviyo" %}
+                        <div class="flex flex-col text-center md:text-left w-full md:w-6/12">
+                        {% render 'form__newsletter', block_settings: section.settings %}
+                        </div>
+                    {% else %}
+                        <div class="newsletter__form-input w-full {% if form_layout == 'horizontal' %}mt-4 md:mt-0 md:w-1/2{% endif %} mx-auto{% if blocks.size < 0 %} md:w-7/12 xl:w-4/12{% endif %}">
+                            {%- assign formId = 'ContactSubscribe' -%}
+                            {% form 'customer', id: formId, class: "sf-newsletter" %}
+                                {%- capture success_message -%}
+                                    {{ 'contact.form.post_success' | t }}
+                                {%- endcapture -%}
+                                {% render 'form__error', form: form %}
+                                {% render 'form__success', form: form, success_message: success_message %}
+                                <input type="hidden" name="contact[tags]" value="newsletter">
+                                {% if st.form_design == '1' %}
+                                <div class="flex items-center {% if form_layout == 'horizontal' %}justify-end{% else %}justify-center{% endif %}">
+                                    <div class="sf__newsletter-form-group flex {% if form_layout != 'horizontal' and form_layout != 'with_image' %}md:w-5/12 lg:w-4/12 w-full{% else %}w-full{% endif %} border border-{{ st.text_color }} rounded items-center self-stretch">
+                                        {%- capture placeholder -%}{%- if st.text_color == 'black' -%}placeholder-gray-500 placeholder-opacity-75{% else %}placeholder-white placeholder-opacity-75{% endif %}{%- endcapture -%}
+                                        <input type="email"
+                                        name="contact[email]"
+                                        id="{{ formId }}-email"
+                                        value="{% if customer.email != blank %}{{ customer.email }}{% endif %}"
+                                        placeholder="{{ st._other }}"
+                                        autocorrect="off"
+                                        autocapitalize="off"
+                                        autocomplete="off"
+                                        spellcheck="false"
+                                    required
+                                        class="w-full block {{ placeholder }} text-{{ st.text_color }} bg-transparent  px-4 py-2 newsletter__input-st"
+                                        >
+                                        <button type="submit" name="commit" class="h-full not-move newsletter-button px-4 py-2 text-{{ st.text_color }} {% if st.submit_button != blank %}border-l{% endif %} border-{{ st.text_color }} rounded-tr rounded-br">
+                                            {% if st.submit_button != blank %}
+                                            <span>{{ st.submit_button }}</span>
+                                            {% else %}
+                                                {% render 'icon', name: 'next' %}
+                                            {% endif %}
+                                        </button>
+                                    </div>
+                                </div>
+                                {% else %}
+                                    <div class="flex items-center justify-center md:flex-row flex-col">
+                                        <div class="sf__newsletter-form-group sf__form-group-minimal flex {% if form_layout != 'horizontal' and form_layout != 'with_image' %}md:w-1/4 w-full{% else %}w-full{% endif %} {% if st.submit_button != blank %}border-b-2 border-{{ st.text_color }}{% endif %}">
+                                            {%- capture placeholder -%}{%- if st.text_color == 'black' -%}placeholder-gray-500 placeholder-opacity-75{% else %}placeholder-white placeholder-opacity-75{% endif %}{%- endcapture -%}
+                                            <input type="email"
+                                            name="contact[email]"
+                                            id="{{ formId }}-email"
+                                            value="{% if customer.email != blank %}{{ customer.email }}{% endif %}"
+                                            placeholder="{{ st.email_placeholder_other }}"
+                                            autocorrect="off"
+                                            autocapitalize="off"
+                                            autocomplete="off"
+                                            spellcheck="false"
+                                            required
+                                            class="w-full block pl-0 {% if st.submit_button == blank %}border-b-2 border-{{ st.text_color }}{% else %}pr-4{% endif %} {{ placeholder }} text-{{ st.text_color }} bg-transparent py-2 newsletter__input-st"
+                                            >
+                                            {%- capture text_color -%}{%- if st.text_color == 'white' -%}black{%- else -%}white{%- endif -%}{%- endcapture -%}
+                                            {% capture btn %}
+                                                {%- if st.submit_button == blank -%}
+                                                    md:mt-0 mt-6 ml-0 md:ml-2.5 md:w-12 md:h-12 w-10 h-10 rounded-full bg-{{ st.text_color }} text-{{text_color}}
+                                                {%- else -%}
+                                                    text-{{ st.text_color }}
+                                                {%-endif -%}
+                                            {% endcapture %}
+                                            <button type="submit" name="commit" class="newsletter-button flex flex-none items-center justify-center{{ btn }}">
+                                                {% if st.submit_button != blank %}
+                                                    <span>{{ st.submit_button }}</span>
+                                                {% else %}
+                                                    {% render 'icon', name: 'next' %}
+                                                {% endif %}
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% if section.settings.show_agreement and settings.agree_text != blank %}
+                                <div class="flex justify-center items-center newsletter__agreement-text">
+                                    {% render 'agree-terms-checkbox' %}
+                                </div>
+                            {% endif %}
+                            {% endform %}
+                        </div>
+                    {% endcase %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+
+    .sf__newsletter-section .klaviyo_gdpr_embed_{{st.list_id}} {
+        margin: 0 !important;
+        max-width: 100%;
+        min-height: 85px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex-flow: column;
+        justify-content: center;
+    }
+
+    .sf__newsletter-section .klaviyo_gdpr_embed_{{st.list_id}} .success_message {
+        margin: 0 !important;
+    }
+
+
+    .sf__newsletter-section .klaviyo_field_group {
+    margin: 0;
+    width: 100%;
+}
+
+    .sf__newsletter-section .consent-text{ 
+        color: white; 
+        font-family: 'Franklin Gothic Cond ITC';
+        font-size: 14px;
+        font-weight: 500;        
+    }
+
+    .sf__newsletter-section .klaviyo-wrapper {
+        display: flex;
+        width: 100%;
+        justify-content: ;
+    }
+    .sf__newsletter-section .klaviyo_styling input[type=text] {
+        margin: 0 !important;
+        border: 0;
+        border-radius: 4px;
+        height: 41px;
+        height: 21px;
+        padding: 20px 10px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    @media screen and (min-width: 992px) {
+        .sf__newsletter-section {
+            margin: var(--margin);
+            border-radius: {{st.border_radius}}px;
+        }
+    }
+
+    @media screen and (max-width: 991px){
+        .sf__newsletter-section .klaviyo_gdpr_embed_{{st.list_id}} {
+        max-width: 100%;        
+        }
+
+        .sf__newsletter-section .klaviyo_field_group {
+            margin: 0;
+            width: 100%;
+        }
+    
+        .sf__newsletter-section .klaviyo_styling input[type=text] {
+            width: 100%;
+        }
+
+        .sf__newsletter-section .consent-text{ 
+            text-align: center !important;
+        }
+
+        .sf__newsletter-section .klaviyo-wrapper {
+            display: flex;
+            width: 100%;
+            justify-content: ;
+            align-items: center;
+            justify-content: center;
+            margin-top: 24px;
+        }
+    }
+
+    @media screen and (max-width: 500px){
+        .sf__newsletter-section .klaviyo-wrapper {
+            flex-flow: column;
+            gap: 10px;
+        }
+    }
+
+</style>
+
+{% schema %}
+{
+    "name": "Newsletter",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_desktop",
+            "label": "Hide on Desktop",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_tablet",
+            "label": "Hide on Tablet",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_mobile",
+            "label": "Hide on Mobile",
+            "default": false
+        },
+        {
+          "type": "select",
+          "id": "margin_vertical",
+          "label": "Section margin (vertical)",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            }
+          ]
+        },
+		{
+            "type": "header",
+            "content": "Layout"
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "Container type",
+            "default": "w-full",
+            "options": [
+                {
+                    "value": "container-fluid",
+                    "label": "Default"
+                },
+                {
+                    "value": "w-full",
+                    "label": "Full width"
+                },
+                {
+                    "value": "container",
+                    "label": "Use container box"
+                }
+            ]
+        },
+        {
+          "type": "select",
+          "id": "bg_color_selector",
+          "label": "Section Background",
+          "default": "color_section1_bg",
+          "options": [
+            {
+              "value": "color_section1_bg",
+              "label": "Section 1"
+            },
+            {
+              "value": "color_section2_bg",
+              "label": "Section 2"
+            },
+            {
+              "value": "color_section3_bg",
+              "label": "Section 3"
+            },
+            {
+              "value": "color_section4_bg",
+              "label": "Section 4"
+            },
+            {
+              "value": "color_section5_bg",
+              "label": "Section 5"
+            },
+            {
+              "value": "color_section6_bg",
+              "label": "Section 6"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "bg_color_override",
+          "label": "Override Background",
+          "default": false
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color"
+        },
+        {
+            "type": "range",
+            "id": "border_radius",
+            "label": "Border radius",
+            "default": 4,
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px"
+        },
+        {
+            "type": "header",
+            "content": "Margins (Desktop)"
+        },
+        {
+            "type": "range",
+            "id": "mr_top",
+            "label": "Top",
+            "default": 0,
+            "min": 0,
+            "max": 200,
+            "step": 5,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "mr_right",
+            "label": "Right",
+            "default": 65,
+            "min": 0,
+            "max": 200,
+            "step": 5,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "mr_bottom",
+            "label": "Bottom",
+            "default": 0,
+            "min": 0,
+            "max": 200,
+            "step": 5,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "mr_left",
+            "label": "Left",
+            "default": 65,
+            "min": 0,
+            "max": 200,
+            "step": 5,
+            "unit": "px"
+        },  
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+            "type": "select",
+            "id": "form_func",
+            "label": "Form Functionality",
+            "default": "klaviyo",
+            "options": [
+                {
+                    "value": "klaviyo",
+                    "label": "Klaviyo"
+                },
+                {
+                    "value": "Other",
+                    "label": "Other"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "form_layout",
+            "label": "Form layout",
+            "default": "vertical",
+            "options": [
+                {
+                    "value": "vertical",
+                    "label": "Vertical"
+                },
+                {
+                    "value": "horizontal",
+                    "label": "Horizontal"
+                },
+                {
+                    "value": "with_image",
+                    "label": "Form with image"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "form_design",
+            "label": "Form style",
+            "default": "1",
+            "options": [
+                {
+                    "value": "1",
+                    "label": "Bordered"
+                },
+                {
+                    "value": "2",
+                    "label": "Minimal"
+                }
+            ]
+        },
+        {
+            "type": "textarea",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Stay up to date with all fashion news<br> and exclusive offers"
+        },
+        {
+        "type": "select",
+        "id": "heading_tag",
+        "label": "Heading tag",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ],
+            "default": "h4"
+        },
+        {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Heading color"
+        },
+        {
+            "type": "richtext",
+            "id": "description_text",
+            "label": "Description"
+        },
+        {
+            "type": "header",
+            "content": "Klaviyo Settings"
+        },
+        {
+            "type": "text",
+            "id": "form_id",
+            "label": "Form ID (Required)",
+            "default": "newsletter_signup"
+        },
+        {
+            "type": "text",
+            "id": "list_id",
+            "label": "List ID (Required)",
+            "default": "WjNwr6",
+            "info": "Pick up List ID from the list on Klaviyo."
+        },
+        {
+            "type": "text",
+            "id": "success_message",
+            "label": "Success message",
+            "default": "Your email has been captured! Thank you."
+        },
+        {
+            "type": "header",
+            "content": "Email"
+        },
+        {
+            "type": "checkbox",
+            "id": "email_enabled",
+            "label": "Enabled",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "email_placeholder",
+            "label": "Placeholder",
+            "default": "Your email"
+        },
+        {
+            "type": "checkbox",
+            "id": "email_required",
+            "label": "Required",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Phone"
+        },
+        {
+            "type": "checkbox",
+            "id": "phone_enabled",
+            "label": "Enabled",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "phone_placeholder",
+            "label": "Placeholder",
+            "default": "Your phone number (optional)"
+        },
+        {
+            "type": "checkbox",
+            "id": "phone_required",
+            "label": "Required",
+            "default": false
+        },
+        {
+            "type": "text",
+            "id": "consent_text",
+            "label": "Consent text",
+            "default": "<p-small>By signing up for emails and/or texts, you accept the Privacy Policy and the Terms of Service. By submitting this form with your email address and/or mobile number, you agree to receive recurring automated promotional and personalized marketing messages (e.g. cart reminders) from 4U by Tia. at the submitted email address and/or cell number. Consent is not a condition of any purchase. You can withdraw your consent at any time by following the unsubscribe instructions in any email we send you or replying STOP to any text message. Reply HELP for text message help. Msg frequency varies. Std text msg & data rates may apply. View Terms & Privacy.</p-small>"
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+              { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+              { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+              { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+              { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+              { "value": "sf__btn sf__btn-link", "label": "Underline" },
+              { "value": "button-1", "label": "Button 1" },
+              { "value": "button-2", "label": "Button 2" },
+              { "value": "button-3", "label": "Button 3" },
+              { "value": "button-4", "label": "Button 4" },
+              { "value": "button-5", "label": "Button 5" },
+              { "value": "button-6", "label": "Button 6" },
+              { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "button-4"
+        },
+        {
+            "type": "text",
+            "id": "button_text",
+            "label": "Button text",
+            "default": "SUBSCRIBE"
+          },
+        {
+            "type": "header",
+            "content": "Other Settings"
+        },
+        {
+            "type": "text",
+            "id": "email_placeholder_other",
+            "label": "Email placeholder text",
+            "default": "Enter your email"
+        },
+        {
+            "type": "text",
+            "id": "submit_button",
+            "label": "Button label",
+            "default": "Subscribe",
+            "info": "Leave blank to use icon"
+        },
+        {
+            "type": "select",
+            "id": "text_color",
+            "label": "Text color",
+            "default": "black",
+            "options": [
+                {
+                    "value": "black",
+                    "label": "Dark"
+                },
+                {
+                    "value": "white",
+                    "label": "Light"
+                }
+            ]
+        },
+        {
+            "type": "checkbox",
+            "id": "show_icon",
+            "label": "Show icon",
+            "default": true
+        },
+        {
+            "type": "image_picker",
+            "id": "icon_img",
+            "label": "Icon image"
+        },
+        {
+            "type": "text",
+            "id": "icon_img_width",
+            "label": "Icon image width (px)",
+            "default": "30"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_agreement",
+            "label": "Show \"Terms & conditions\" checkbox",
+            "default": false
+        },
+        {
+            "type": "richtext",
+            "id": "term_condition_text",
+            "label": "Agree Terms & Conditions text",
+            "default": "<p>I agree to the Terms and Conditions.</p>"
+        },
+        {
+            "type": "paragraph",
+            "content": "Any customers who sign up will have an account created for them in Shopify. [View customers](/admin/customers?query=&accepts_marketing=1)"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "image",
+            "name": "Image",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "select",
+                    "id": "image_width",
+                    "label": "Width",
+                    "default": "66%",
+                    "options": [
+                        {
+                            "value": "16%",
+                            "label": "16%"
+                        },
+                        {
+                            "value": "25%",
+                            "label": "25%"
+                        },
+                        {
+                            "value": "33%",
+                            "label": "33%"
+                        },
+                        {
+                            "value": "50%",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "66%",
+                            "label": "66%"
+                        },
+                        {
+                            "value": "75%",
+                            "label": "75%"
+                        },
+                        {
+                            "value": "83%",
+                            "label": "83%"
+                        },
+                        {
+                            "value": "100%",
+                            "label": "100%"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Newsletter",
+            "category": "Promotional"
+        }
+    ]
+}
+{% endschema %}

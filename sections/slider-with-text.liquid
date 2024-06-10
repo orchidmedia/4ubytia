@@ -1,0 +1,808 @@
+{%- liquid
+  case section.settings.bg_color_selector
+    when 'color_section1_bg'
+      assign bg_color = settings.color_section1_bg
+    when 'color_section2_bg'
+      assign bg_color = settings.color_section2_bg
+    when 'color_section3_bg'
+      assign bg_color = settings.color_section3_bg
+    when 'color_section4_bg'
+      assign bg_color = settings.color_section4_bg
+    when 'color_section5_bg'
+      assign bg_color = settings.color_section5_bg
+    when 'color_section6_bg'
+      assign bg_color = settings.color_section6_bg
+    else
+      assign bg_color = settings.color_section1_bg
+  endcase
+-%}
+
+{%- liquid
+  if section.settings.bg_color_override
+    assign bg_color = section.settings.background_color
+  endif
+  assign has_bg = false
+  unless bg_color == "rgba(0,0,0,0)" or bg_color == blank
+    assign has_bg = true
+  endunless
+-%}
+
+{% capture container %}
+  {{ section.settings.container }}
+{% endcapture %}
+
+{% assign st = section.settings %}
+
+<style>
+  [id^=sf__img-width-slider-] .sf-custom__block .sf__dot:before {
+    background-color: {{ st.dots_color }};
+  }
+  [id^=sf__img-width-slider-] .sf-custom__block .sf__dot svg circle {
+    stroke: {{ st.dots_color }};
+  }
+</style>
+
+<section id="sf__img-width-slider-{{ section.id }}"
+  class="slider-{{ section.id }} sf__banner-with-slider section-pv-{{ section.settings.margin_vertical }} {{ section.settings.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}"
+  data-section-type="banner-with-slider" data-section-id="{{ section.id }}"
+  data-autoplay="{% if request.design_mode %}false{% else %}{{ section.settings.slide_autoplay }}{% endif %}"
+  data-timeout="{{ section.settings.autorotate_speed | times: 1000 }}" data-effect="{{ section.settings.slide_effect }}"
+  data-enable-arrows="{{ section.settings.show_arrows }}"
+  data-enable-dots="{{ section.settings.show_dots }}"
+  {% if has_bg %} data-bg="{{ bg_color | color_to_hsl }}" {% endif %}
+  style="background-color: {{ bg_color }}; --items: 1;">
+  
+  <div class="{{ container }}"
+    style="--column-gap: {{ section.settings.item_gap }}px; --row-gap: {{ section.settings.item_gap | divided_by: 2 }}px; --column-gap-mobile: {{ section.settings.item_gap_mobile }}px;">
+    {% render 'index-section-header', section_settings: section.settings %}
+  
+    <div class="sf-custom__grid flex flex-wrap {% if section.settings.layout == 'right' %} flex-row-reverse {% endif %}">
+      <div class="sf-custom__block img__box-{{ section.id }} sf w-full lg:w-{{ section.settings.image_column_size }}/12">
+        <div class="relative h-full">
+          <div class="sf-slider-{{ section.id }} swiper-container swiper--equal-height">
+            <div role="region" aria-label="Slider with Text" class="swiper-wrapper">
+              {% for block in section.blocks %}
+                {%- assign content_positions = block.settings.content_position | split: ' ' -%}
+                {%- assign text_alignment = block.settings.text_alignment -%}
+                {%- assign text_horizontal_alignment = content_positions.first -%}
+                {%- assign text_vertical_alignment = content_positions.last | strip -%}
+                {%- assign text_color = block.settings.content_text_color -%}
+                <div {{ block.shopify_attributes }} data-slide="{{ forloop.index0 }}"
+                  class="relative swiper-slide w-full h-full sf-bg-lazy">
+                  {% if block.settings.item_image != blank %}
+                    {% render 'responsive-image', image: block.settings.item_image, wrapper_class: 'w-full h-full' %}
+                  {% else %}
+                    {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+                    {{ 'collection-' | append: current | placeholder_svg_tag: 'sf__placeholder-svg w-full h-full w-full h-full object-cover' }}
+                  {% endif %}
+                  <div
+                    class="sf__slide-block flex sf__slide-block--{{ text_vertical_alignment }}-{{ text_horizontal_alignment }} absolute inset-0 w-full 2xl:p-24 lg:p-12 sm:p-10 p-4">
+                    <div class="sf__slide-content text-{{ text_alignment }}" {% if text_color != 'rgba(0,0,0,0)' %}style="color:{{ text_color }}"{% endif %}>
+                      {% if block.settings.subheading != blank %}
+                        {% capture custom_classes %}sf__content-subheading{% endcapture %}
+                        {%- capture custom_styles -%}
+                          {%- if text_color !='rgba(0,0,0,0)' and text_color != blank -%}
+                            color:{{ text_color }};
+                          {%- endif -%}
+                        {%- endcapture -%}
+            
+                        {% render 'heading-tag' 
+                          heading: block.settings.subheading_tag,
+                          content: block.settings.subheading,
+                          custom_classes: custom_classes,
+                          custom_styles: custom_styles
+                        %}
+                      {% endif %}
+                      {% if block.settings.heading != blank %}
+                        {%- capture custom_styles -%}
+                          {%- if text_color !='rgba(0,0,0,0)' and text_color != blank -%}
+                            color:{{ text_color }};
+                          {%- endif -%}
+                        {%- endcapture -%}
+            
+                        {% render 'heading-tag' 
+                          heading: block.settings.heading_tag,
+                          content: block.settings.heading,
+                          custom_classes: custom_classes,
+                          custom_styles: custom_styles
+                        %}
+                      {% endif %}
+                      {% if block.settings.description != blank %}
+                        <div class="rte sf__content-description text-color-subtext">{{ block.settings.description }}</div>
+                      {% endif %}
+                      {% if block.settings.button_text != blank %}
+                        <a href="{{ block.settings.button_link | default: " #" }}"
+                          class="button {{ block.settings.button_style }} xl:mt-12 lg:mt-10 mt-5 slide__block-link inline-block">
+                          {{ block.settings.button_text }}
+                        </a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% if section.blocks.size > 1 %}
+            <div class="absolute left-0 w-full bottom-0 pb-5 z-10">
+              {% render 'slider-controls', absolute: true, show_pagination: section.settings.show_dots,
+                show_nav: section.settings.show_arrows, nav_class: 'border border-1 upper-nav-500' %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <div
+        class="sf-custom__block content__box-{{section.id}} flex items-center w-full lg:w-{{ 12 | minus: section.settings.image_column_size }}/12 {% if st.container == 'w-full' %}px-4{% else %}px-0{% endif %}">
+        <div class="content__box w-full text-{{ st.content_alignment }}">
+          {% if section.settings.sub_title != blank %}
+            {% capture custom_classes %}content__subheading mb-5{% endcapture %}
+            {%- capture custom_styles -%}
+              {%- if st.title_color !='rgba(0,0,0,0)' and st.title_color != blank -%}
+                color:{{ st.title_color }};
+              {%- endif -%}
+            {%- endcapture -%}
+
+            {% render 'heading-tag' 
+              heading: st.sub_title_tag,
+              content: st.sub_title,
+              custom_classes: custom_classes,
+              custom_styles: custom_styles
+            %}
+          {% endif %}
+          {% if section.settings.title != blank %}
+            {% capture custom_classes %}content__heading rte mb-4 lg:mb-6{% endcapture %}
+            {%- capture custom_styles -%}
+              {%- if st.title_color !='rgba(0,0,0,0)' and st.title_color != blank -%}
+                color:{{ st.title_color }};
+              {%- endif -%}
+            {%- endcapture -%}
+
+            {% render 'heading-tag' 
+              heading: st.title_tag,
+              content: st.title,
+              custom_classes: custom_classes,
+              custom_styles: custom_styles
+            %}
+          {% endif %}
+          {% if section.settings.text != blank %}
+          <div 
+            class="mb-6 lg:mb-8 text-color-subtext rte prose" 
+            {% if st.content_color != 'rgba(0,0,0,0)' %}style="color:{{ st.content_color }};"{% endif %}>
+            {{ section.settings.text }}
+          </div>
+          {% endif %}
+          {% if section.settings.button_label != blank %}
+          <a href="{{ section.settings.button_link | default: " #" }}"
+            class="button {{ section.settings.button_style }}">{{
+            section.settings.button_label }}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .upper-nav-500 {
+    transform: translateY(-500%) !important;
+  }
+{% endstyle %}
+
+{% schema %}
+  {
+    "name": "Slider with text",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Section header"
+      },
+      {
+        "type":"text",
+        "id":"heading",
+        "label":"Heading"
+      },
+      {
+        "type": "text",
+        "id": "subheading",
+        "label": "Subheading"
+      },
+      {
+        "type": "select",
+        "id": "header_alignment",
+        "label": "Text alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_desktop",
+        "label": "Hide on Desktop",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_tablet",
+        "label": "Hide on Tablet",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_mobile",
+        "label": "Hide on Mobile",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "margin_vertical",
+        "label": "Section margin (vertical)",
+        "default": "none",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "sm",
+            "label": "Small"
+          },
+          {
+            "value": "md",
+            "label": "Medium"
+          },
+          {
+            "value": "lg",
+            "label": "Large"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "container",
+        "label": "Container type",
+        "default": "container-fluid",
+        "options": [
+          {
+            "value": "container-fluid",
+            "label": "Default"
+          },
+          {
+            "value": "w-full",
+            "label": "Full width"
+          },
+          {
+            "value": "container",
+            "label": "Use container box"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "bg_color_selector",
+        "label": "Section Background",
+        "default": "color_section1_bg",
+        "options": [
+          {
+            "value": "color_section1_bg",
+            "label": "Section 1"
+          },
+          {
+            "value": "color_section2_bg",
+            "label": "Section 2"
+          },
+          {
+            "value": "color_section3_bg",
+            "label": "Section 3"
+          },
+          {
+            "value": "color_section4_bg",
+            "label": "Section 4"
+          },
+          {
+            "value": "color_section5_bg",
+            "label": "Section 5"
+          },
+          {
+            "value": "color_section6_bg",
+            "label": "Section 6"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "bg_color_override",
+        "label": "Override Background",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "range",
+        "id": "item_gap",
+        "label": "Column gap",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "default": 100,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "item_gap_mobile",
+        "label": "Column gap on mobile",
+        "min": 0,
+        "max": 30,
+        "step": 2,
+        "default": 30,
+        "unit": "px"
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title color"
+      },
+      {
+        "type": "color",
+        "id": "content_color",
+        "label": "Content color"
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "Image alignment",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_column_size",
+        "label": "Image container width",
+        "default": "6",
+        "options": [
+          {
+            "value": "2",
+            "label": "16%"
+          },
+          {
+            "value": "3",
+            "label": "25%"
+          },
+          {
+            "value": "4",
+            "label": "33%"
+          },
+          {
+            "value": "5",
+            "label": "41%"
+          },
+          {
+            "value": "6",
+            "label": "50%"
+          },
+          {
+            "value": "7",
+            "label": "58%"
+          },
+          {
+            "value": "8",
+            "label": "66%"
+          },
+          {
+            "value": "9",
+            "label": "75%"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "title_tag",
+        "label": "Subheading tag",
+        "default": "h2",
+        "options": [
+          { "value": "p", "label": "Paragraph" },
+          { "value": "heading-1-seo", "label": "SEO H1" },
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" },
+          { "value": "h4", "label": "H4" },
+          { "value": "h5", "label": "H5" },
+          { "value": "h6", "label": "H6" },
+          { "value": "p-xsmall", "label": "Extra small paragraph" },
+          { "value": "p-small", "label": "Small paragraph" },
+          { "value": "p-medium", "label": "Medium paragraph" },
+          { "value": "p-large", "label": "Large paragraph" },
+          { "value": "p-xlarge", "label": "Extra large paragraph" },
+          { "value": "quote-1", "label": "Quote 1" },
+          { "value": "quote-2", "label": "Quote 2" },
+          { "value": "quote-3", "label": "Quote 3" }
+        ]
+      },
+      {
+        "type": "textarea",
+        "id": "title",
+        "label": "Heading",
+        "default": "Slider with text"
+      },
+      {
+        "type": "select",
+        "id": "sub_title_tag",
+        "label": "Subheading tag",
+        "default": "h2",
+        "options": [
+          { "value": "p", "label": "Paragraph" },
+          { "value": "heading-1-seo", "label": "SEO H1" },
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" },
+          { "value": "h4", "label": "H4" },
+          { "value": "h5", "label": "H5" },
+          { "value": "h6", "label": "H6" },
+          { "value": "p-xsmall", "label": "Extra small paragraph" },
+          { "value": "p-small", "label": "Small paragraph" },
+          { "value": "p-medium", "label": "Medium paragraph" },
+          { "value": "p-large", "label": "Large paragraph" },
+          { "value": "p-xlarge", "label": "Extra large paragraph" },
+          { "value": "quote-1", "label": "Quote 1" },
+          { "value": "quote-2", "label": "Quote 2" },
+          { "value": "quote-3", "label": "Quote 3" }
+        ]
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Subheading"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Pair large text with an image to give focus to your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>"
+      },
+      {
+        "type": "select",
+        "id": "content_alignment",
+        "label": "Text alignment",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "content": "Button settings",
+        "type": "header"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label",
+        "default": "Shop Collection"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      },
+      {
+        "type": "select",
+        "id": "button_style",
+        "label": "Button style",
+        "options": [
+          { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+          { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+          { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+          { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+          { "value": "sf__btn sf__btn-link", "label": "Underline" },
+          { "value": "button-1", "label": "Button 1" },
+          { "value": "button-2", "label": "Button 2" },
+          { "value": "button-3", "label": "Button 3" },
+          { "value": "button-4", "label": "Button 4" },
+          { "value": "button-5", "label": "Button 5" },
+          { "value": "button-6", "label": "Button 6" },
+          { "value": "button-7", "label": "Button 7" }
+        ],
+        "default": "sf__btn sf__btn-primary"
+      },
+      {
+        "type": "text",
+        "id": "custom_class",
+        "label": "Custom classes"
+      },
+      {
+        "type": "header",
+        "content": "Slider"
+      },
+      {
+        "type": "checkbox",
+        "id": "slide_autoplay",
+        "label": "Auto-rotate slides",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "autorotate_speed",
+        "label": {"en": "Change slides every"},
+        "info": {"en": "Work when auto-rotate"},
+        "max": 10,
+        "min": 2,
+        "step": 1,
+        "unit": "s",
+        "default": 5
+      },
+      {
+        "type": "checkbox",
+        "id": "show_dots",
+        "label": "Show pagination",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "dots_color",
+        "label": "Pagination color",
+        "default": "#000"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_arrows",
+        "label": "Show navigation",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "item_slide",
+        "name": "Item slide",
+        "settings": [
+            {
+              "type": "header",
+              "content": "Image settings"
+            },
+            {
+              "type": "image_picker",
+              "id": "item_image",
+              "label": "Image"
+            },
+            {
+              "type": "header",
+              "content": "Content"
+            },
+            {
+              "type": "color",
+              "id": "content_text_color",
+              "label": "Text color",
+              "default": "#000"
+            },
+            {
+              "type":"select",
+              "id":"content_position",
+              "label":{
+                "en":"Content position"
+              },
+              "default":"left middle",
+              "options":[
+                {
+                  "label":{
+                    "en":"Top left"
+                  },
+                  "value":"left top"
+                },
+                {
+                  "label":{
+                    "en":"Top center"
+                  },
+                  "value":"center top"
+                },
+                {
+                  "label":{
+                    "en":"Top right"
+                  },
+                  "value":"right top"
+                },
+                {
+                  "label":{
+                    "en":"Middle left"
+                  },
+                  "value":"left middle"
+                },
+                {
+                  "label":{
+                    "en":"Middle center"
+                  },
+                  "value":"center middle"
+                },
+                {
+                  "label":{
+                    "en":"Middle right"
+                  },
+                  "value":"right middle"
+                },
+                {
+                  "label":{
+                    "en":"Bottom left"
+                  },
+                  "value":"left bottom"
+                },
+                {
+                  "label":{
+                    "en":"Bottom center"
+                  },
+                  "value":"center bottom"
+                },
+                {
+                  "label":{
+                    "en":"Bottom right"
+                  },
+                  "value":"right bottom"
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "id": "text_alignment",
+              "label": "Content alignment",
+              "default": "left",
+              "options": [
+                {
+                  "value": "left",
+                  "label": {"en": "Left"}
+                },
+                {
+                  "value": "center",
+                  "label": {"en": "Center"}
+                },
+                {
+                  "value": "right",
+                  "label": {"en": "Right"}
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "id": "subheading_tag",
+              "label": "Subheading tag",
+              "default": "h2",
+              "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "subheading",
+              "label": "Subheading",
+              "default": "Hot this week"
+            },
+            {
+              "type": "select",
+              "id": "heading_tag",
+              "label": "Heading tag",
+              "default": "h2",
+              "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+              ]
+            },
+            {
+              "type": "textarea",
+              "id": "heading",
+              "label": "Heading",
+              "default": "Chenille sweater with<br> raglan sleeves"
+            },
+            {
+              "type": "richtext",
+              "id": "description",
+              "label": "Description"
+            },
+            {
+              "type": "text",
+              "id": "button_text",
+              "label": "Button label",
+              "default": "Shop Now"
+            },
+            {
+              "type": "url",
+              "id": "button_link",
+              "label": "Button link"
+            },
+            {
+              "type": "select",
+              "id": "button_style",
+              "label": "Button style",
+              "options": [
+                { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                { "value": "button-1", "label": "Button 1" },
+                { "value": "button-2", "label": "Button 2" },
+                { "value": "button-3", "label": "Button 3" },
+                { "value": "button-4", "label": "Button 4" },
+                { "value": "button-5", "label": "Button 5" },
+                { "value": "button-6", "label": "Button 6" },
+                { "value": "button-7", "label": "Button 7" }
+              ],
+              "default": "sf__btn sf__btn-primary"
+            }
+          ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Slider with text",
+        "category": "Banner",
+        "blocks": [
+          { "type": "item_slide" },
+          { "type": "item_slide" },
+          { "type": "item_slide" }
+        ]
+      }
+    ]
+  }
+{% endschema %}

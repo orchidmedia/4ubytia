@@ -1,0 +1,225 @@
+{% assign container = section.settings.container %}
+{% assign class = '' %}
+{% if section.settings.hide_on_mb %}
+  {% assign class = 'hidden md:block' %}
+{% endif %}
+
+{% comment %} desktop paddings {% endcomment %}
+{% capture p_top %}{% if block.settings.pd_top %}{{block.settings.pd_top}}{% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.pd_right %}{{block.settings.pd_right}}{% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.pd_bottom %}{{block.settings.pd_bottom}}{% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.pd_left %}{{block.settings.pd_left}}{% else %}0{% endif %}{% endcapture %}
+
+{% comment %} mobile paddings {% endcomment %}
+{% capture p_top_mb %}{% if block.settings.pd_top_mb %}{{block.settings.pd_top_mb}}{% else %}0{% endif %}{% endcapture %}
+{% capture p_right_mb %}{% if block.settings.pd_right_mb %}{{block.settings.pd_right_mb}}{% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom_mb %}{% if block.settings.pd_bottom_mb %}{{block.settings.pd_bottom_mb}}{% else %}0{% endif %}{% endcapture %}
+{% capture p_left_mb %}{% if block.settings.pd_left_mb %}{{block.settings.pd_left_mb}}{% else %}0{% endif %}{% endcapture %}
+
+
+{% capture custom_styles %}
+  --breadcrumbs-padding:{{ p_top }}px {{ p_right }}px {{ p_bottom }}px {{ p_left }}px; 
+  --breadcrumbs-padding-mb:{{ p_top_mb }}px {{ p_right_mb }}px {{ p_bottom_mb }}px {{ p_left_mb }}px;
+{% endcapture %}
+
+<div class="breadcrumbs{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %} {{class}}" style="{{custom_styles}}">
+  {% render 'breadcrumb', container: container, 
+    justify: section.settings.text_alignment, 
+    hide_current: section.settings.hide_current,
+    bg_color: section.settings.background_color, 
+    link_icon: section.settings.breadcrumb_icon, 
+    custom_links: section.settings.custom_links
+  %}
+</div>
+
+{% schema %}
+  {
+    "name": "Breadcrumb",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "hide_desktop",
+        "label": "Hide on Desktop",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_tablet",
+        "label": "Hide on Tablet",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_mobile",
+        "label": "Hide on Mobile",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "container",
+        "label": "Container type",
+        "default": "container",
+        "options": [
+          {
+            "value": "container-fluid",
+            "label": "Default"
+          }, {
+            "value": "w-full",
+            "label": "Full width"
+          }, {
+            "value": "container",
+            "label": "Use container box"
+          }
+        ]
+      }, {
+        "type": "select",
+        "id": "breadcrumb_icon",
+        "label": "Icon For Breadcrumb",
+        "default": "slash",
+        "options": [
+          {
+            "value": "chevron-right",
+            "label": "Default"
+          }, {
+            "value": "slash",
+            "label": "Slash"
+          }
+        ]
+      }, 
+      {
+        "type": "select",
+        "id": "custom_links",
+        "label": "Breadcrumbs links style",
+        "options": [
+          { "value": "link-1", "label": "Link 1" },
+          { "value": "link-2", "label": "Link 2" },
+          { "value": "link-3", "label": "Link 3" },
+          { "value": "link-4", "label": "Link 4" },
+          { "value": "link-5", "label": "Link 5" }
+          ],
+        "default": "link-1"
+      },
+      {
+        "type": "header",
+        "content": "Breadcrumb Padding Desktop"
+      }, {
+        "type": "range",
+        "id": "pd_top",
+        "label": "Top",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "pd_right",
+        "label": "Right",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "pd_bottom",
+        "label": "Bottom",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "pd_left",
+        "label": "Left",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, 
+      {
+        "type": "header",
+        "content": "Breadcrumb Padding Mobile"
+      }, {
+        "type": "range",
+        "id": "pd_top_mb",
+        "label": "Top",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "pd_right_mb",
+        "label": "Right",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "pd_bottom_mb",
+        "label": "Bottom",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "pd_left_mb",
+        "label": "Left",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "Text alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Prepend Custom Link (Pages Only)"
+      }, 
+      {
+        "type": "text",
+        "id": "custom_link_text",
+        "label": "Custom Text"
+      }, 
+      {
+        "type": "url",
+        "id": "custom_link_url",
+        "label": "Custom Url"
+      }
+    ],
+    "templates": [
+      "product",
+      "page",
+      "blog",
+      "article",
+      "collection"
+    ],
+    "presets": [
+      {
+        "name": "Breadcrumb"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,193 @@
+{%- assign st = section.settings -%} 
+
+{% assign min = 1 %}
+{% assign max = 100 %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+{% assign swiper_control_name = "swiper-testimonial-8-control-" | append: randomNumber %}
+
+{% style %}
+    @media screen and (max-width: 991px) {
+        .testimonials-8 .swiper-slide{
+            padding: 0 30px;
+        }
+    }
+{% endstyle %}
+
+{% liquid 
+    if st.use_bg_img
+        if st.bg_image_svg != blank or st.bg_image
+            if st.bg_image_svg != blank
+                assign img_url = st.bg_image_svg
+            else
+                assign img_url = st.bg_image | image_url
+            endif
+            assign section_bg_url = 'background-image:url(' | append: img_url | append: ');'
+
+            case st.bg_position
+                when 'top-left'
+                    assign section_bg_pos_x = 'left'
+                    assign section_bg_pos_y = 'top'
+                when 'top-center'
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'top'
+                when 'top-right'
+                    assign section_bg_pos_x = 'right'
+                    assign section_bg_pos_y = 'top'
+                when 'center-left'
+                    assign section_bg_pos_x = 'left'
+                    assign section_bg_pos_y = 'center'
+                when 'center'
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'center'
+                when 'center-right'
+                    assign section_bg_pos_x = 'right'
+                    assign section_bg_pos_y = 'center'
+                when 'bottom-left'
+                    assign section_bg_pos_x = 'left'
+                    assign section_bg_pos_y = 'bottom'
+                when 'bottom-center'
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'bottom'
+                when 'bottom-right'
+                    assign section_bg_pos_x = 'right'
+                    assign section_bg_pos_y = 'bottom'
+                else
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'center'
+            endcase
+            assign section_bg_position = 'background-position-x:' | append: section_bg_pos_x | append: ';background-position-y:' | append: section_bg_pos_y | append: ';'
+
+            case st.bg_size
+                when 'auto'
+                    assign bg_size = 'auto'
+                when 'inherit'
+                    assign bg_size = 'inherit'
+                when 'cover'
+                    assign bg_size = 'cover'
+                when 'contain'
+                    assign bg_size = 'contain'
+                else
+                    assign bg_size = 'cover'
+            endcase
+            assign section_bg_size = 'background-size:' | append: bg_size | append: ';'
+
+            case st.bg_repeat
+                when 'no-repeat'
+                    assign bg_repeat = 'no-repeat'
+                when 'repeat'
+                    assign bg_repeat = 'repeat'
+                when 'repeat-x'
+                    assign bg_repeat = 'repeat-x'
+                when 'repeat-y'
+                    assign bg_repeat = 'repeat-y'
+                when 'round':
+                    assign bg_repeat = 'round'
+                when 'space':
+                    assign bg_repeat = 'space'
+                else
+                    assign bg_repeat = 'no-repeat'
+            endcase
+            assign section_bg_repeat = 'background-repeat:' | append: bg_repeat | append: ';'
+
+            assign section_bg = section_bg_url | append: section_bg_position | append: section_bg_size | append: section_bg_repeat
+        endif
+    endif
+%}
+
+<div class="swiper-container swiper-testimonial-8-{{randomNumber}}" style="{{ section_bg }}">
+    {%- if st.use_bg_img -%}
+        <span  role="img" aria-label="[{{ st.bg_svg_alt_text }}]"> </span>
+    {%- endif -%}
+    <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+            <div class="swiper-slide" {{ block.shopify_attributes }} data-index={{ forloop.index0 }}>
+                <div class="flex justify-center rounded-[5px] h-full" style="margin: auto;">
+                    <div class="flex flex-col text-center gap-6 testimonials-8-content">
+                        {% if section.settings.show_stars %}
+                            <div class="stars flex justify-center">
+                                {%- render 'testimonials__stars' -%}
+                            </div>
+                        {% endif %}
+
+                        {% if block.settings.title != blank %}
+
+                            {%- capture custom_styles -%}
+                                {%- if block.settings.title_color !='rgba(0,0,0,0)' and block.settings.title_color != blank -%}
+                                    color:{{ block.settings.title_color }};
+                                {%- endif -%}
+                            {%- endcapture -%}
+                        
+                            {% render 'heading-tag' 
+                                heading: block.settings.title_tag,
+                                content: block.settings.title,
+                                custom_styles: custom_styles
+                            %}
+
+                        {% endif %}
+
+                        {% if block.settings.description != blank %}
+
+                            {%- capture custom_styles -%}
+                                {%- if block.settings.description_color !='rgba(0,0,0,0)' and block.settings.description_color != blank -%}
+                                    color:{{ block.settings.description_color }};
+                                {%- endif -%}
+                            {%- endcapture -%}
+                        
+                            {% render 'heading-tag' 
+                                heading: block.settings.description_tag,
+                                content: block.settings.description,
+                                custom_styles: custom_styles
+                            %}
+
+                        {% endif %}
+
+                        {% if block.settings.footer %}
+
+                            {%- capture custom_styles -%}
+                                {%- if block.settings.footer_color !='rgba(0,0,0,0)' and block.settings.footer_color != blank -%}
+                                    color:{{ block.settings.footer_color }};
+                                {%- endif -%}
+                            {%- endcapture -%}
+
+                            {% render 'heading-tag' 
+                                heading: block.settings.footer_tag,
+                                content: block.settings.footer,
+                                custom_styles: custom_styles
+                            %}
+                        {% endif %}
+
+                        {% if block.settings.button_text %}
+                            <div>
+                                {% render 'button-link'
+                                    text: block.settings.button_text,
+                                    link: block.settings.button_link,
+                                    style: block.settings.button_style
+                                %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% render 'slider-controls', show_nav: section.settings.show_navigation, show_pagination: section.settings.show_pagination, absolute: true, swiper_control_name: swiper_control_name %}
+
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var swiper = new Swiper('.swiper-testimonial-8-{{randomNumber}}', {
+            slidesPerView: 2,
+            loop: true,
+            navigation: { 
+                nextEl: document.querySelector('.sf-slider__controls-next.swiper-testimonial-8-control-{{randomNumber}}'),
+                prevEl: document.querySelector('.sf-slider__controls-prev.swiper-testimonial-8-control-{{randomNumber}}')
+            },
+            pagination: {
+                el: document.querySelector('.swiper-pagination.swiper-testimonial-8-control-{{randomNumber}}'),
+                clickable: true
+            }
+        });
+    }, false);
+</script>

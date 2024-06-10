@@ -1,0 +1,12 @@
+<div class="{% if block.settings.title != blank %}sf__accordion-content{% endif %} rte sf__footer-block-content">
+    <div class="mt-3 md:mt-0 md:pb-0">
+        <div>
+            {% render 'form__newsletter', block_settings: block.settings %}
+        </div>
+        {% if block.settings.show_social %}
+        <div class="block -mx-4 mt-4">
+            {% render 'social-media-links' %}
+        </div>
+        {% endif %}
+    </div>
+</div>

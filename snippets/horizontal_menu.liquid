@@ -1,0 +1,36 @@
+{% capture blockTtl %}
+  {% if block.settings.title != blank %}
+    {% render 'heading-tag' 
+      heading: block.settings.heading_size,
+      content: block.settings.title
+    %}
+  {% endif %}
+{% endcapture %}
+
+<div id="nav_menu-{{ block.id }}" 
+  class="ft_block_item {{ block.settings.text_align }} flex {{ block.settings.disposition }} menuhr justify-center"
+  style="gap: {{ block.settings.gap }}px;{% if block.settings.btmmr %}margin-bottom: 0;{% endif %}"
+>
+  {% if block.settings.border_top %}
+    <hr class="hr-hmenu" style="border:1px solid {{ block.settings.border }}" />
+  {% endif %}
+
+  <ul class="horLinks">
+    <li>{{ blockTtl }}</li>
+    {% for link in linklists[block.settings.menulinks].links %}
+      <li>
+        <a href="{{ link.url }}"
+          {% if link.title contains '[new]' %}target="_blank"{% endif %}
+        >
+          {% render 'heading-tag' 
+            heading: block.settings.heading_size,
+            content: link.title | split: '[' | first
+          %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% if block.settings.border_bottom %}
+    <hr class="hr-hmenu" style="border:1px solid {{ block.settings.border }}" />
+  {% endif %}
+</div>

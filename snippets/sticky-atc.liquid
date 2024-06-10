@@ -1,0 +1,115 @@
+{%- assign st = section.settings -%} 
+{%- assign stb = settings -%}
+{% assign class = '' %}
+{% unless st.use_sticky_atc %}
+  {% assign class = 'md:hidden' %}
+{% endunless %}
+
+{% unless st.use_sticky_atc_on_mobile %}
+  {% assign class = 'hidden md:block' %}
+{% endunless %}
+
+{%- assign enable_dynamic_checkout = st.enable_dynamic_checkout -%}
+{%- assign is_preorder = product.metafields.beauty.preorder.active -%}
+{% capture hide_stickyBar_section %}
+    {% if stb.hide_stickybar_mobile %} hide-mobile{% endif %}{% if stb.hide_stickybar_tablet %} hide-tablet{% endif %}{% if stb.hide_stickybar_desktop %} hide-desktop{% endif %}
+{% endcapture %}
+{% capture hide_mobile_qty_input %}
+    {% if stb.hide_qty_stickybar %} hide-mobile{% endif %}
+{% endcapture %}
+
+{% assign sold_out = true %}
+{% assign variant = product.selected_or_first_available_variant %}
+{% if variant.available %}
+  {% assign sold_out = false %}
+{% endif %}
+{% for variant in product.variants %}
+  {% if variant.inventory_management == 'shopify' and variant.inventory_policy == 'continue' and variant.inventory_quantity == 0 %}
+    {% assign sold_out = false %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+<div
+id="prod__sticky-atc"
+  class="prod__sticky-atc {{ class }} {{hide_stickyBar_section}} sf-prod__block fixed z-40 {%if stb.sticy_bar_position == 'top' %} top-0 {%else%%} bottom-0{%endif%} inset-x-0  transition-transform {% if enable_dynamic_checkout %} enable-dynamic-checkout{% endif %}"
+  style="box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.09); background-color: {{stb.sticky_bg_color}};" data-view="sticky-atc"  
+>  
+  <div class="{{ st.container }}{% if st.container == 'w-full' %} px-4{% endif %}">
+    {% form 'product', product,
+        class: 'form product-form lg:container flex items-center justify-between', 
+        id: 'sticky-atc-form',
+        novalidate: 'novalidate',
+        data-product-id: product.id, data-product-handle: product.handle
+    %}
+    <input hidden name="id" required value="{{ product.selected_or_first_available_variant.id }}">
+ 
+    <div class="{% if product.has_only_default_variant %} flex {% else %} hidden {% endif %} md:flex  " style="justify-content:center;align-items:center">
+      {% if stb.hide_desktop_stickybar_thumbnail == false%}
+        <div class="spc__main-img cursor-pointer ">
+            {% render 'responsive-image', image: product.featured_image, sizes: "200px", image_class: 'h-full object-contain' %}
+        </div>
+      {%endif%}
+        <div class="{% unless stb.hide_desktop_stickybar_thumbnail == false %}ml-6 {% endunless %}psa__info">
+            
+          {%- capture custom_styles -%}
+            {%- if stb.sticky_title_color !='rgba(0,0,0,0)' and stb.sticky_title_color != blank -%}
+                color:{{ stb.sticky_title_color }};
+            {%- endif -%}
+          {%- endcapture -%}
+
+          {% render 'heading-tag'
+            heading: stb.sticky_title_heading,
+            content: product.title,
+            custom_styles: custom_styles
+          %}
+
+          <div>
+            {%- capture custom_classes -%}
+              sticky_prices {% if stb.hide_price_desktop %} hide-desktop {% endif %} {% if stb.hide_price_tablet %} hide-tablet {% endif %} {% if stb.hide_price_mobile %}hide-mobile {% endif %}
+            {%- endcapture -%}
+            {% render 'product-prices', variant: product.selected_or_first_available_variant,font_size:stb.sticky_price_size,price_color:stb.sticky_price_color,price_hover_color:stb.sticky_price_hover_color, class: custom_classes %}
+          </div>
+        </div>
+    </div>
+    <div class="flex flex-shrink-0 items-center psa__form-controls {% unless product.has_only_default_variant %} w-full md:w-auto{% endunless %}" style="--sticky-background-color: {{stb.sticky_bg_color}};">
+      {% render 'sticky-variant-option', product: product %}
+      {%- capture qty_input_class -%}
+          mr-2.5 lg:mr-5 lg:ml-5 {% unless product.has_only_default_variant %}hidden{% endunless %} {% if stb.hide_qty_stickybar %}hide-mobile-qty-stepper{% endif %}
+      {%- endcapture -%}
+      {%- comment -%} {% render 'product-qty-input', class: qty_input_class  %} {%- endcomment -%}
+      {% if sold_out == false %}
+        {% render 'product-sticky-qty-input', class: qty_input_class  %}
+      {% endif %}
+      {% render 'product-atc', class: settings.stickybar_button_style, product: product, is_preorder: is_preorder, extra_styles: 'height: 46px;', is_sticky_bar: true %}
+      {% if enable_dynamic_checkout and is_preorder != true %}
+          <div class="abc prod__dynamic_checkout buy-one-click md:ml-5">
+              {{ form | payment_button }}
+          </div>
+      {% endif %}
+      {% if st.sticky_atc_wishtlist or st.sticky_atc_compare %}
+        <div class="hidden lg:flex items-center ml-5">
+          {% if st.sticky_atc_compare %}
+            {% render 'tooltip', type: 'compare', class_name: 'sf__tooltip-top' %}
+          {% endif %}
+          {% if st.sticky_atc_wishtlist %}
+            {% render 'tooltip', type: 'wishlist', class_name: 'sf__tooltip-top' %}
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+    {% endform %}
+  </div>
+</div>
+
+<style>
+  @media screen and (max-width: 991px){
+  .hide-mobile-qty-stepper{
+    display: none !important;
+  }
+  #sticky-atc-form .psa__info, #sticky-atc-form .spc__main-img, .psa__form-controls .sf-product-variant-option-dropdown:nth-child(2) {
+    display: none;
+  } 
+}
+</style>
+ 

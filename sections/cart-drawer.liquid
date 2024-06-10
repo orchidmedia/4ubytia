@@ -1,0 +1,100 @@
+{% assign f_cart_countdown = shop.metafields['beautyecom-bs-kit'].cart-countdown %}
+<div
+  style="--tw-bg-opacity: 0;"
+  class="scd__wrapper hidden transition-colors duration-300 bg-black fixed z-[100] inset-0"
+>
+  <div class="scd__content sf-no-scroll-bar transition-transform duration-300 translate-x-0 translate-x-full ml-auto min-h-full md:w-[375px] bg-white z-50">
+    {%- assign primary_locale = '' -%}
+    {%- for locale in shop.published_locales -%}
+      {%- if locale.primary == true -%}
+        {%- assign primary_locale = locale.iso_code -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- capture form_action -%}
+      /checkout{%- if primary_locale != request.locale.iso_code -%}?locale={{request.locale.iso_code}}{%- endif -%}
+    {%- endcapture -%}
+    {%- if primary_locale != request.locale.iso_code -%}
+      {%- capture checkout_params -%}
+        ?locale={{request.locale.iso_code}}
+      {%- endcapture -%}
+    {%- endif -%}
+
+    <form action="{{ form_action }}" method="post" class="checkout-form flex flex-col {% if cart.item_count < 1 %}h-full{% endif %}" novalidate>
+      {% if settings.cart_show_announcement %}
+        <div class="scd__announcement">{{settings.cart_announcement_text}}</div>
+      {% endif %}
+      <div class="scd__header px-6 py-3 md:pt-4 border-b border-color-border">
+        <p class="scd__close p-2 cursor-pointer absolute">
+          {% render 'icon', name: 'times', size: 'large' %}
+        </p>
+        <p-small class="font-bold uppercase ">{% render 'icon', name: 'prev', size: 'large' %} {{ 'cart.general.title' | t }}</p-small>
+        {% if f_cart_countdown.show_on_drawer == true and template != 'cart' %}
+          {% render 'beauty-cart-countdown' %}
+        {% endif %}
+        {% render 'beauty-cart-goal' %}
+      </div>
+
+      <div class="scd__body px-5 pb-4 flex flex-col flex-grow {% if cart.items.size < 1 %}justify-center{% endif %}">
+        {%- if cart.items.size > 0 -%}
+          <div class="scd__items">
+            {% for item in cart.items %}
+              {% render 'cart-drawer-item', item: item %}
+            {% endfor %}
+          </div>
+        {%- else -%}
+          {% render 'cart-drawer-empty-msg' %}
+        {%- endif -%}
+      </div>
+      <div class="scd__footer py-4 px-6">
+        {% render 'cart-addons' %}
+        <div class="scd__summary mb-4 pt-4" data-cart-summary>
+          <div data-discounts>
+            <ul class="scd-cart__discounts" role="list" data-discounts-list>
+            {% unless cart.cart_level_discount_applications.size == 0 %}
+                {% for discount in cart.cart_level_discount_applications %}
+                  <li>
+                    {% render 'icon', name: 'discount' %}
+                    <span>{{ discount.title | upcase }}&nbsp;(-{{ discount.total_allocated_amount | money }})</span>
+                  </li>
+                {% endfor %}
+            {% endunless %}
+            </ul>
+          </div>
+
+          {%- comment -%}{% render "promo-code" %}{%- endcomment -%}
+          <div class="scd__subtotal flex justify-between pb-2" data-cart-subtotal id="subtotal">
+            <span class="font-medium p-medium">{{ 'cart.general.subtotal' | t }}</span>
+            <span class="scd__subtotal-price font-medium p-medium sf-currency" data-cart-subtotal-price>{{ cart.total_price | money }}</span>
+          </div>
+          <div class="savings_on_front flex justify-between py-2" id="savings">
+            <span class="font-medium p-medium">Savings</span>
+            <span class="saving_total font-medium p-medium">{{ cart.total_price | money }}</span>
+          </div>
+          <div class="flex justify-between py-2" id="shipping">
+            <span class="font-medium p-medium">Shipping & Tax</span>
+            <span class="font-medium p-medium">Calculated at Checkout</span>
+          </div>
+          <div class="scd__subtotal flex justify-between pt-2" id="grandTotal" data-cart-subtotal>
+            <span class="font-medium p-medium">{{ 'cart.general.est_total' | t }}</span>
+            <span class="scd__subtotal-price font-medium p-medium sf-currency" data-cart-subtotal-price>{{ cart.total_price | money }}</span>
+          </div>
+          <!-- <hr class="mt-5" style="border-top: 1px solid rgba(0, 0, 0, 0.3);"> -->
+        </div>
+        <div class="flex flex-col items-center">
+          <button type="submit" data-checkout class="{{settings.cart_drawer_checkout_button_style}} w-full scd__checkout mb-0" name="checkout">
+            {{ 'cart.general.checkout' | t }}
+          </button>
+          <!-- <a class="underline" href="{{ routes.cart_url }}">
+            {{ 'cart.general.viewcart' | t }}
+          </a> -->
+        </div>
+        {% if settings.cart_drawer_trust_badge %}
+        <div class="scd__trust-badge mt-2">
+          <img src="{{ settings.cart_drawer_trust_badge | img_url: '840x' }}" loading="lazy" width="400" height="100" alt="Trust secure badge">
+        </div>
+        {% endif %}
+      </div>
+      <div class="scd__overlay inset-0"></div>
+    </form>
+  </div>
+</div>

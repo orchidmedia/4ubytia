@@ -1,0 +1,1516 @@
+{%- assign st = section.settings -%}
+{%- assign blog_to_show = section.settings.limit | default: 3 -%}
+{%- assign use_scroll_mobile = section.settings.use_scroll_mobile -%}
+{% assign show_sidebar = section.settings.show_sidebar %}
+{%- if section.settings.show_all_posts -%}
+    {%- assign blog_to_show = default -%}
+{%- else -%}
+    {%- assign blog_to_show = section.settings.limit -%}
+{%- endif -%}
+
+{% case section.settings.bg_color_selector %}
+    {% when 'color_section1_bg' %}
+        {%- assign bg_color = settings.color_section1_bg -%}
+    {% when 'color_section2_bg' %}
+        {%- assign bg_color = settings.color_section2_bg -%}
+    {% when 'color_section3_bg' %}
+        {%- assign bg_color = settings.color_section3_bg -%}
+    {% when 'color_section4_bg' %}
+        {%- assign bg_color = settings.color_section4_bg -%}
+    {% when 'color_section5_bg' %}
+        {%- assign bg_color = settings.color_section5_bg -%}
+    {% when 'color_section6_bg' %}
+        {%- assign bg_color = settings.color_section6_bg -%}
+    {% else %}
+        {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+
+{%- if section.settings.bg_color_override -%}
+    {%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+
+{% capture container %}
+    {{ st.container }}
+{% endcapture %}
+
+<section id="sf__blog-post-{{ section.id }}" class="sf__blog-post section-pv-{{ section.settings.margin_vertical }} {{ section.settings.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}" style="background-color: {{ bg_color }};" data-section-id="{{section.id}}">
+    <div class="{{ container }}" style="--column-gap: {{ section.settings.column_gap }}px; --column-gap-mobile: {{ section.settings.mobile_gap }}px; --row-gap: {{ section.settings.column_gap | plus: 10 }}px;">
+        <!-- {% render 'index-section-header', section_settings: section.settings %} -->
+
+        <div class="max-auto">
+            <div class="flex flex-wrap -mx-0 md:-mx-0">
+                <div class="w-full {% if show_sidebar %}lg:w-9/12 w-73{% else %}lg:w-12/12 w-100{% endif %} menoguides-categories">
+                    {% for link in linklists[st.blog].links %}
+                        {% assign blog = link.object %}
+                        {% if st.heading_contained %}
+                            {% capture center_contained %}
+                                style="display:table; margin:auto"
+                            {% endcapture %}
+                        {% endif %}
+                        {% if blog.articles.size > 0  %}
+                            <div {{ center_contained }}>
+                                <div class="flex justify-between items-end">
+                                    {%- capture custom_styles -%}
+                                        {%- if st.category_color !='rgba(0,0,0,0)' and st.category_color != blank -%}
+                                            color:{{ st.category_color }};
+                                        {%- endif -%}
+                                    {%- endcapture -%}
+
+                                    {% render 'heading-tag'
+										heading: st.category_tag,
+										content: blog.title,
+										custom_styles: custom_styles
+									%}
+
+                                    {% if st.heading_link_hide %}
+                                        <a href="{{ blog.url }}" role="button" class="link-5">View All</a>
+                                    {% endif %}
+                                </div>
+                                {% render 'separator' style: st.separator_style %}
+
+                            </div>
+
+                            <!-- <h3>{{ blog.metafields.custom.type }}</h3> -->
+                            <div class="relative blog-post-swiper-container">
+                                <div class="grid grid-cols-1 grid-cols-2 md:grid-cols-{{ st.column | minus: 1 }} lg:grid-cols-{{ st.column }} gap-9 menoguides-articles-grid meno-adult-grid swiper blog-post-swiper" 
+									style="--column-gap: {{ section.settings.column_gap }}px; --column-gap-mobile: {{ section.settings.mobile_gap }}px; --row-gap: {{ section.settings.column_gap | plus: 10 }}px;"
+								>
+                                    <div role="region" aria-label="Blogs slider" class="relative swiper-wrapper">
+                                        {% if blog.articles.size > 0  %}
+                                            {% for article in blog.articles limit: blog_to_show %}
+                                                {% render 'article-card', article: article, 
+                                                   view: st.view, blog_url: blog.url, 
+                                                   tag_line_height: section.settings.article_tags_line_height
+                                                 %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div role="region" aria-label="Meno blog carousel" class="swiper-pagination"></div>
+                                </div>
+                                {% if blog.articles.size > 4 and st.column > 3 %}
+                                    {% render 'slider-controls', 
+										custom_class: 'hide-tablet', absolute: true, 
+										container: true, show_pagination: false,  show_nav: true
+									%}
+                                {% endif %}
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% if show_sidebar %}
+                    <div class="w-full lg:w-3/12 {% if st.design == "layout3"%}sidebar-design-03 w-25{% endif %}">
+
+                        <div class="sf-block-aside">
+                            <h4>Popular Guides</h4>
+                            <hr>
+
+                            <div class="sf-aside-content">
+                                <ul class="sf-list-menu">
+                                    {%- for article in blog.articles limit: 5 -%}
+                                        <li>
+                                            <a href="{{ article.url }}" class="link-2">
+                                                <span class="sf__title-count">&#x2022;
+                                                    {{ article.title }}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    {%- endfor -%}
+                                </ul>
+                            </div>
+                        </div>
+
+                        {%- if blog.all_tags != blank -%}
+                            <div class="sf-block-aside">
+                                {% if section.settings.design == "layout3" %}
+                                    <h4>Browse by topic</h4>
+                                    <hr>
+                                {% else %}
+                                    <h3 class="sf-aside-title">Browse by topic</h3>
+                                {% endif %}
+                                {% if template contains 'blog' %}
+                                    {% assign tag_list = current_tags %}
+                                {% else %}
+                                    {% assign tag_list = article.tags %}
+                                {% endif %}
+                                <div class="sf-aside-content sf-aside-tags">
+                                    {% for link in linklists.blogs.links %}
+                                        {% assign blogForTags = link.object %}
+                                        {%- for tag in blogForTags.all_tags -%}
+                                            <a 
+												href="{{ blogForTags.url }}/tagged/{{ tag | handle }}" 
+												role="button" 
+												class="button-5 {% if tag_list contains tag %}active{% endif %}"
+											>
+												{{ tag }}
+                                            </a>
+                                        {%- endfor -%}
+                                    {%- endfor -%}
+                                </div>
+                            </div>
+                        {%- endif -%}
+
+                        {% render 'blog-sidebar' %}
+
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .meno-adult-grid {
+        margin-top: {{ st.margin_top }}px;
+        margin-bottom: {{ st.margin_bottom }}px;
+    }
+
+    @media screen and (max-width: 991px) {
+        .meno-adult-grid {
+            margin-top: {{ st.margin_top_mb }}px;
+            margin-bottom: {{ st.margin_bottom_mb }}px;
+        }
+    }
+</style>
+
+<!-- Initialize Swiper -->
+<script>
+
+    const menoBlogPostSwiperContainers = document.querySelectorAll('#sf__blog-post-{{ section.id }} .blog-post-swiper-container');
+
+    menoBlogPostSwiperContainers.forEach(singleSwiper => {
+		const swiperEle = singleSwiper.querySelector('.blog-post-swiper');
+        const pagination = singleSwiper.querySelector('.swiper-pagination');
+        const arrowPrev = singleSwiper.querySelector('.swiper-button-prev');
+        const arrowNext = singleSwiper.querySelector('.swiper-button-next');
+
+        new Swiper(swiperEle, {
+            slidesPerView: 1.2,
+            spaceBetween: {{ st.mobile_gap }},
+            pagination: {
+                el: pagination,
+                clickable: true
+            },
+            breakpoints: {
+                992: {
+                    slidesPerView:{% if st.limit >= 4 %}4
+                    {% else %}
+                        3
+                    {% endif %},
+                    spaceBetween: {{ st.column_gap }},
+                    navigation: {
+                        nextEl: arrowNext,
+                        prevEl: arrowPrev
+                    },
+                    pagination: {
+                        el: pagination
+                    }
+                }
+            }
+        });
+    })
+</script>
+
+<style>
+    #sf__blog-post-{{ section.id }} .swiper-pagination-bullet {
+        background: none;
+        border: 1px solid #807f79;
+        opacity: 1;
+        margin: 2px 4px;
+    }
+
+    #sf__blog-post-{{ section.id }} .swiper {
+        padding-bottom: 70px;
+    }
+</style>
+
+{% schema %}
+    {
+        "name": "Meno/Adult Blog posts",
+        "settings": [
+            {
+                "type": "header",
+                "content": "General"
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_desktop",
+                "label": "Hide on Desktop",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_tablet",
+                "label": "Hide on Tablet",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_mobile",
+                "label": "Hide on Mobile",
+                "default": false
+            }, {
+                "type": "select",
+                "id": "margin_vertical",
+                "label": "Section margin (vertical)",
+                "default": "none",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "None"
+                    }, {
+                        "value": "sm",
+                        "label": "Small"
+                    }, {
+                        "value": "md",
+                        "label": "Medium"
+                    }, {
+                        "value": "lg",
+                        "label": "Large"
+                    }
+                ]
+            }, {
+                "type": "select",
+                "id": "container",
+                "label": "Container type",
+                "default": "container-fluid",
+                "options": [
+                    {
+                        "value": "container-fluid",
+                        "label": "Default"
+                    }, {
+                        "value": "w-full",
+                        "label": "Full width"
+                    }, {
+                        "value": "container",
+                        "label": "Use container box"
+                    }
+                ]
+            }, {
+                "type": "select",
+                "id": "bg_color_selector",
+                "label": "Section Background",
+                "default": "color_section1_bg",
+                "options": [
+                    {
+                        "value": "color_section1_bg",
+                        "label": "Section 1"
+                    },
+                    {
+                        "value": "color_section2_bg",
+                        "label": "Section 2"
+                    },
+                    {
+                        "value": "color_section3_bg",
+                        "label": "Section 3"
+                    },
+                    {
+                        "value": "color_section4_bg",
+                        "label": "Section 4"
+                    }, {
+                        "value": "color_section5_bg",
+                        "label": "Section 5"
+                    }, {
+                        "value": "color_section6_bg",
+                        "label": "Section 6"
+                    }
+                ]
+            }, {
+                "type": "checkbox",
+                "id": "bg_color_override",
+                "label": "Override Background",
+                "default": false
+            }, {
+                "type": "color",
+                "id": "background_color",
+                "label": "Background color",
+                "default": "rgba(0,0,0,0)"
+            }, {
+                "type": "header",
+                "content": "Content"
+            }, {
+                "id": "blog",
+                "type": "link_list",
+                "label": "Select Blog Menu"
+            }, {
+                "type": "range",
+                "id": "limit",
+                "label": "Posts to show",
+                "min": 2,
+                "max": 12,
+                "step": 1,
+                "default": 4
+            }, {
+                "type": "checkbox",
+                "id": "show_all_posts",
+                "label": "Show all posts with no limit",
+                "default": false
+            }, {
+                "type": "range",
+                "id": "column",
+                "label": "Posts per row",
+                "min": 2,
+                "max": 6,
+                "step": 1,
+                "default": 4
+            }, {
+                "type": "range",
+                "id": "column_gap",
+                "label": "Column gap",
+                "min": 0,
+                "max": 50,
+                "step": 2,
+                "default": 30,
+                "unit": "px"
+            }, {
+                "type": "range",
+                "id": "mobile_gap",
+                "label": "Column gap on mobile",
+                "min": 0,
+                "max": 30,
+                "step": 2,
+                "default": 10,
+                "unit": "px"
+            }, {
+                "type": "range",
+                "id": "margin_top",
+                "label": "Margin Top",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 24
+            }, {
+                "type": "range",
+                "id": "margin_bottom",
+                "label": "Margin Bottom",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 70
+            }, {
+                "type": "range",
+                "id": "margin_top_mb",
+                "label": "Margin Top Mobile",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 24
+            }, {
+                "type": "range",
+                "id": "margin_bottom_mb",
+                "label": "Margin Bottom Mobile",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 70
+            }, {
+                "type": "header",
+                "content": "Category Settings"
+            }, {
+                "type": "color",
+                "id": "category_color",
+                "label": "Category color",
+                "default": "#000000"
+            }, {
+                "type": "select",
+                "id": "category_tag",
+                "label": "Category tag",
+                "default": "h3",
+                "info": "Category text is picked up automatically from Blog Post Tags.",
+                "options": [
+                    {
+                        "value": "p",
+                        "label": "Paragraph"
+                    },
+                    { "value": "heading-1-seo", "label": "SEO H1" },
+                    {
+                        "value": "h1",
+                        "label": "H1"
+                    },
+                    {
+                        "value": "h2",
+                        "label": "H2"
+                    },
+                    {
+                        "value": "h3",
+                        "label": "H3"
+                    }, {
+                        "value": "h4",
+                        "label": "H4"
+                    }, {
+                        "value": "h5",
+                        "label": "H5"
+                    }, {
+                        "value": "h6",
+                        "label": "H6"
+                    }, {
+                        "value": "p-xsmall",
+                        "label": "Extra small paragraph"
+                    }, {
+                        "value": "p-small",
+                        "label": "Small paragraph"
+                    }, {
+                        "value": "p-medium",
+                        "label": "Medium paragraph"
+                    }, {
+                        "value": "p-large",
+                        "label": "Large paragraph"
+                    }, {
+                        "value": "p-xlarge",
+                        "label": "Extra large paragraph"
+                    }, {
+                        "value": "quote-1",
+                        "label": "Quote 1"
+                    }, {
+                        "value": "quote-2",
+                        "label": "Quote 2"
+                    }, {
+                        "value": "quote-3",
+                        "label": "Quote 3"
+                    }
+                ]
+            }, {
+                "type": "select",
+                "id": "separator_style",
+                "label": "Separator style",
+                "info": "Separator styling available on 'Theme Settings' inside the 'SEPARATORS' dropdown.",
+                "options": [
+                    {
+                        "value": "separator",
+                        "label": "Primary"
+                    },
+                    {
+                        "value": "separator-1",
+                        "label": "Separator 1"
+                    },
+                    {
+                        "value": "separator-2",
+                        "label": "Separator 2"
+                    },
+                    {
+                        "value": "separator-3",
+                        "label": "Separator 3"
+                    }, {
+                        "value": "separator-4",
+                        "label": "Separator 4"
+                    }, {
+                        "value": "separator-5",
+                        "label": "Separator 5"
+                    }
+                ]
+            }, {
+                "type": "checkbox",
+                "id": "heading_contained",
+                "label": "Contained Heading",
+                "default": true
+            }, {
+                "type": "checkbox",
+                "id": "heading_link_hide",
+                "label": "Enable heading link(Right side)",
+                "default": false
+            }, {
+                "type": "header",
+                "content": "Article Card Settings"
+            }, {
+                "type": "range",
+                "id": "article_tags_line_height",
+                "min": 0,
+                "max": 100,
+                "step": 2,
+                "unit": "px",
+                "label": "Article tags line height",
+                "default": 14
+            }, {
+                "type": "color",
+                "id": "topic_color",
+                "label": "Topic color",
+                "default": "#356687"
+            }, {
+                "type": "select",
+                "id": "topic_tag",
+                "label": "Topic tag",
+                "default": "p-large",
+                "info": "Topic text is picked up automatically from Blog Post - Metafields: Topic.",
+                "options": [
+                    {
+                        "value": "p",
+                        "label": "Paragraph"
+                    },
+                    { "value": "heading-1-seo", "label": "SEO H1" },
+                    {
+                        "value": "h1",
+                        "label": "H1"
+                    },
+                    {
+                        "value": "h2",
+                        "label": "H2"
+                    },
+                    {
+                        "value": "h3",
+                        "label": "H3"
+                    }, {
+                        "value": "h4",
+                        "label": "H4"
+                    }, {
+                        "value": "h5",
+                        "label": "H5"
+                    }, {
+                        "value": "h6",
+                        "label": "H6"
+                    }, {
+                        "value": "p-xsmall",
+                        "label": "Extra small paragraph"
+                    }, {
+                        "value": "p-small",
+                        "label": "Small paragraph"
+                    }, {
+                        "value": "p-medium",
+                        "label": "Medium paragraph"
+                    }, {
+                        "value": "p-large",
+                        "label": "Large paragraph"
+                    }, {
+                        "value": "p-xlarge",
+                        "label": "Extra large paragraph"
+                    }, {
+                        "value": "quote-1",
+                        "label": "Quote 1"
+                    }, {
+                        "value": "quote-2",
+                        "label": "Quote 2"
+                    }, {
+                        "value": "quote-3",
+                        "label": "Quote 3"
+                    }
+                ]
+            }, {
+                "type": "color",
+                "id": "article_title_color",
+                "label": "Title color",
+                "default": "#000000"
+            }, {
+                "type": "select",
+                "id": "article_title_tag",
+                "label": "Title tag",
+                "default": "h5",
+                "info": "Title text is picked up automatically from Blog Post Title.",
+                "options": [
+                    {
+                        "value": "p",
+                        "label": "Paragraph"
+                    },
+                    { "value": "heading-1-seo", "label": "SEO H1" },
+                    {
+                        "value": "h1",
+                        "label": "H1"
+                    },
+                    {
+                        "value": "h2",
+                        "label": "H2"
+                    },
+                    {
+                        "value": "h3",
+                        "label": "H3"
+                    }, {
+                        "value": "h4",
+                        "label": "H4"
+                    }, {
+                        "value": "h5",
+                        "label": "H5"
+                    }, {
+                        "value": "h6",
+                        "label": "H6"
+                    }, {
+                        "value": "p-xsmall",
+                        "label": "Extra small paragraph"
+                    }, {
+                        "value": "p-small",
+                        "label": "Small paragraph"
+                    }, {
+                        "value": "p-medium",
+                        "label": "Medium paragraph"
+                    }, {
+                        "value": "p-large",
+                        "label": "Large paragraph"
+                    }, {
+                        "value": "p-xlarge",
+                        "label": "Extra large paragraph"
+                    }, {
+                        "value": "quote-1",
+                        "label": "Quote 1"
+                    }, {
+                        "value": "quote-2",
+                        "label": "Quote 2"
+                    }, {
+                        "value": "quote-3",
+                        "label": "Quote 3"
+                    }
+                ]
+            }, {
+                "type": "color",
+                "id": "article_excerpt_color",
+                "label": "Excerpt color",
+                "default": "#000000"
+            }, {
+                "type": "select",
+                "id": "article_excerpt_tag",
+                "label": "Excerpt tag",
+                "default": "excerpt-custom",
+                "info": "Article excerpt will be picked from Blog Post Excerpt. If field is empty, it will automatically pick an excerpt from Blog Post Content.",
+                "options": [
+                    {
+                        "value": "excerpt-custom",
+                        "label": "Custom"
+                    },
+                    {
+                        "value": "p",
+                        "label": "Paragraph"
+                    },
+                    { "value": "heading-1-seo", "label": "SEO H1" },
+                    {
+                        "value": "h1",
+                        "label": "H1"
+                    },
+                    {
+                        "value": "h2",
+                        "label": "H2"
+                    }, {
+                        "value": "h3",
+                        "label": "H3"
+                    }, {
+                        "value": "h4",
+                        "label": "H4"
+                    }, {
+                        "value": "h5",
+                        "label": "H5"
+                    }, {
+                        "value": "h6",
+                        "label": "H6"
+                    }, {
+                        "value": "p-xsmall",
+                        "label": "Extra small paragraph"
+                    }, {
+                        "value": "p-small",
+                        "label": "Small paragraph"
+                    }, {
+                        "value": "p-medium",
+                        "label": "Medium paragraph"
+                    }, {
+                        "value": "p-large",
+                        "label": "Large paragraph"
+                    }, {
+                        "value": "p-xlarge",
+                        "label": "Extra large paragraph"
+                    }, {
+                        "value": "quote-1",
+                        "label": "Quote 1"
+                    }, {
+                        "value": "quote-2",
+                        "label": "Quote 2"
+                    }, {
+                        "value": "quote-3",
+                        "label": "Quote 3"
+                    }
+                ]
+            }, {
+                "type": "color",
+                "id": "article_author_color",
+                "label": "Author color",
+                "default": "#000000"
+            }, {
+                "type": "select",
+                "id": "article_author_tag",
+                "label": "Author tag",
+                "default": "p-large",
+                "info": "Article author will be picked from Blog. Author can be enabled/disabled on Theme Settings - Article Card.",
+                "options": [
+                    {
+                        "value": "p",
+                        "label": "Paragraph"
+                    },
+                    { "value": "heading-1-seo", "label": "SEO H1" },
+                    {
+                        "value": "h1",
+                        "label": "H1"
+                    },
+                    {
+                        "value": "h2",
+                        "label": "H2"
+                    },
+                    {
+                        "value": "h3",
+                        "label": "H3"
+                    }, {
+                        "value": "h4",
+                        "label": "H4"
+                    }, {
+                        "value": "h5",
+                        "label": "H5"
+                    }, {
+                        "value": "h6",
+                        "label": "H6"
+                    }, {
+                        "value": "p-xsmall",
+                        "label": "Extra small paragraph"
+                    }, {
+                        "value": "p-small",
+                        "label": "Small paragraph"
+                    }, {
+                        "value": "p-medium",
+                        "label": "Medium paragraph"
+                    }, {
+                        "value": "p-large",
+                        "label": "Large paragraph"
+                    }, {
+                        "value": "p-xlarge",
+                        "label": "Extra large paragraph"
+                    }, {
+                        "value": "quote-1",
+                        "label": "Quote 1"
+                    }, {
+                        "value": "quote-2",
+                        "label": "Quote 2"
+                    }, {
+                        "value": "quote-3",
+                        "label": "Quote 3"
+                    }
+                ]
+            }, {
+                "type": "header",
+                "content": "Sidebar"
+            }, {
+                "type": "checkbox",
+                "id": "show_sidebar",
+                "label": "Show sidebar",
+                "default": true
+            }, {
+                "type": "select",
+                "id": "layout",
+                "label": "Placement",
+                "default": "right_column",
+                "options": [
+                    {
+                        "value": "left_column",
+                        "label": "Left column"
+                    }, {
+                        "value": "right_column",
+                        "label": "Right column"
+                    }
+                ]
+            }, {
+                "type": "select",
+                "id": "design",
+                "label": "Layout",
+                "options": [
+                    {
+                        "label": "Layout 1",
+                        "value": "layout1"
+                    }, {
+                        "label": "Layout 2",
+                        "value": "layout2"
+                    }, {
+                        "label": "Layout 3",
+                        "value": "layout3"
+                    }
+                ],
+                "default": "layout3"
+            }, {
+                "type": "header",
+                "content": "Card settings"
+            }, {
+                "type": "select",
+                "id": "article_image_aspect_ratio",
+                "label": "Image aspect ratio",
+                "default": "16/9",
+                "options": [
+                    {
+                        "value": "original",
+                        "label": "Original aspect ratio"
+                    },
+                    {
+                        "value": "1/1",
+                        "label": "1:1"
+                    },
+                    {
+                        "value": "3/4",
+                        "label": "3:4"
+                    },
+                    {
+                        "value": "4/3",
+                        "label": "4:3"
+                    }, {
+                        "value": "16/9",
+                        "label": "16:9"
+                    }
+                ]
+            }, {
+                "type": "select",
+                "id": "article_align_content",
+                "label": "Content alignment",
+                "default": "text-left",
+                "options": [
+                    {
+                        "label": "Left",
+                        "value": "text-left"
+                    }, {
+                        "label": "Center",
+                        "value": "text-center"
+                    }, {
+                        "label": "Right",
+                        "value": "text-right"
+                    }
+                ]
+            }, {
+                "type": "checkbox",
+                "id": "article_show_tags",
+                "label": "Show tags",
+                "default": true
+            }, {
+                "type": "checkbox",
+                "id": "article_show_date",
+                "label": "Show published date",
+                "default": true
+            }, {
+                "type": "checkbox",
+                "id": "article_show_excerpt",
+                "label": "Show excerpt",
+                "default": true
+            }, {
+                "type": "checkbox",
+                "id": "article_show_button",
+                "label": "Show read more link",
+                "default": true
+            }, {
+                "type": "header",
+                "content": "Button settings"
+            }, {
+                "type": "url",
+                "id": "button_link",
+                "label": "Button link"
+            }, {
+                "type": "text",
+                "id": "button_text",
+                "label": "Button label",
+                "default": "View More",
+                "info": "Leave it blank to hide"
+            }, {
+                "type": "select",
+                "id": "button_style",
+                "label": "Button style",
+                "options": [
+                    {
+                        "value": "sf__btn sf__btn-primary",
+                        "label": "Primary"
+                    },
+                    {
+                        "value": "sf__btn sf__btn-secondary",
+                        "label": "Secondary"
+                    },
+                    {
+                        "value": "sf__btn sf__btn-blank-light",
+                        "label": "Transparent (light)"
+                    },
+                    {
+                        "value": "sf__btn sf__btn-blank-dark",
+                        "label": "Transparent (dark)"
+                    }, {
+                        "value": "sf__btn sf__btn-link",
+                        "label": "Underline"
+                    }, {
+                        "value": "button-1",
+                        "label": "Button 1"
+                    }, {
+                        "value": "button-2",
+                        "label": "Button 2"
+                    }, {
+                        "value": "button-3",
+                        "label": "Button 3"
+                    }, {
+                        "value": "button-4",
+                        "label": "Button 4"
+                    }, {
+                        "value": "button-5",
+                        "label": "Button 5"
+                    }, {
+                        "value": "button-6",
+                        "label": "Button 6"
+                    }, {
+                        "value": "button-7",
+                        "label": "Button 7"
+                    }
+                ],
+                "default": "sf__btn sf__btn-primary"
+            }, {
+                "type": "header",
+                "content": "Mobile Settings"
+            }, {
+                "type": "checkbox",
+                "id": "use_scroll_mobile",
+                "label": "Enable horizontal scroll",
+                "default": true
+            }, {
+                "type": "text",
+                "id": "custom_class",
+                "label": "Custom classes"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "categories",
+                "name": "Widget categories",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title",
+                        "default": "Categories"
+                    }, {
+                        "type": "link_list",
+                        "id": "list_blog",
+                        "label": "Select categories menu"
+                    }, {
+                        "type": "select",
+                        "id": "custom_links",
+                        "label": "Links style",
+                        "options": [
+                            {
+                                "value": "link-1",
+                                "label": "Link 1"
+                            },
+                            {
+                                "value": "link-2",
+                                "label": "Link 2"
+                            },
+                            {
+                                "value": "link-3",
+                                "label": "Link 3"
+                            },
+                            {
+                                "value": "link-4",
+                                "label": "Link 4"
+                            }, {
+                                "value": "link-5",
+                                "label": "Link 5"
+                            }
+                        ],
+                        "default": "link-1"
+                    }
+                ]
+            },
+            {
+                "type": "tagged-categories",
+                "name": "Latest Articles (Tags)",
+                "limit": 5,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "tag",
+                        "label": "Blog Tag",
+                        "default": "The Basics"
+                    }, {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title",
+                        "info": "Overwrite the tag title"
+                    }, {
+                        "type": "select",
+                        "id": "link_style",
+                        "label": "Link style",
+                        "options": [
+                            {
+                                "value": "link-1",
+                                "label": "Link 1"
+                            },
+                            {
+                                "value": "link-2",
+                                "label": "Link 2"
+                            },
+                            {
+                                "value": "link-3",
+                                "label": "Link 3"
+                            },
+                            {
+                                "value": "link-4",
+                                "label": "Link 4"
+                            }, {
+                                "value": "link-5",
+                                "label": "Link 5"
+                            }
+                        ],
+                        "default": "link-5"
+                    }
+                ]
+            },
+            {
+                "type": "banner",
+                "name": "Widget banner",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "color",
+                        "id": "bg_color",
+                        "label": "Background Color"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Image"
+                    },
+                    {
+                        "type": "select",
+                        "id": "subheading_tag",
+                        "label": "Subheading tag",
+                        "default": "h3",
+                        "options": [
+                            {
+                                "value": "p",
+                                "label": "Paragraph"
+                            },
+                            { "value": "heading-1-seo", "label": "SEO H1" },
+                            {
+                                "value": "h1",
+                                "label": "H1"
+                            },
+                            {
+                                "value": "h2",
+                                "label": "H2"
+                            },
+                            {
+                                "value": "h3",
+                                "label": "H3"
+                            }, {
+                                "value": "h4",
+                                "label": "H4"
+                            }, {
+                                "value": "h5",
+                                "label": "H5"
+                            }, {
+                                "value": "h6",
+                                "label": "H6"
+                            }, {
+                                "value": "p-xsmall",
+                                "label": "Extra small paragraph"
+                            }, {
+                                "value": "p-small",
+                                "label": "Small paragraph"
+                            }, {
+                                "value": "p-medium",
+                                "label": "Medium paragraph"
+                            }, {
+                                "value": "p-large",
+                                "label": "Large paragraph"
+                            }, {
+                                "value": "p-xlarge",
+                                "label": "Extra large paragraph"
+                            }, {
+                                "value": "quote-1",
+                                "label": "Quote 1"
+                            }, {
+                                "value": "quote-2",
+                                "label": "Quote 2"
+                            }, {
+                                "value": "quote-3",
+                                "label": "Quote 3"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "color",
+                        "id": "subheading_color",
+                        "label": "Subheading color",
+                        "default": "#000000"
+                    }, {
+                        "type": "html",
+                        "id": "subheading",
+                        "label": "Subheading"
+                    }, {
+                        "type": "select",
+                        "id": "description_tag",
+                        "label": "Description tag",
+                        "default": "p-small",
+                        "options": [
+                            {
+                                "value": "p",
+                                "label": "Paragraph"
+                            },
+                            { "value": "heading-1-seo", "label": "SEO H1" },
+                            {
+                                "value": "h1",
+                                "label": "H1"
+                            },
+                            {
+                                "value": "h2",
+                                "label": "H2"
+                            },
+                            {
+                                "value": "h3",
+                                "label": "H3"
+                            }, {
+                                "value": "h4",
+                                "label": "H4"
+                            }, {
+                                "value": "h5",
+                                "label": "H5"
+                            }, {
+                                "value": "h6",
+                                "label": "H6"
+                            }, {
+                                "value": "p-xsmall",
+                                "label": "Extra small paragraph"
+                            }, {
+                                "value": "p-small",
+                                "label": "Small paragraph"
+                            }, {
+                                "value": "p-medium",
+                                "label": "Medium paragraph"
+                            }, {
+                                "value": "p-large",
+                                "label": "Large paragraph"
+                            }, {
+                                "value": "p-xlarge",
+                                "label": "Extra large paragraph"
+                            }, {
+                                "value": "quote-1",
+                                "label": "Quote 1"
+                            }, {
+                                "value": "quote-2",
+                                "label": "Quote 2"
+                            }, {
+                                "value": "quote-3",
+                                "label": "Quote 3"
+                            }
+                        ]
+                    }, {
+                        "type": "color",
+                        "id": "description_color",
+                        "label": "Description color",
+                        "default": "#000000"
+                    }, {
+                        "type": "textarea",
+                        "id": "description",
+                        "label": "Description"
+                    }, {
+                        "type": "text",
+                        "id": "button_text",
+                        "label": "Button label",
+                        "default": "Shop Now"
+                    }, {
+                        "type": "url",
+                        "id": "button_link",
+                        "label": "Button link"
+                    }, {
+                        "type": "select",
+                        "id": "button_style",
+                        "label": "Button style",
+                        "options": [
+                            {
+                                "value": "sf__btn sf__btn-primary",
+                                "label": "Primary"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-secondary",
+                                "label": "Secondary"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-blank-light",
+                                "label": "Transparent (light)"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-blank-dark",
+                                "label": "Transparent (dark)"
+                            }, {
+                                "value": "sf__btn sf__btn-link",
+                                "label": "Underline"
+                            }, {
+                                "value": "button button-1",
+                                "label": "Button 1"
+                            }, {
+                                "value": "button button-2",
+                                "label": "Button 2"
+                            }, {
+                                "value": "button button-3",
+                                "label": "Button 3"
+                            }, {
+                                "value": "button button-4",
+                                "label": "Button 4"
+                            }, {
+                                "value": "button button-5",
+                                "label": "Button 5"
+                            }, {
+                                "value": "button button-6",
+                                "label": "Button 6"
+                            }, {
+                                "value": "button button-7",
+                                "label": "Button 7"
+                            }
+                        ],
+                        "default": "button button-7"
+                    }, {
+                        "type": "select",
+                        "id": "text_align",
+                        "label": "Text Align",
+                        "default": "text-center",
+                        "options": [
+                            {
+                                "value": "text-left",
+                                "label": "Left"
+                            }, {
+                                "value": "text-center",
+                                "label": "Center"
+                            }, {
+                                "value": "text-right",
+                                "label": "right"
+                            }
+                        ]
+                    }, {
+                        "type": "checkbox",
+                        "id": "flip_content",
+                        "label": "Flip content",
+                        "default": false
+                    }
+                ]
+            },
+            {
+                "type": "social",
+                "name": "Widget social",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title",
+                        "default": "Share this page"
+                    },
+                    {
+                        "type": "select",
+                        "id": "icon_select",
+                        "label": "Icons",
+                        "options": [
+                            {
+                                "value": "icon-1",
+                                "label": "Icon 1"
+                            }, {
+                                "value": "icon-2",
+                                "label": "Icon 2"
+                            }, {
+                                "value": "icon-3",
+                                "label": "Icon 3"
+                            }
+                        ],
+                        "default": "icon-1"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "icon_size_override",
+                        "label": "Override icon size",
+                        "default": false
+                    },
+                    {
+                        "type": "range",
+                        "id": "icon_size",
+                        "min": 10,
+                        "max": 50,
+                        "step": 1,
+                        "unit": "px",
+                        "label": "Icons size",
+                        "default": 30
+                    }, {
+                        "type": "range",
+                        "id": "icon_size_mobile",
+                        "min": 10,
+                        "max": 50,
+                        "step": 1,
+                        "unit": "px",
+                        "label": "Icons size (mobile)",
+                        "default": 20
+                    }
+                ]
+            }, {
+                "type": "instagram",
+                "name": "Widget Instagram",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title",
+                        "default": "Instagram"
+                    }, {
+                        "type": "range",
+                        "min": 4,
+                        "max": 24,
+                        "step": 1,
+                        "id": "images_count",
+                        "label": "Images to show",
+                        "default": 4
+                    }
+                ]
+            }, {
+                "type": "tags",
+                "name": "Widget tags",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title",
+                        "default": "Tags"
+                    }, {
+                        "type": "select",
+                        "id": "button_style",
+                        "label": "Button style",
+                        "options": [
+                            {
+                                "value": "sf__btn sf__btn-primary",
+                                "label": "Primary"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-secondary",
+                                "label": "Secondary"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-blank-light",
+                                "label": "Transparent (light)"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-blank-dark",
+                                "label": "Transparent (dark)"
+                            }, {
+                                "value": "sf__btn sf__btn-link",
+                                "label": "Underline"
+                            }, {
+                                "value": "button-1",
+                                "label": "Button 1"
+                            }, {
+                                "value": "button-2",
+                                "label": "Button 2"
+                            }, {
+                                "value": "button-3",
+                                "label": "Button 3"
+                            }, {
+                                "value": "button-4",
+                                "label": "Button 4"
+                            }, {
+                                "value": "button-5",
+                                "label": "Button 5"
+                            }, {
+                                "value": "button-6",
+                                "label": "Button 6"
+                            }, {
+                                "value": "button-7",
+                                "label": "Button 7"
+                            }
+                        ],
+                        "default": "button-7"
+                    }, {
+                        "type": "select",
+                        "id": "button_style_active",
+                        "label": "Button style active",
+                        "options": [
+                            {
+                                "value": "sf__btn sf__btn-primary",
+                                "label": "Primary"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-secondary",
+                                "label": "Secondary"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-blank-light",
+                                "label": "Transparent (light)"
+                            },
+                            {
+                                "value": "sf__btn sf__btn-blank-dark",
+                                "label": "Transparent (dark)"
+                            }, {
+                                "value": "sf__btn sf__btn-link",
+                                "label": "Underline"
+                            }, {
+                                "value": "button-1",
+                                "label": "Button 1"
+                            }, {
+                                "value": "button-2",
+                                "label": "Button 2"
+                            }, {
+                                "value": "button-3",
+                                "label": "Button 3"
+                            }, {
+                                "value": "button-4",
+                                "label": "Button 4"
+                            }, {
+                                "value": "button-5",
+                                "label": "Button 5"
+                            }, {
+                                "value": "button-6",
+                                "label": "Button 6"
+                            }, {
+                                "value": "button-7",
+                                "label": "Button 7"
+                            }
+                        ],
+                        "default": "button-6"
+                    }
+                ]
+            }, {
+                "type": "recent_post",
+                "name": "Widget recent posts",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title",
+                        "default": "Recent Post"
+                    },
+                    {
+                        "type": "blog",
+                        "id": "sidebar_recent_blog_name",
+                        "label": "Blog Name"
+                    },
+                    {
+                        "type": "text",
+                        "id": "sidebar_recent_blog_count",
+                        "label": "Post Count",
+                        "info": "Integer",
+                        "default": "3"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "blog_show_tags",
+                        "label": "Show tags",
+                        "default": true
+                    }, {
+                        "type": "checkbox",
+                        "id": "blog_show_author",
+                        "label": "Show author",
+                        "default": false
+                    }, {
+                        "type": "checkbox",
+                        "id": "blog_show_date",
+                        "label": "Show date",
+                        "default": false
+                    }, {
+                        "type": "checkbox",
+                        "id": "show_excerpt",
+                        "label": "Show excerpt",
+                        "default": false
+                    }, {
+                        "type": "text",
+                        "id": "truncate",
+                        "label": "Show Words",
+                        "default": "15",
+                        "info": "Integer"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "Meno/Adult Blog posts",
+                "category": "Blog"
+            }
+        ]
+    }
+{% endschema %}

@@ -1,0 +1,6555 @@
+{%- liquid
+  assign st = section.settings
+  assign use_bg_img = st.use_bg_img
+  assign bg_position = st.bg_position
+  assign parallax = st.parallax
+-%}
+
+{% render 'custom-content-section', show_header: true, section: section, use_bg_img: use_bg_img, bg_position: bg_position, parallax: parallax %}
+
+{% schema %}
+{
+  "name": "Custom content",
+  "settings": [
+    {
+        "type": "header",
+        "content": "Section header"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Sub heading color"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading tag",
+      "options": [
+        { "value": "p", "label": "Paragraph" },
+        { "value": "heading-1-seo", "label": "SEO H1" },
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" },
+        { "value": "p-xsmall", "label": "Extra small paragraph" },
+        { "value": "p-small", "label": "Small paragraph" },
+        { "value": "p-medium", "label": "Medium paragraph" },
+        { "value": "p-large", "label": "Large paragraph" },
+        { "value": "p-xlarge", "label": "Extra large paragraph" },
+        { "value": "quote-1", "label": "Quote 1" },
+        { "value": "quote-2", "label": "Quote 2" },
+        { "value": "quote-3", "label": "Quote 3" }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "range",
+      "id": "heading_padding",
+      "label": "Heading Padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Custom content"
+    },
+    {
+      "type": "select",
+      "id": "subheading_tag",
+      "label": "Heading tag",
+      "options": [
+        { "value": "p", "label": "Paragraph" },
+        { "value": "heading-1-seo", "label": "SEO H1" },
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" },
+        { "value": "p-xsmall", "label": "Extra small paragraph" },
+        { "value": "p-small", "label": "Small paragraph" },
+        { "value": "p-medium", "label": "Medium paragraph" },
+        { "value": "p-large", "label": "Large paragraph" },
+        { "value": "p-xlarge", "label": "Extra large paragraph" },
+        { "value": "quote-1", "label": "Quote 1" },
+        { "value": "quote-2", "label": "Quote 2" },
+        { "value": "quote-3", "label": "Quote 3" }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "range",
+      "id": "subheading_padding",
+      "label": "Subheading Padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+        "type": "text",
+        "id": "subheading",
+        "label": "Subheading"
+    },
+    {
+        "type": "textarea",
+        "id": "description",
+        "label": "Description"
+    },
+    {
+      "type": "range",
+      "id": "text_padding",
+      "label": "Description Padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+        "type": "select",
+        "id": "header_alignment",
+        "label": "Text alignment",
+        "default": "center",
+        "options": [
+            {
+                "value": "left",
+                "label": "Left"
+            },
+            {
+                "value": "center",
+                "label": "Center"
+            }
+        ]
+    },
+    {
+        "type": "header",
+        "content": "General"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Hide on Desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_tablet",
+      "label": "Hide on Tablet",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Hide on Mobile",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "margin_vertical",
+      "label": "Section margin (vertical)",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ]
+    },
+    {
+        "type": "select",
+        "id": "container",
+        "label": "Container type",
+        "default": "container-fluid",
+        "options": [
+            {
+                "value": "container-fluid",
+                "label": "Default"
+            },
+            {
+                "value": "w-full",
+                "label": "Full width"
+            },
+            {
+                "value": "container",
+                "label": "Use container box"
+            }
+        ]
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Right" },
+        { "value": "between", "label": "Space between" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertical alignment",
+      "options": [
+        { "value": "start", "label": "Top" },
+        { "value": "center", "label": "Middle" },
+        { "value": "end", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg_color_selector",
+      "label": "Bakground Color",
+      "default": "background-color-1",
+      "options": [
+        { "value": "background-color-1", "label": "Background Color 1" },
+        { "value": "background-color-2", "label": "Background Color 2" },
+        { "value": "background-color-3", "label": "Background Color 3" },
+        { "value": "background-color-4", "label": "Background Color 4" },
+        { "value": "background-color-5", "label": "Background Color 5" },
+        { "value": "background-color-6", "label": "Background Color 6" },
+        { "value": "background-color-7", "label": "Background Color 7" },
+        { "value": "background-color-8", "label": "Background Color 8" },
+        { "value": "background-color-9", "label": "Background Color 9" },
+        { "value": "background-color-10", "label": "Background Color 10" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_color_override",
+      "label": "Override Background",
+      "default": false
+    },
+    {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color"
+    },
+    {
+        "type": "range",
+        "id": "gap_mb",
+        "label": "Column gap (Mobile)",
+        "default": 30,
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Column gap",
+      "default": 30,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Padding"
+    },
+    {
+      "type": "checkbox",
+      "id": "override_padding_desktop",
+      "label": "Override padding",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "dp_top",
+      "label": "Top",
+      "unit": "px",
+      "min": 0,
+      "max": 350,
+      "step": 10,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "dp_right",
+      "label": "Right",
+      "unit": "px",
+      "min": 0,
+      "max": 350,
+      "step": 10,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "dp_bottom",
+      "label": "Bottom",
+      "unit": "px",
+      "min": 0,
+      "max": 350,
+      "step": 10,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "dp_left",
+      "label": "Left",
+      "unit": "px",
+      "min": 0,
+      "max": 350,
+      "step": 10,
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Mobile Padding"
+    },
+    {
+      "type": "checkbox",
+      "id": "override_padding_mobile",
+      "label": "Override padding",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "mp_top",
+      "label": "Top",
+      "unit": "px",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mp_right",
+      "label": "Right",
+      "unit": "px",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mp_bottom",
+      "label": "Bottom",
+      "unit": "px",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mp_left",
+      "label": "Left",
+      "unit": "px",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Background Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_bg_img",
+      "label": "Enable Background Image",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_svg",
+      "label": "Default Image - SVG",
+      "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+    },
+    {
+      "type": "text",
+      "id": "svg_alt_text",
+      "label": "Svg Alt Text"
+    },
+    {
+      "type":"select",
+      "id":"bg_position",
+      "label":{
+        "de":"Fotoausrichtung",
+        "en":"Image alignment",
+        "es":"Alineación de imagen",
+        "fr":"Alignement de l'image",
+        "it":"Allineamento immagine",
+        "ja":"画像アラインメント",
+        "nl":"Afbeelding uitlijnen",
+        "pt-BR":"Alinhamento da imagem",
+        "zh-CN":"图片对齐方式",
+        "zh-TW":"圖片對齊"
+      },
+      "default":"center",
+      "options":[
+        {
+          "label":{
+            "en":"Top left"
+          },
+          "value":"left-top"
+        },
+        {
+          "label":{
+            "en":"Top center"
+          },
+          "value":"top"
+        },
+        {
+          "label":{
+            "en":"Top right"
+          },
+          "value":"right-top"
+        },
+        {
+          "label":{
+            "en":"Middle left"
+          },
+          "value":"left"
+        },
+        {
+          "label":{
+            "en":"Middle center"
+          },
+          "value":"center"
+        },
+        {
+          "label":{
+            "en":"Middle right"
+          },
+          "value":"right"
+        },
+        {
+          "label":{
+            "en":"Bottom left"
+          },
+          "value":"left-bottom"
+        },
+        {
+          "label":{
+            "en":"Bottom center"
+          },
+          "value":"bottom"
+        },
+        {
+          "label":{
+            "en":"Bottom right"
+          },
+          "value":"right-bottom"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg_size",
+      "label": "Background size",
+      "default": "auto",
+      "options": [
+        { "label": "Auto", "value": "auto" },
+        { "label": "Cover", "value": "cover" },
+        { "label": "Contain", "value": "contain" },
+        { "label": "Initial", "value": "initial" },
+        { "label": "Inherit", "value": "inherit" }
+      ]
+    },
+    {
+      "type":"checkbox",
+      "id":"parallax",
+      "label":{
+        "en":"Parallax effect"
+      },
+      "default":false
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "mb_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "mb_image_svg",
+      "label": "Default Image - SVG",
+      "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+    },
+    {
+      "type": "text",
+      "id": "mb_svg_alt_text",
+      "label": "Svg Alt Text"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_scroll_mobile",
+      "label": "Enable horizontal scroll",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "scroll_type",
+      "label": "Scroll Type",
+      "default": "free",
+      "options": [
+        {
+          "value": "free",
+          "label": "Free Handle"
+        },
+        {
+          "value": "scrollbar",
+          "label": "Scrollbar"
+        },
+        {
+          "value": "dots",
+          "label": "Dots"
+        },
+        {
+          "value": "nextprev",
+          "label": "Prev-Next Buttons"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "mobile_grid",
+      "label": "Mobile grid",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "column",
+          "label": "Column (1 per row)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Column gap",
+      "default": 16,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+        "type": "text",
+        "id": "custom_class",
+        "label": "Custom classes"
+    },
+    {
+        "type": "text",
+        "id": "custom_grid_classes",
+        "label": "Custom Grid classes"
+    },
+    {
+        "type": "text",
+        "id": "custom_id",
+        "label": "Custom id"
+    },
+    {
+      "type": "header",
+      "content": "Load More Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_load_more",
+      "label": "Enable load more",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "load_more_visible_number",
+      "label": "Num visible blocks",
+      "default": 2,
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "type": "select",
+      "id": "load_more_button_style",
+      "label": "Button style",
+      "default": "button-1",
+      "options": [
+        {
+          "value": "sf__btn sf__btn-primary",
+          "label": "Primary"
+        },
+        {
+          "value": "sf__btn sf__btn-secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "sf__btn sf__btn-blank-light",
+          "label": "Transparent (light)"
+        },
+        {
+          "value": "sf__btn sf__btn-blank-dark",
+          "label": "Transparent (dark)"
+        },
+        {
+          "value": "sf__btn sf__btn-link",
+          "label": "Underline"
+        },
+        {
+          "value": "button-1",
+          "label": "Button 1"
+        },
+        {
+          "value": "button-2",
+          "label": "Button 2"
+        },
+        {
+          "value": "button-3",
+          "label": "Button 3"
+        },
+        {
+          "value": "button-4",
+          "label": "Button 4"
+        },
+        {
+          "value": "button-5",
+          "label": "Button 5"
+        },
+        {
+          "value": "button-6",
+          "label": "Button 6"
+        },
+        {
+          "value": "button-7",
+          "label": "Button 7"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "load_more_padding",
+      "label": "Load More Padding",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "type": "text",
+      "id": "load_more_button_text",
+      "label": "Load more text",
+      "default": "Load More"
+    },
+    {
+      "type": "text",
+      "id": "load_less_button_text",
+      "label": "Load less text",
+      "default": "Load Less"
+    },
+    {
+      "type": "select",
+      "id": "load_more_alignment",
+      "label": "Load more button alignment",
+      "default": "center",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        }, {
+          "value": "center",
+          "label": "Center"
+        }, {
+          "value": "flex-end",
+          "label": "right"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+        "type": "breadcrumbs",
+        "name": "breadcrumbs",
+        "settings": [
+          {
+        "type": "checkbox",
+        "id": "hide_desktop",
+        "label": "Hide on Desktop",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_tablet",
+        "label": "Hide on Tablet",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_mobile",
+        "label": "Hide on Mobile",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "container",
+        "label": "Container type",
+        "default": "container",
+        "options": [
+          {
+            "value": "container-fluid",
+            "label": "Default"
+          }, {
+            "value": "w-full",
+            "label": "Full width"
+          }, {
+            "value": "container",
+            "label": "Use container box"
+          }
+        ]
+      }, {
+        "type": "select",
+        "id": "breadcrumbicon",
+        "label": "Icon For Breadcrumb",
+        "default": "chevron-right",
+        "options": [
+          {
+            "value": "chevron-right",
+            "label": "Default"
+          }, {
+            "value": "slash",
+            "label": "Slash"
+          }
+        ]
+      }, 
+      {
+        "type": "header",
+        "content": "Breadcrumb Padding Desktop"
+      }, {
+        "type": "range",
+        "id": "dp_top",
+        "label": "Top",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "dp_right",
+        "label": "Right",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "dp_bottom",
+        "label": "Bottom",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "dp_left",
+        "label": "Left",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, 
+      {
+        "type": "header",
+        "content": "Breadcrumb Padding Mobile"
+      }, {
+        "type": "range",
+        "id": "dp_top_mb",
+        "label": "Top",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "dp_right_mb",
+        "label": "Right",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "dp_bottom_mb",
+        "label": "Bottom",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      }, {
+        "type": "range",
+        "id": "dp_left_mb",
+        "label": "Left",
+        "unit": "px",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "id": "bread_crumb_active_link_font_weight",
+        "type": "select",
+        "label": "Font weight (Active Link)",
+        "default": "600",
+        "options": [
+          {
+            "value": "100",
+            "label": "Thin 100"
+          },
+          {
+            "value": "200",
+            "label": "Extra-light 200"
+          },
+          {
+            "value": "300",
+            "label": "Light 300"
+          },
+          {
+            "value": "400",
+            "label": "Regular 400"
+          }, {
+            "value": "500",
+            "label": "Medium 500"
+          }, {
+            "value": "600",
+            "label": "Semi-bold 600"
+          }, {
+            "value": "700",
+            "label": "Bold 700"
+          }, {
+            "value": "800",
+            "label": "Extra-bold 800"
+          }, {
+            "value": "900",
+            "label": "Black 900"
+          }
+        ]
+      }, {
+        "id": "bread_crumb_link_font_weight",
+        "type": "select",
+        "label": "Font weight (Bread Crumb Links)",
+        "default": "400",
+        "options": [
+          {
+            "value": "100",
+            "label": "Thin 100"
+          },
+          {
+            "value": "200",
+            "label": "Extra-light 200"
+          },
+          {
+            "value": "300",
+            "label": "Light 300"
+          },
+          {
+            "value": "400",
+            "label": "Regular 400"
+          }, {
+            "value": "500",
+            "label": "Medium 500"
+          }, {
+            "value": "600",
+            "label": "Semi-bold 600"
+          }, {
+            "value": "700",
+            "label": "Bold 700"
+          }, {
+            "value": "800",
+            "label": "Extra-bold 800"
+          }, {
+            "value": "900",
+            "label": "Black 900"
+          }
+        ]
+      }, {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      }, {
+        "type": "color",
+        "id": "link_color",
+        "label": "Link Color"
+      }, {
+        "type": "color",
+        "id": "hover_link_color",
+        "label": "Link hover Color"
+      }, {
+        "type": "color",
+        "id": "active_link_color",
+        "label": "Active Link Color"
+      }, {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "Text alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      }, {
+        "type": "checkbox",
+        "id": "hide_current",
+        "label": "Hide current page",
+        "default": false
+      }, {
+        "type": "checkbox",
+        "id": "hide_on_mb",
+        "label": "Hide on mobile",
+        "default": false
+      }, {
+        "type": "header",
+        "content": "Prepend Custom Link (Pages Only)"
+      }, {
+        "type": "text",
+        "id": "custom_link_text",
+        "label": "Custom Text"
+      }, {
+        "type": "url",
+        "id": "custom_link_url",
+        "label": "Custom Url"
+      }
+        ]
+      },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "header",
+          "content": "General"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_desktop",
+          "label": "Hide on Desktop",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_tablet",
+          "label": "Hide on Tablet",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_mobile",
+          "label": "Hide on Mobile",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" },
+            { "value": "custom-h2", "label": "Custom H2" },
+            { "value": "custom-h3", "label": "Custom H3" },
+            { "value": "custom-h4", "label": "Custom H4" },
+            { "value": "custom-h5", "label": "Custom H5" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type": "range",
+          "id": "title_padding",
+          "label": "Title Padding",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Heading",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "select",
+          "id": "subheading_tag",
+          "label": "Subheading tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type": "range",
+          "id": "subtitle_padding",
+          "label": "Subtitle Padding",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "textarea",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "select",
+          "id": "text_tag",
+          "label": "Text tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type": "range",
+          "id": "text_padding",
+          "label": "Text Padding",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store."
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": {
+            "cs": "Vodorovné zarovnání",
+            "da": "Vandret justering",
+            "de": "Horizontale Ausrichtung",
+            "en": "Horizontal alignment",
+            "es": "Alineación horizontal",
+            "fi": "Vaakasuora tasaus",
+            "fr": "Alignement horizontal",
+            "it": "Allineamento orizzontale",
+            "ja": "水平アラインメント",
+            "ko": "가로 정렬",
+            "nb": "Horisontal justering",
+            "nl": "Horizontaal uitlijnen",
+            "pl": "Wyrównanie w poziomie",
+            "pt-BR": "Alinhamento horizontal",
+            "pt-PT": "Alinhamento horizontal",
+            "sv": "Horisontell justering",
+            "th": "การจัดวางแนวนอน",
+            "tr": "Yatay hizalama",
+            "vi": "Căn ngang",
+            "zh-CN": "水平对齐",
+            "zh-TW": "水平對齊"
+          },
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": {
+                "cs": "Doleva",
+                "da": "Venstre",
+                "de": "Links",
+                "en": "Left",
+                "es": "Izquierda",
+                "fi": "Vasen",
+                "fr": "Gauche",
+                "it": "Sinistra",
+                "ja": "左",
+                "ko": "왼쪽",
+                "nb": "Venstre",
+                "nl": "Links",
+                "pl": "Do lewej",
+                "pt-BR": "Esquerda",
+                "pt-PT": "Esquerda",
+                "sv": "Vänster",
+                "th": "ด้านซ้าย",
+                "tr": "Sol",
+                "vi": "Bên trái",
+                "zh-CN": "左侧",
+                "zh-TW": "左方"
+              }
+            },
+            {
+              "value": "center",
+              "label": {
+                "cs": "Na střed",
+                "da": "Centreret",
+                "de": "Mittig",
+                "en": "Center",
+                "es": "Centrada",
+                "fi": "Keskitetty",
+                "fr": "Centré",
+                "it": "Centrato",
+                "ja": "中央揃え",
+                "ko": "센터 맞추기",
+                "nb": "Sentrert",
+                "nl": "Gecentreerd",
+                "pl": "Wyśrodkowane",
+                "pt-BR": "Centralizado",
+                "pt-PT": "Centrado",
+                "sv": "Centrera",
+                "th": "ตรงกลาง",
+                "tr": "Orta",
+                "vi": "Giữa",
+                "zh-CN": "居中",
+                "zh-TW": "置中"
+              }
+            },
+            {
+              "value": "right",
+              "label": {
+                "cs": "Doprava",
+                "da": "Højre",
+                "de": "Rechts",
+                "en": "Right",
+                "es": "Derecha",
+                "fi": "Oikea",
+                "fr": "Droite",
+                "it": "Destra",
+                "ja": "右",
+                "ko": "오른쪽",
+                "nb": "Høyre",
+                "nl": "Rechts",
+                "pl": "Do prawej",
+                "pt-BR": "Direita",
+                "pt-PT": "Direita",
+                "sv": "Höger",
+                "th": "ด้านขวา",
+                "tr": "Sağ",
+                "vi": "Bên phải",
+                "zh-CN": "右侧",
+                "zh-TW": "右方"
+              }
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "body_color",
+          "label": "Body color",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading color",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "number",
+          "id": "padding_top_custom",
+          "label": "Padding Top Custom"
+        },   
+        {
+          "type": "number",
+          "id": "padding_right_custom",
+          "label": "Padding Right Custom"
+        },     
+        {
+          "type": "number",
+          "id": "padding_bottom_custom",
+          "label": "Padding Bottom Custom"
+        }, 
+        {
+          "type": "number",
+          "id": "padding_left_custom",
+          "label": "Padding Left Custom"
+        },    
+        {
+            "type": "header",
+            "content": "Button settings"
+        },
+        {
+          "type": "range",
+          "id": "button_mt",
+          "label": "Button margin top",
+          "min": 0,
+          "max": 100,
+          "unit": "px",
+          "step": 1,
+          "default": 16
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label"
+        },
+        {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button link"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_target",
+          "label": "Open link in a new tab",
+          "default": false
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+              { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+              { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+              { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+              { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+              { "value": "sf__btn sf__btn-link", "label": "Underline" },
+              { "value": "sf__btn-underline-2", "label": "Underline 2" },
+              { "value": "sf__btn-underline-3", "label": "Underline 3" },        
+              { "value": "button-1", "label": "Button 1" },
+              { "value": "button-2", "label": "Button 2" },
+              { "value": "button-3", "label": "Button 3" },
+              { "value": "button-4", "label": "Button 4" },
+              { "value": "button-5", "label": "Button 5" },
+              { "value": "button-6", "label": "Button 6" },
+              { "value": "button-7", "label": "Button 7" },
+              { "value": "link-1", "label": "Link 1" },
+              { "value": "link-2", "label": "Link 2" },
+              { "value": "link-3", "label": "Link 3" },
+              { "value": "link-4", "label": "Link 4" },
+              { "value": "link-5", "label": "Link 5" }
+            ],
+            "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "checkbox",
+          "id": "override_width",
+          "label": "Override button width",
+          "info": "Enable to override custom buttons width.",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "button_width",
+          "label": "Button width",
+          "options": [
+            {
+              "value": "1/4",
+              "label": "25%"
+            },
+            {
+              "value": "1/3",
+              "label": "33%"
+            },
+            {
+              "value": "2/5",
+              "label": "40%"
+            },
+            {
+              "value": "1/2",
+              "label": "50%"
+            },
+            {
+              "value": "2/3",
+              "label": "66%"
+            },
+            {
+              "value": "3/4",
+              "label": "75%"
+            },
+            {
+              "value": "full",
+              "label": "100%"
+            }
+          ],
+          "default": "1/2"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_second_button",
+          "label": "Show second button",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "button_label_2",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link_2",
+          "label": "Button link"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_target_2",
+          "label": "Open link in a new tab",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "button_style_2",
+          "label": "Button style",
+          "options": [
+            { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+            { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+            { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+            { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+            { "value": "sf__btn sf__btn-link", "label": "Underline" },
+            { "value": "sf__btn-underline-2", "label": "Underline 2" },
+            { "value": "sf__btn-underline-3", "label": "Underline 3" },        
+            { "value": "button-1", "label": "Button 1" },
+            { "value": "button-2", "label": "Button 2" },
+            { "value": "button-3", "label": "Button 3" },
+            { "value": "button-4", "label": "Button 4" },
+            { "value": "button-5", "label": "Button 5" },
+            { "value": "button-6", "label": "Button 6" },
+            { "value": "button-7", "label": "Button 7" }
+          ],
+          "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "checkbox",
+          "id": "override_width_2",
+          "label": "Override button width",
+          "info": "Enable to override custom buttons width.",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "button_width_2",
+          "label": "Button width",
+          "options": [
+            {
+              "value": "1/4",
+              "label": "25%"
+            },
+            {
+              "value": "1/3",
+              "label": "33%"
+            },
+            {
+              "value": "2/5",
+              "label": "40%"
+            },
+            {
+              "value": "1/2",
+              "label": "50%"
+            },
+            {
+              "value": "2/3",
+              "label": "66%"
+            },
+            {
+              "value": "3/4",
+              "label": "75%"
+            },
+            {
+              "value": "full",
+              "label": "100%"
+            }
+          ],
+          "default": "1/2"
+        },
+        {
+          "type": "select",
+          "id": "buttons_gap",
+          "label": "Gap",
+          "default": "sm",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "xs",
+              "label": "Extra Small"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            },
+            {
+              "value": "xl",
+              "label": "Extra Large"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_bg_img",
+          "label": "Use background image",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image",
+          "label": "Background image"
+        },
+        {
+          "type": "select",
+          "id": "bg_size",
+          "label": "Background image size",
+          "options": [
+            { "value": "auto", "label": "Auto" },
+            { "value": "cover", "label": "Cover" },
+            { "value": "contain", "label": "Contain" },
+            { "value": "inherit", "label": "Inherit" }
+          ],
+          "default": "cover"
+        },
+        {
+          "type": "select",
+          "id": "bg_position",
+          "label": "Background image position",
+          "options": [
+            { "value": "top-left", "label": "Top left" },
+            { "value": "top-center", "label": "Top center" },
+            { "value": "top-right", "label": "Top right" },
+            { "value": "center-left", "label": "Center left" },
+            { "value": "center", "label": "Center" },
+            { "value": "center-right", "label": "Center right" },
+            { "value": "bottom-left", "label": "Bottom left" },
+            { "value": "bottom-center", "label": "Bottom center" },
+            { "value": "bottom-right", "label": "Bottom right" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        },
+        {
+          "type": "header",
+          "content": "SEO & Performance"
+        },
+        {
+          "type": "checkbox",
+          "id": "section_preload",
+          "label": "Preload",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "header",
+          "content": "General"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_desktop",
+          "label": "Hide on Desktop",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_tablet",
+          "label": "Hide on Tablet",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_mobile",
+          "label": "Hide on Mobile",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_svg",
+          "label": "Default Image - SVG",
+          "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+        },
+        {
+          "type": "text",
+          "id": "svg_alt_text",
+          "label": "Svg Alt Text"
+        },
+        {
+          "type": "number",
+          "id": "image_max_w",
+          "label": "Image max-width (px)"
+        },
+        {
+          "type": "number",
+          "id": "image_max_h",
+          "label": "Image max-height (px)"
+        },
+        {
+          "type": "select",
+          "id": "pcard_image_animation",
+          "label": "Image animation",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "scale-up",
+              "label": "Scale up"
+            },
+            {
+              "value": "scale-down",
+              "label": "Scale down"
+            },
+            {
+              "value": "zoom-in",
+              "label": "Zoom in"
+            }
+          ]
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Image link"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Overlay Image",
+          "info": "Place an overlay above the image."
+        },
+        {
+          "type": "text",
+          "id": "image_overlay",
+          "label": "Overlay Image - SVG",
+          "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+        },
+        {
+          "type": "select",
+          "id": "overlay_size",
+          "label": "Overlay Image Size",
+          "options": [
+            { "value": "auto", "label": "Auto" }, 
+            { "value": "100%", "label": "100%" }
+          ],
+          "default": "100%"
+        },
+        {
+          "type": "select",
+          "id": "overlay_position",
+          "label": "Overlay Image Position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        },
+        {
+          "type": "header",
+          "content": "SEO & Performance"
+        },
+        {
+          "type": "checkbox",
+          "id": "section_preload",
+          "label": "Preload",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": {
+        "cs": "Video",
+        "da": "Video",
+        "de": "Video",
+        "en": "Video",
+        "es": "Video",
+        "fi": "Video",
+        "fr": "Vidéo",
+        "it": "Video",
+        "ja": "ビデオ",
+        "ko": "동영상",
+        "nb": "Video",
+        "nl": "Video",
+        "pl": "Film",
+        "pt-BR": "Vídeo",
+        "pt-PT": "Vídeo",
+        "sv": "Video",
+        "th": "วิดีโอ",
+        "tr": "Video",
+        "vi": "Video",
+        "zh-CN": "视频",
+        "zh-TW": "影片"
+      },
+      "settings": [
+        {
+          "type": "select",
+          "id": "video_selector",
+          "label": "Video Type Selector",
+          "default": "youtube-vimeo",
+          "options": [
+            {
+              "value": "youtube-vimeo",
+              "label": "Youtube / Vimeo"
+            },
+            {
+              "value": "video-format",
+              "label": "Video Format"
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "video",
+          "label": "Video",
+          "default": "https://cdn.shopify.com/s/files/1/0555/7220/1635/files/blurry-trees.mp4",
+          "info": "Allow multiple format. MP4, MOV and WEBM supported."
+        },
+        {
+          "type": "video_url",
+          "id": "video_link",
+          "label": {
+            "cs": "Odkaz na video",
+            "da": "Videolink",
+            "de": "Video-Link",
+            "en": "Video link",
+            "es": "Enlace de video",
+            "fi": "Videolinkki",
+            "fr": "Lien de la vidéo",
+            "it": "Link video",
+            "ja": "ビデオリンク",
+            "ko": "동영상 링크",
+            "nb": "Videokobling",
+            "nl": "Videolink",
+            "pl": "Link filmu",
+            "pt-BR": "Link do vídeo",
+            "pt-PT": "Ligação do vídeo",
+            "sv": "Videolänk",
+            "th": "ลิงก์วิดีโอ",
+            "tr": "Video bağlantısı",
+            "vi": "Liên kết video",
+            "zh-CN": "视频链接",
+            "zh-TW": "影片連結"
+          },
+          "accept": [
+            "youtube",
+            "vimeo"
+          ],
+          "info": "Supports Youtube and Vimeo",
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+        },
+        {
+          "type": "url",
+          "id": "video_captions",
+          "label": "Video Captions - Video Format",
+          "info": "Only .vtt format allowed."
+        },
+        {
+          "type": "paragraph",
+          "content": "Video Captions - Youtube: Custom captions must be uploaded on Youtube - video settings."
+        },
+        {
+          "type":"select",
+          "id":"video_captions_vimeo",
+          "label":{
+            "en":"Video Captions - Vimeo"
+          },
+          "default":"generated",
+          "options":[
+            {
+              "label":{
+                "en":"None"
+              },
+              "value":"none"
+            },
+            {
+              "label":{
+                "en":"Auto Generated"
+              },
+              "value":"generated"
+            },
+            {
+              "label":{
+                "en":"Custom English"
+              },
+              "value":"custom"
+            }
+          ],
+          "info": "Custom english captions must be uploaded on Vimeo - video settings."
+        },
+        {
+          "type": "select",
+          "id": "ratio",
+          "label": "Video ratio",
+          "default": "16:9",
+          "options": [
+              {
+                  "value": "16:9",
+                  "label": "16:9"
+              },
+              {
+                  "value": "21:9",
+                  "label": "21:9"
+              },
+              {
+                  "value": "4:3",
+                  "label": "4:3"
+              },
+              {
+                "value": "1:1",
+                "label": "1:1"
+              },
+              {
+                "value": "9:16",
+                "label": "9:16"
+              }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Cover image",
+          "info": "Leave blank to use video thumbnail"
+        },
+        {
+          "type": "textarea",
+          "id": "video_title",
+          "label": {
+            "cs": "Nadpis",
+            "da": "Overskrift",
+            "de": "Überschrift",
+            "en": "Heading",
+            "es": "Título",
+            "fi": "Otsake",
+            "fr": "En-tête",
+            "it": "Heading",
+            "ja": "見出し",
+            "ko": "제목",
+            "nb": "Overskrift",
+            "nl": "Kop",
+            "pl": "Nagłówek",
+            "pt-BR": "Título",
+            "pt-PT": "Título",
+            "sv": "Rubrik",
+            "th": "ส่วนหัว",
+            "tr": "Başlık",
+            "vi": "Tiêu đề",
+            "zh-CN": "标题",
+            "zh-TW": "標題"
+          }
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type":"color",
+          "id":"text_color",
+          "label":"Text color",
+          "default": "#fff"
+        },
+        {
+          "type":"checkbox",
+          "id":"enable_play",
+          "label":"Enable play button",
+          "default": true
+        },
+        {
+          "type":"select",
+          "id":"play_style",
+          "label":"Play button style",
+          "options":[
+              {
+                  "label":"Outline",
+                  "value":"outline"
+              },
+              {
+                  "label":"Solid",
+                  "value":"solid"
+              }
+          ],
+          "default": "solid"
+        },
+        {
+          "type":"select",
+          "id":"play_size",
+          "label":"Play button size",
+          "options":[
+              {
+                  "label":"Medium",
+                  "value":"medium"
+              },
+              {
+                  "label":"Large",
+                  "value":"large"
+              }
+          ],
+          "default": "medium"
+        },
+        {
+          "type": "text",
+          "id": "button_svg",
+          "label": "Button SVG",
+          "info": "Enter the button svg code."
+        },
+        {
+          "type": "text",
+          "id": "button_svg_size",
+          "label": "Button SVG size",
+          "info": "Enter the button svg max size.",
+          "default": "42px"
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay",
+          "label": "Autoplay",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "loop",
+          "label": "Loop",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "video_card",
+      "name": {
+        "cs": "Video Card",
+        "da": "Video Card",
+        "de": "Video Card",
+        "en": "Video Card",
+        "es": "Video Card",
+        "fi": "Video Card",
+        "fr": "Vidéo Card",
+        "it": "Video Card",
+        "ja": "ビデオ",
+        "ko": "동영상",
+        "nb": "Video Card",
+        "nl": "Video Card",
+        "pl": "Film",
+        "pt-BR": "Vídeo Card",
+        "pt-PT": "Vídeo Card",
+        "sv": "Video Card",
+        "th": "วิดีโอ",
+        "tr": "Video Card",
+        "vi": "Video Card",
+        "zh-CN": "视频",
+        "zh-TW": "影片"
+      },
+      "settings": [
+        {
+          "type": "select",
+          "id": "video_selector",
+          "label": "Video Type Selector",
+          "default": "youtube-vimeo",
+          "options": [
+            {
+              "value": "youtube-vimeo",
+              "label": "Youtube / Vimeo"
+            },
+            {
+              "value": "video-format",
+              "label": "Video Format"
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "video",
+          "label": "Video",
+          "default": "https://cdn.shopify.com/s/files/1/0555/7220/1635/files/blurry-trees.mp4",
+          "info": "Allow multiple format. MP4, MOV and WEBM supported."
+        },
+        {
+          "type": "video_url",
+          "id": "video_link",
+          "label": {
+            "cs": "Odkaz na video",
+            "da": "Videolink",
+            "de": "Video-Link",
+            "en": "Video link",
+            "es": "Enlace de video",
+            "fi": "Videolinkki",
+            "fr": "Lien de la vidéo",
+            "it": "Link video",
+            "ja": "ビデオリンク",
+            "ko": "동영상 링크",
+            "nb": "Videokobling",
+            "nl": "Videolink",
+            "pl": "Link filmu",
+            "pt-BR": "Link do vídeo",
+            "pt-PT": "Ligação do vídeo",
+            "sv": "Videolänk",
+            "th": "ลิงก์วิดีโอ",
+            "tr": "Video bağlantısı",
+            "vi": "Liên kết video",
+            "zh-CN": "视频链接",
+            "zh-TW": "影片連結"
+          },
+          "accept": [
+            "youtube",
+            "vimeo"
+          ],
+          "info": "Supports Youtube and Vimeo",
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+        },
+        {
+          "type": "url",
+          "id": "video_captions",
+          "label": "Video Captions - Video Format",
+          "info": "Only .vtt format allowed."
+        },
+        {
+          "type": "paragraph",
+          "content": "Video Captions - Youtube: Custom captions must be uploaded on Youtube - video settings."
+        },
+        {
+          "type":"select",
+          "id":"video_captions_vimeo",
+          "label":{
+            "en":"Video Captions - Vimeo"
+          },
+          "default":"generated",
+          "options":[
+            {
+              "label":{
+                "en":"None"
+              },
+              "value":"none"
+            },
+            {
+              "label":{
+                "en":"Auto Generated"
+              },
+              "value":"generated"
+            },
+            {
+              "label":{
+                "en":"Custom English"
+              },
+              "value":"custom"
+            }
+          ],
+          "info": "Custom english captions must be uploaded on Vimeo - video settings."
+        },
+        {
+          "type": "select",
+          "id": "ratio",
+          "label": "Video ratio",
+          "default": "16:9",
+          "options": [
+              {
+                  "value": "16:9",
+                  "label": "16:9"
+              },
+              {
+                  "value": "21:9",
+                  "label": "21:9"
+              },
+              {
+                  "value": "4:3",
+                  "label": "4:3"
+              },
+              {
+                "value": "1:1",
+                "label": "1:1"
+              },
+              {
+                "value": "9:16",
+                "label": "9:16"
+              }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Cover image",
+          "info": "Leave blank to use video thumbnail"
+        },
+        {
+          "type": "textarea",
+          "id": "video_title",
+          "label": {
+            "cs": "Nadpis",
+            "da": "Overskrift",
+            "de": "Überschrift",
+            "en": "Heading",
+            "es": "Título",
+            "fi": "Otsake",
+            "fr": "En-tête",
+            "it": "Heading",
+            "ja": "見出し",
+            "ko": "제목",
+            "nb": "Overskrift",
+            "nl": "Kop",
+            "pl": "Nagłówek",
+            "pt-BR": "Título",
+            "pt-PT": "Título",
+            "sv": "Rubrik",
+            "th": "ส่วนหัว",
+            "tr": "Başlık",
+            "vi": "Tiêu đề",
+            "zh-CN": "标题",
+            "zh-TW": "標題"
+          }
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type":"color",
+          "id":"text_color",
+          "label":"Text color",
+          "default": "#fff"
+        },
+        {
+          "type": "checkbox",
+          "id": "video_controls",
+          "label": "Enable video controls",
+          "info": "Enable play/pause and sound buttons"
+      },
+      {
+        "type":"select",
+        "id":"controls_position",
+        "label":{
+            "en":"Video Controls Position"
+        },
+        "default":"center center",
+        "options":[
+            {
+                "label":{
+                    "en":"Top left"
+                },
+                "value":"left top"
+            },
+            {
+                "label":{
+                    "en":"Top center"
+                },
+                "value":"center top"
+            },
+            {
+                "label":{
+                    "en":"Top right"
+                },
+                "value":"right top"
+            },
+            {
+                "label":{
+                    "en":"Bottom left"
+                },
+                "value":"left bottom"
+            },
+            {
+                "label":{
+                    "en":"Bottom center"
+                },
+                "value":"center bottom"
+            },
+            {
+                "label":{
+                    "en":"Bottom right"
+                },
+                "value":"right bottom"
+            },
+            {
+                "label":{
+                    "en":"Center center"
+                },
+                "value":"center center"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "play_button",
+          "label": "Play Button Url"
+        },
+        {
+          "type": "text",
+          "id": "pause_button",
+          "label": "Pause Button Url"
+        },
+        {
+          "type": "text",
+          "id": "play_pause_svg_size",
+          "label": "Controls Size",
+          "default": "42px"
+        },
+        {
+          "type": "text",
+          "id": "play_pause_alt",
+          "label": "Alternative Text for Play/Pause",
+          "default": "Play/Pause button"
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay",
+          "label": "Autoplay",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "loop",
+          "label": "Loop",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Lightbox",
+          "info": "Enable/disable lightbox and it's settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "lightbox_enabled",
+          "label": "Enable lightbox",
+          "default": false
+        },
+        {
+          "type": "paragraph",
+          "content": "Choose between default button and custom button"
+        },
+        {
+          "type": "checkbox",
+          "id": "lightbox_default_btn",
+          "label": "Use default button",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "lightbox_btn_color",
+          "label": "Button color"
+        },
+        {
+          "type": "paragraph",
+          "content": "Default lightbox button options"
+        },
+        {
+          "type": "text",
+          "id": "lightbox_btn_label",
+          "label": "Button label",
+          "default": "Watch now"
+        },
+        {
+          "type": "select",
+          "id": "lightbox_btn_style",
+          "label": "Button style",
+          "options": [
+            { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+            { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+            { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+            { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+            { "value": "sf__btn sf__btn-link", "label": "Underline" },
+            { "value": "sf__btn-underline-2", "label": "Underline 2" },
+            { "value": "sf__btn-underline-3", "label": "Underline 3" },
+            { "value": "button-1", "label": "Button 1" },
+            { "value": "button-2", "label": "Button 2" },
+            { "value": "button-3", "label": "Button 3" },
+            { "value": "button-4", "label": "Button 4" },
+            { "value": "button-5", "label": "Button 5" },
+            { "value": "button-6", "label": "Button 6" },
+            { "value": "button-7", "label": "Button 7" }
+          ],
+          "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "checkbox",
+          "id": "lightbox_btn_override_width",
+          "label": "Override button width",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "lightbox_btn_width",
+          "label": "Button width",
+          "options": [
+            { "value": "1/4", "label": "25%" },
+            { "value": "1/3", "label": "33%" },
+            { "value": "2/5", "label": "40%" },
+            { "value": "1/2", "label": "50%" },
+            { "value": "2/3", "label": "66%" },
+            { "value": "3/4", "label": "75%" },
+            { "value": "full", "label": "100%" }
+          ],
+          "default": "1/2"
+        },
+        {
+          "type": "text",
+          "id": "lightbox_btn_classes",
+          "label": "Button classes"
+        },
+        {
+          "type": "paragraph",
+          "content": "Custom lightbox button options"
+        },
+        {
+          "type": "select",
+          "id": "lightbox_btn",
+          "label": "Button type",
+          "options":[
+            { "label":"Default", "value": "default" },
+            { "label":"Outline", "value":"outline" },
+            { "label":"Solid", "value":"solid" }
+          ],
+          "default": "outline"
+        },
+        {
+          "type": "select",
+          "id": "lightbox_btn_size",
+          "label": "Button size",
+          "options":[
+            { "label":"Medium", "value":"medium" },
+            { "label":"Large", "value":"large" },
+            { "label":"Extra Large", "value":"xlarge" }
+          ],
+          "default": "medium"
+        },
+        {
+          "type": "color",
+          "id": "lightbox_btn_bg_color",
+          "label": "Solid button background color",
+          "info": "Background color is only used for solid button type."
+        },
+        {
+          "type": "text",
+          "id": "lightbox_video_url",
+          "label": "Video URL",
+          "info": "Enter the video URL. If empty won't be shown."
+        },
+        {
+          "type": "text",
+          "id": "lightbox_button_svg",
+          "label": "Lightbox Button SVG",
+          "info": "Enter the button svg code."
+        },
+        {
+          "type": "text",
+          "id": "lightbox_button_svg_size",
+          "label": "Lightbox Button SVG size",
+          "info": "Enter the button svg max size.",
+          "default": "42px"
+        },
+        {
+          "type": "text",
+          "id": "lightbox_button_alt",
+          "label": "Alternative Text for Lightbox button",
+          "default": "Open Lightbox Button"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "separator",
+      "name": "Separator",
+      "settings": [
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Container width",
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "separator_style",
+          "label": "Style",
+          "info": "Separator styling available on 'Theme Settings' inside the 'SEPARATORS' dropdown.",
+          "options": [
+            {
+              "value": "separator",
+              "label": "Primary"
+            },
+            {
+              "value": "separator-1",
+              "label": "Separator 1"
+            },
+            {
+              "value": "separator-2",
+              "label": "Separator 2"
+            },
+            {
+              "value": "separator-3",
+              "label": "Separator 3"
+            },
+            {
+              "value": "separator-4",
+              "label": "Separator 4"
+            },
+            {
+              "value": "separator-5",
+              "label": "Separator 5"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Position",
+          "default": "center",
+          "options": [
+            {
+              "value": "start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "margin_vertical",
+          "label": "Margin vertical",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_mobile",
+          "label": "Hide Mobile",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "product",
+      "name": {
+        "cs": "Produkt",
+        "da": "Produkt",
+        "de": "Produkt",
+        "en": "Product",
+        "es": "Producto",
+        "fi": "Tuote",
+        "fr": "Produit",
+        "it": "Prodotto",
+        "ja": "商品",
+        "ko": "제품",
+        "nb": "Produkt",
+        "nl": "Product",
+        "pl": "Produkt",
+        "pt-BR": "Produto",
+        "pt-PT": "Produto",
+        "sv": "Produkt",
+        "th": "สินค้า",
+        "tr": "Ürün",
+        "vi": "Sản phẩm",
+        "zh-CN": "产品",
+        "zh-TW": "產品"
+      },
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": {
+            "cs": "Produkt",
+            "da": "Produkt",
+            "de": "Produkt",
+            "en": "Product",
+            "es": "Producto",
+            "fi": "Tuote",
+            "fr": "Produit",
+            "it": "Prodotto",
+            "ja": "商品",
+            "ko": "제품",
+            "nb": "Produkt",
+            "nl": "Product",
+            "pl": "Produkt",
+            "pt-BR": "Produto",
+            "pt-PT": "Produto",
+            "sv": "Produkt",
+            "th": "สินค้า",
+            "tr": "Ürün",
+            "vi": "Sản phẩm",
+            "zh-CN": "产品",
+            "zh-TW": "產品"
+          }
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "product_form",
+      "name": "Product form",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": {
+            "cs": "Produkt",
+            "da": "Produkt",
+            "de": "Produkt",
+            "en": "Product",
+            "es": "Producto",
+            "fi": "Tuote",
+            "fr": "Produit",
+            "it": "Prodotto",
+            "ja": "商品",
+            "ko": "제품",
+            "nb": "Produkt",
+            "nl": "Product",
+            "pl": "Produkt",
+            "pt-BR": "Produto",
+            "pt-PT": "Produto",
+            "sv": "Produkt",
+            "th": "สินค้า",
+            "tr": "Ürün",
+            "vi": "Sản phẩm",
+            "zh-CN": "产品",
+            "zh-TW": "產品"
+          }
+        },
+        {
+          "type": "checkbox",
+          "id": "show_quantity_selector",
+          "label": {
+            "cs": "Zobrazit výběr množství",
+            "da": "Vis antalsvælger",
+            "de": "Mengenauswahl anzeigen",
+            "en": "Show quantity selector",
+            "es": "Mostrar selector de cantidad",
+            "fi": "Näytä määrän valitsin",
+            "fr": "Afficher le sélecteur de quantité",
+            "it": "Mostra selettore quantità",
+            "ja": "数量セレクターを表示する",
+            "ko": "수량 선택기 표시",
+            "nb": "Vis mengdevelger",
+            "nl": "Hoeveelheidskiezer weergeven",
+            "pl": "Pokaż selektor ilości",
+            "pt-BR": "Exiba um seletor de quantidade",
+            "pt-PT": "Mostrar um seletor de quantidade",
+            "sv": "Visa kvantitetsväljare",
+            "th": "แสดงตัวเลือกจำนวน",
+            "tr": "Adet seçiciyi göster",
+            "vi": "Hiển thị hộp chọn số lượng",
+            "zh-CN": "显示数量选择器",
+            "zh-TW": "顯示數量選擇器"
+          },
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show vendor",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_price",
+          "label": "Show price",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_add_to_cart",
+          "label": "Show cart button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_product_review",
+          "label": "Show review",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_payment_button",
+          "label": {
+            "cs": "Zobrazit dynamické tlačítko pokladny",
+            "da": "Vis dynamisk betalingsknap",
+            "de": "Dynamischen Checkout Button anzeigen",
+            "en": "Show dynamic checkout button",
+            "es": "Mostrar botón de pago dinámico",
+            "fi": "Näytä dynaaminen kassapainike",
+            "fr": "Afficher le bouton de paiement dynamique",
+            "it": "Mostra pulsante di check-out dinamico",
+            "ja": "動的チェックアウトボタンを表示する",
+            "ko": "동적 결제 버튼 표시",
+            "nb": "Vis dynamisk knapp for å gå til kassen",
+            "nl": "Dynamische checkoutknop weergeven",
+            "pl": "Pokaż dynamiczny przycisk realizacji zakupu",
+            "pt-BR": "Exibir botão de checkout dinâmico",
+            "pt-PT": "Mostrar o botão dinâmico de finalização da compra",
+            "sv": "Visa dynamiska utcheckningsknappar",
+            "th": "แสดงปุ่มชำระเงินแบบไดนามิก",
+            "tr": "Dinamik ödeme düğmesini göster",
+            "vi": "Hiển thị nút thanh toán nhanh",
+            "zh-CN": "显示动态结账按钮",
+            "zh-TW": "顯示動態結帳按鈕"
+          },
+          "info": {
+            "cs": "Každý zákazník uvidí platební metodu, kterou ze všech metod dostupných v obchodě (například PayPal nebo Apple Pay) nejvíce preferuje. [Další informace](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "da": "Den enkelte kunde vil se sin foretrukne betalingsmetode blandt dem, der er tilgængelige i din butik, f.eks. PayPal eller Apple Pay. [Få mere at vide](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "de": "Jeder Kunde sieht seine bevorzugte Zahlungsmethode aus den in deinem Shop verfügbaren Zahlungsmethoden wie PayPal oder Apple Pay. [Mehr Informationen](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "en": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "es": "Cada cliente verá su forma de pago preferida entre las disponibles en tu tienda, como PayPal o Apple Pay. [Más información](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "fi": "Kukin asiakas näkee ensisijaisen valintansa kauppasi tarjoamista maksutavoista, esim. PayPal tai Apple Pay. [Lisätietoja](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "fr": "Chaque client verra son moyen de paiement préféré parmi ceux qui sont proposés sur votre boutique, tels que PayPal ou Apple Pay. [En savoir plus](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "it": "Ogni cliente vedrà il suo metodo di pagamento preferito tra quelli disponibili nel tuo negozio, come PayPal o Apple Pay. [Maggiori informazioni](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "ja": "PayPalやApple Payなど、ストアで利用可能な希望の決済方法がお客様に表示されます。[詳しくはこちら](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "ko": "각 고객은 PayPal 또는 Apple Pay와 같이 스토어에서 사용 가능한 지불 방법을 확인할 수 있습니다. [자세히 알아보기](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "nb": "Hver enkelt kunde vil se sin foretrukne betalingsmåte blant de som er tilgjengelig i butikken din, som PayPal eller Apple Pay. [Finn ut mer](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "nl": "Elke klant ziet zijn of haar beschikbare voorkeursmethode om af te rekenen, zoals PayPal of Apple Pay. [Meer informatie](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "pl": "Każdy klient zobaczy swoją preferowaną metodę płatności wśród metod dostępnych w Twoim sklepie, np. PayPal lub Apple Pay. [Dowiedz się więcej](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "pt-BR": "Cada cliente verá a forma de pagamento preferencial dele dentre as disponíveis na loja, como PayPal ou Apple Pay. [Saiba mais](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "pt-PT": "Cada cliente irá ver o seu método de pagamento preferido entre os disponíveis na loja, como o PayPal ou Apple Pay. [Saiba mais](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "sv": "Varje kund kommer att se den föredragna betalningsmetoden från de som finns tillgängliga i din butik, till exempel PayPal eller Apple Pay. [Läs mer](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "th": "ลูกค้าแต่ละรายจะเห็นวิธีการชำระเงินที่ต้องการจากวิธีที่ใช้ได้ในร้านค้าของคุณ เช่น PayPal หรือ Apple Pay [ดูข้อมูลเพิ่มเติม](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "tr": "Her müşteri, mağazanız sunulanlar arasından tercih ettikleri ödeme yöntemini görür (ör. PayPal veya Apple Pay). [Daha fazla bilgi edinin](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "vi": "Mỗi khách hàng sẽ thấy phương thức thanh toán ưu tiên trong những phương thức thanh toán được hỗ trợ tại cửa hàng như PayPal hoặc Apple Pay. [Tìm hiểu thêm](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "zh-CN": "每位客户都可在您商店提供的付款方式中看到他们的首选付款方式，例如 PayPal 或 Apple Pay。[了解详细信息](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "zh-TW": "每位顧客都可以在您商店內開放使用的付款方式中看見他們偏好使用的方式，如 PayPal、Apple Pay 等。[深入瞭解](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+          },
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "article",
+      "name": {
+        "cs": "Článek",
+        "da": "Artikel",
+        "de": "Artikel",
+        "en": "Article",
+        "es": "Artículo",
+        "fi": "Artikkeli",
+        "fr": "Article",
+        "it": "Articolo",
+        "ja": "記事",
+        "ko": "문서",
+        "nb": "Artikkel",
+        "nl": "Artikel",
+        "pl": "Artykuł",
+        "pt-BR": "Artigo",
+        "pt-PT": "Artigo",
+        "sv": "Artikel",
+        "th": "บทความ",
+        "tr": "Makale",
+        "vi": "Bài viết",
+        "zh-CN": "文章",
+        "zh-TW": "文章"
+      },
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": {
+            "cs": "Článek",
+            "da": "Artikel",
+            "de": "Artikel",
+            "en": "Article",
+            "es": "Artículo",
+            "fi": "Artikkeli",
+            "fr": "Article",
+            "it": "Articolo",
+            "ja": "記事",
+            "ko": "문서",
+            "nb": "Artikkel",
+            "nl": "Artikel",
+            "pl": "Artykuł",
+            "pt-BR": "Artigo",
+            "pt-PT": "Artigo",
+            "sv": "Artikel",
+            "th": "บทความ",
+            "tr": "Makale",
+            "vi": "Bài viết",
+            "zh-CN": "文章",
+            "zh-TW": "文章"
+          }
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "25%",
+              "label": {
+                "cs": "25 %",
+                "da": "25 %",
+                "de": "25%",
+                "en": "25%",
+                "es": "25%",
+                "fi": "25 %",
+                "fr": "25 %",
+                "it": "25%",
+                "ja": "25%",
+                "ko": "25%",
+                "nb": "25 %",
+                "nl": "25%",
+                "pl": "25%",
+                "pt-BR": "25%",
+                "pt-PT": "25%",
+                "sv": "25 %",
+                "th": "25%",
+                "tr": "%25",
+                "vi": "25%",
+                "zh-CN": "25％",
+                "zh-TW": "25%"
+              }
+            },
+            {
+              "value": "30%",
+              "label": "30%"
+            },
+            { 
+              "value": "33%",
+              "label": {
+                "cs": "33 %",
+                "da": "33 %",
+                "de": "33%",
+                "en": "33%",
+                "es": "33%",
+                "fi": "33 %",
+                "fr": "33 %",
+                "it": "33%",
+                "ja": "33%",
+                "ko": "33%",
+                "nb": "33 %",
+                "nl": "33%",
+                "pl": "33%",
+                "pt-BR": "33%",
+                "pt-PT": "33%",
+                "sv": "33 %",
+                "th": "33%",
+                "tr": "%33",
+                "vi": "33%",
+                "zh-CN": "33%",
+                "zh-TW": "33%"
+              }
+            },
+            {
+              "value": "50%",
+              "label": {
+                "cs": "50 %",
+                "da": "50 %",
+                "de": "50%",
+                "en": "50%",
+                "es": "50%",
+                "fi": "50 %",
+                "fr": "50 %",
+                "it": "50%",
+                "ja": "50%",
+                "ko": "50%",
+                "nb": "50 %",
+                "nl": "50%",
+                "pl": "50%",
+                "pt-BR": "50%",
+                "pt-PT": "50%",
+                "sv": "50 %",
+                "th": "50%",
+                "tr": "%50",
+                "vi": "50%",
+                "zh-CN": "50%",
+                "zh-TW": "50%"
+              }
+            },
+            {
+              "value": "66%",
+              "label": {
+                "cs": "66 %",
+                "da": "66 %",
+                "de": "66%",
+                "en": "66%",
+                "es": "66%",
+                "fi": "66 %",
+                "fr": "66 %",
+                "it": "66%",
+                "ja": "66%",
+                "ko": "66%",
+                "nb": "66 %",
+                "nl": "66%",
+                "pl": "66%",
+                "pt-BR": "66%",
+                "pt-PT": "66%",
+                "sv": "66 %",
+                "th": "66%",
+                "tr": "%66",
+                "vi": "66%",
+                "zh-CN": "66%",
+                "zh-TW": "66%"
+              }
+            },
+            {
+              "value": "75%",
+              "label": {
+                "cs": "75 %",
+                "da": "75 %",
+                "de": "75%",
+                "en": "75%",
+                "es": "75%",
+                "fi": "75 %",
+                "fr": "75 %",
+                "it": "75%",
+                "ja": "75%",
+                "ko": "75%",
+                "nb": "75 %",
+                "nl": "75%",
+                "pl": "75%",
+                "pt-BR": "75%",
+                "pt-PT": "75%",
+                "sv": "75 %",
+                "th": "75%",
+                "tr": "%75",
+                "vi": "75%",
+                "zh-CN": "75%",
+                "zh-TW": "75%"
+              }
+            },
+            {
+              "value": "100%",
+              "label": {
+                "cs": "100 %",
+                "da": "100 %",
+                "de": "100%",
+                "en": "100%",
+                "es": "100%",
+                "fi": "100 %",
+                "fr": "100 %",
+                "it": "100%",
+                "ja": "100%",
+                "ko": "100%",
+                "nb": "100 %",
+                "nl": "100%",
+                "pl": "100%",
+                "pt-BR": "100%",
+                "pt-PT": "100%",
+                "sv": "100 %",
+                "th": "100%",
+                "tr": "%100",
+                "vi": "100%",
+                "zh-CN": "100%",
+                "zh-TW": "100%"
+              }
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "cover_image",
+          "label": {
+            "cs": "Titulní obrázek",
+            "da": "Coverbillede",
+            "de": "Titelbild",
+            "en": "Cover image",
+            "es": "Imagen de portada",
+            "fi": "Kansikuva",
+            "fr": "Image de couverture",
+            "it": "Immagine di copertina",
+            "ja": "表紙画像",
+            "ko": "커버 이미지",
+            "nb": "Forsidebilde",
+            "nl": "Coverafbeelding",
+            "pl": "Obraz w tle",
+            "pt-BR": "Imagem de capa",
+            "pt-PT": "Imagem de capa",
+            "sv": "Omslagsbild",
+            "th": "รูปภาพหน้าปก",
+            "tr": "Kapak görseli",
+            "vi": "Ảnh bìa",
+            "zh-CN": "封面图片",
+            "zh-TW": "封面圖片"
+          },
+          "default": "large",
+          "options": [
+            {
+              "value": "small",
+              "label": {
+                "cs": "Malý",
+                "da": "Lille",
+                "de": "Klein",
+                "en": "Small",
+                "es": "Pequeño",
+                "fi": "Pieni",
+                "fr": "Petit",
+                "it": "Piccolo",
+                "ja": "スモール",
+                "ko": "스몰",
+                "nb": "Liten",
+                "nl": "Klein",
+                "pl": "Mały",
+                "pt-BR": "Pequeno",
+                "pt-PT": "Pequeno",
+                "sv": "Liten",
+                "th": "เล็ก",
+                "tr": "Küçük",
+                "vi": "Nhỏ",
+                "zh-CN": "小",
+                "zh-TW": "小型"
+              }
+            },
+            {
+              "value": "large",
+              "label": {
+                "cs": "Velký",
+                "da": "Stor",
+                "de": "Groß",
+                "en": "Large",
+                "es": "Grande",
+                "fi": "Suuri",
+                "fr": "Grande",
+                "it": "Grande",
+                "ja": "大",
+                "ko": "라지",
+                "nb": "Stor",
+                "nl": "Groot",
+                "pl": "Duży",
+                "pt-BR": "Grande",
+                "pt-PT": "Grande",
+                "sv": "Stor",
+                "th": "ใหญ่",
+                "tr": "Büyük",
+                "vi": "Lớn",
+                "zh-CN": "大",
+                "zh-TW": "大型"
+              }
+            },
+            {
+              "value": "none",
+              "label": {
+                "cs": "Žádný",
+                "da": "Ingen",
+                "de": "Keine",
+                "en": "None",
+                "es": "Ninguno",
+                "fi": "Ei mitään",
+                "fr": "Aucune",
+                "it": "Nessuno",
+                "ja": "なし",
+                "ko": "없음",
+                "nb": "Ingen",
+                "nl": "Geen",
+                "pl": "Brak",
+                "pt-BR": "Nenhum",
+                "pt-PT": "Nenhum",
+                "sv": "Inga",
+                "th": "ไม่มี",
+                "tr": "Yok",
+                "vi": "Không",
+                "zh-CN": "无",
+                "zh-TW": "無"
+              }
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "article_show_author",
+          "label": "Show author",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "article_show_date",
+          "label": "Show date",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "article_show_button",
+          "label": "Show button",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "article_title_tag",
+          "label": "Heading tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type": "color",
+          "id": "article_title_color",
+          "label": "Title color"
+        },
+        {
+          "type": "text",
+          "id": "article_button_text",
+          "label": "Button text",
+          "default": "Read More"
+        },
+        {
+          "type": "select",
+          "id": "article_button_style",
+          "label": "Button style",
+          "options": [
+            { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+            { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+            { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+            { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+            { "value": "sf__btn sf__btn-link", "label": "Underline" },
+            { "value": "sf__btn-underline-2", "label": "Underline 2" },
+            { "value": "sf__btn-underline-3", "label": "Underline 3" },
+            { "value": "button-1", "label": "Button 1" },
+            { "value": "button-2", "label": "Button 2" },
+            { "value": "button-3", "label": "Button 3" },
+            { "value": "button-4", "label": "Button 4" },
+            { "value": "button-5", "label": "Button 5" },
+            { "value": "button-6", "label": "Button 6" },
+            { "value": "button-7", "label": "Button 7" }
+          ],
+          "default": "button-3"
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "name": "Klaviyo Form",
+      "type": "klaviyo_form",
+      "settings": [
+        {
+          "type": "range",
+          "id": "label_font_size",
+          "label": "Label Font Size",
+          "default": 16,
+          "min": 14,
+          "max": 20,
+          "step": 1,
+          "unit": "px"
+        },
+        {
+          "type": "text",
+          "id": "form_padding",
+          "label": "Form Padding (Desktop)",
+          "default": "40px 50px 60px"
+        },
+        {
+          "type": "text",
+          "id": "form_padding_mb",
+          "label": "Form Padding (Mobile)",
+          "default": "37px 15px 60px"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Submit Your Story"
+        },
+        {
+          "type": "text",
+          "id": "success_message",
+          "label": "Button text",
+          "default": "Thank you for sharing your"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+            { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+            { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+            { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+            { "value": "sf__btn sf__btn-link", "label": "Underline" },
+            { "value": "sf__btn-underline-2", "label": "Underline 2" },
+            { "value": "sf__btn-underline-3", "label": "Underline 3" },
+            { "value": "button-1", "label": "Button 1" },
+            { "value": "button-2", "label": "Button 2" },
+            { "value": "button-3", "label": "Button 3" },
+            { "value": "button-4", "label": "Button 4" },
+            { "value": "button-5", "label": "Button 5" },
+            { "value": "button-6", "label": "Button 6" },
+            { "value": "button-7", "label": "Button 7" }
+          ],
+          "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "border_radius",
+          "label": "Border Radius", 
+          "default": "0"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "image_card",
+      "name": {
+        "en": "Image card"
+      },
+      "settings": [
+        {
+          "type": "header",
+          "content": "General"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_desktop",
+          "label": "Hide on Desktop",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_tablet",
+          "label": "Hide on Tablet",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_mobile",
+          "label": "Hide on Mobile",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "image_layout",
+          "label": "Card image layout",
+          "default": "layout-1",
+          "options": [
+            {
+              "value": "layout-1",
+              "label": "Text over"
+            },
+            {
+              "value": "layout-2",
+              "label": "Text above (title first)"
+            },
+            {
+              "value": "layout-3",
+              "label": "Text above (subtitle first)"
+            },
+            {
+              "value": "layout-4",
+              "label": "Text below (title first)"
+            },
+            {
+              "value": "layout-5",
+              "label": "Text below (subtitle first)"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "30%",
+              "label": "30%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+            "type": "select",
+            "id": "content_position",
+            "label": "Content position",
+            "info": "Bottom and Top works only for 'Text over' layout",
+            "options": [
+            {
+                "value": "top_left",
+                "label": "Top left"
+            },
+            {
+                "value": "top_center",
+                "label": "Top center"
+            },
+            {
+                "value": "top_right",
+                "label": "Top right"
+            },
+            {
+                "value": "center_left",
+                "label": "Middle left"
+            },
+            {
+                "value": "center_center",
+                "label": "Middle center"
+            },
+            {
+                "value": "center_right",
+                "label": "Middle right"
+            },
+            {
+                "value": "bottom_left",
+                "label": "Bottom left"
+            },
+            {
+                "value": "bottom_center",
+                "label": "Bottom center"
+            },
+            {
+                "value": "bottom_right",
+                "label": "Bottom right"
+            }
+            ],
+            "default": "bottom_center"
+        },
+        {
+          "type": "select",
+          "id": "content_alignment",
+          "label": "Content alignment",
+          "default": "center",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ],
+          "default": "h3"
+        },
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_svg",
+          "label": "Default Image - SVG",
+          "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+        },
+        {
+          "type": "text",
+          "id": "svg_alt_text",
+          "label": "Svg Alt Text"
+        },
+        {
+          "type": "number",
+          "id": "image_max_w",
+          "label": "Image max-width (px)"
+        },
+        {
+          "type": "number",
+          "id": "image_max_h",
+          "label": "Image max-height (px)"
+        },
+        {
+          "type": "select",
+          "id": "image_animation",
+          "label": "Image animation",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "scale-up",
+              "label": "Scale up"
+            },
+            {
+              "value": "scale-down",
+              "label": "Scale down"
+            },
+            {
+              "value": "zoom-in",
+              "label": "Zoom in"
+            }
+          ]
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": {
+            "en": "Image link"
+          }
+        },
+        {
+          "type": "range",
+          "id": "title_padding",
+          "label": "Title padding",
+          "default": 0,
+          "min": 0,
+          "max": 8,
+          "step": 1
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": {
+            "en": "Heading"
+          }
+        },
+        {
+          "type": "range",
+          "id": "heading_padding",
+          "label": "Heading Padding",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0
+        },
+        {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Heading color"
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Sub heading (rich text + html)"
+        },
+        {
+          "type": "range",
+          "id": "subheading_padding",
+          "label": "Subheading Padding",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0
+        },
+        {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Sub heading color"
+        },
+        {
+            "type": "header",
+            "content": "Button settings"
+        },
+        {
+            "type": "range",
+            "id": "button_mt",
+            "label": "Margin Top",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "step": 1,
+            "default": 16
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+              { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+              { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+              { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+              { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+              { "value": "sf__btn sf__btn-link", "label": "Underline" },
+              { "value": "sf__btn-underline-2", "label": "Underline 2" },
+              { "value": "sf__btn-underline-3", "label": "Underline 3" },
+              { "value": "button-1", "label": "Button 1" },
+              { "value": "button-2", "label": "Button 2" },
+              { "value": "button-3", "label": "Button 3" },
+              { "value": "button-4", "label": "Button 4" },
+              { "value": "button-5", "label": "Button 5" },
+              { "value": "button-6", "label": "Button 6" },
+              { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "checkbox",
+          "id": "override_width",
+          "label": "Override button width",
+          "info": "Enable to override custom buttons width.",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "button_width",
+          "label": "Button width",
+          "options": [
+            {
+              "value": "1/4",
+              "label": "25%"
+            },
+            {
+              "value": "1/3",
+              "label": "33%"
+            },
+            {
+              "value": "2/5",
+              "label": "40%"
+            },
+            {
+              "value": "1/2",
+              "label": "50%"
+            },
+            {
+              "value": "2/3",
+              "label": "66%"
+            },
+            {
+              "value": "3/4",
+              "label": "75%"
+            },
+            {
+              "value": "full",
+              "label": "100%"
+            }
+          ],
+          "default": "1/2"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_second_button",
+          "label": "Show second button",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "button_label_2",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link_2",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "button_style_2",
+          "label": "Button style",
+          "options": [
+            { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+            { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+            { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+            { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+            { "value": "sf__btn sf__btn-link", "label": "Underline" },
+            { "value": "sf__btn-underline-2", "label": "Underline 2" },
+            { "value": "sf__btn-underline-3", "label": "Underline 3" },
+            { "value": "button-1", "label": "Button 1" },
+            { "value": "button-2", "label": "Button 2" },
+            { "value": "button-3", "label": "Button 3" },
+            { "value": "button-4", "label": "Button 4" },
+            { "value": "button-5", "label": "Button 5" },
+            { "value": "button-6", "label": "Button 6" },
+            { "value": "button-7", "label": "Button 7" }
+          ],
+          "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "checkbox",
+          "id": "override_width_2",
+          "label": "Override button width",
+          "info": "Enable to override custom buttons width.",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "button_width_2",
+          "label": "Button width",
+          "options": [
+            {
+              "value": "1/4",
+              "label": "25%"
+            },
+            {
+              "value": "1/3",
+              "label": "33%"
+            },
+            {
+              "value": "2/5",
+              "label": "40%"
+            },
+            {
+              "value": "1/2",
+              "label": "50%"
+            },
+            {
+              "value": "2/3",
+              "label": "66%"
+            },
+            {
+              "value": "3/4",
+              "label": "75%"
+            },
+            {
+              "value": "full",
+              "label": "100%"
+            }
+          ],
+          "default": "1/2"
+        },
+        {
+          "type": "select",
+          "id": "buttons_gap",
+          "label": "Gap",
+          "default": "sm",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "xs",
+              "label": "Extra Small"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            },
+            {
+              "value": "xl",
+              "label": "Extra Large"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        },
+        {
+          "type": "header",
+          "content": "SEO & Performance"
+        },
+        {
+          "type": "checkbox",
+          "id": "section_preload",
+          "label": "Preload",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "lookbook",
+      "name": {
+        "en": "Lookbook item"
+      },
+      "settings": [
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Container width",
+          "default": "50%",
+          "options": [
+            { "value": "16%", "label": "16%" },
+            { "value": "25%", "label": "25%" },
+            { "value": "33%", "label": "33%" },
+            { "value": "50%", "label": "50%" },
+            { "value": "66%", "label": "66%" },
+            { "value": "75%", "label": "75%" },
+            { "value": "83%", "label": "83%" },
+            { "value": "100%", "label": "100%" }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_svg",
+          "label": "Default Image - SVG",
+          "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+        },
+        {
+          "type": "text",
+          "id": "svg_alt_text",
+          "label": "Svg Alt Text"
+        },
+        {
+            "type": "header",
+            "content": "Product 1"
+        },
+        {
+            "type": "range",
+            "id": "top_1",
+            "label": "Offset top",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 9
+        },
+        {
+            "type": "range",
+            "id": "left_1",
+            "label": "Offset left",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 63
+        },
+        {
+            "type": "product",
+            "id": "product_1",
+            "label": "Select product"
+        },
+        {
+            "type": "header",
+            "content": "Product 2"
+        },
+        {
+            "type": "range",
+            "id": "top_2",
+            "label": "Offset top",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 26
+        },
+        {
+            "type": "range",
+            "id": "left_2",
+            "label": "Offset left",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 50
+        },
+        {
+            "type": "product",
+            "id": "product_2",
+            "label": "Select product"
+        },
+        {
+            "type": "header",
+            "content": "Product 3"
+        },
+        {
+            "type": "range",
+            "id": "top_3",
+            "label": "Offset top",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 61
+        },
+        {
+            "type": "range",
+            "id": "left_3",
+            "label": "Offset left",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 48
+        },
+        {
+            "type": "product",
+            "id": "product_3",
+            "label": "Select product"
+        },
+        {
+            "type": "header",
+            "content": "Product 4"
+        },
+        {
+            "type": "range",
+            "id": "top_4",
+            "label": "Offset top",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "left_4",
+            "label": "Offset left",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "product",
+            "id": "product_4",
+            "label": "Select product"
+        },
+        {
+            "type": "header",
+            "content": "Product 5"
+        },
+        {
+            "type": "range",
+            "id": "top_5",
+            "label": "Offset top",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 20
+        },
+        {
+            "type": "range",
+            "id": "left_5",
+            "label": "Offset left",
+            "min": 0,
+            "max": 100,
+            "unit": "%",
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "product",
+            "id": "product_5",
+            "label": "Select product"
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "product_bundles",
+      "name": {
+        "en": "Product bundles"
+      },
+      "settings": [
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+            "type": "textarea",
+            "id": "title",
+            "label": "Heading"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_side_circle",
+            "label": "Show side counters",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "show_side_circle_numbers",
+            "label": "Show numbers on side counters",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "show_reviews",
+            "label": "Show reviews badge"
+        },
+        {
+            "type": "header",
+            "content": "Button settings"
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label"
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+              { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+              { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+              { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+              { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+              { "value": "sf__btn sf__btn-link", "label": "Underline" },
+              { "value": "sf__btn-underline-2", "label": "Underline 2" },
+              { "value": "sf__btn-underline-3", "label": "Underline 3" },
+              { "value": "button-1", "label": "Button 1" },
+              { "value": "button-2", "label": "Button 2" },
+              { "value": "button-3", "label": "Button 3" },
+              { "value": "button-4", "label": "Button 4" },
+              { "value": "button-5", "label": "Button 5" },
+              { "value": "button-6", "label": "Button 6" },
+              { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_override_width",
+          "label": "Override button width",
+          "info": "Enable to override custom buttons width.",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "button_width",
+          "label": "Button width",
+          "options": [
+            {
+              "value": "1/4",
+              "label": "25%"
+            },
+            {
+              "value": "1/3",
+              "label": "33%"
+            },
+            {
+              "value": "2/5",
+              "label": "40%"
+            },
+            {
+              "value": "1/2",
+              "label": "50%"
+            },
+            {
+              "value": "2/3",
+              "label": "66%"
+            },
+            {
+              "value": "3/4",
+              "label": "75%"
+            },
+            {
+              "value": "full",
+              "label": "100%"
+            }
+          ],
+          "default": "1/2"
+        },
+        {
+            "type": "header",
+            "content": "Products"
+        },
+        {
+            "type": "product",
+            "id": "product_1",
+            "label": "Product 1"
+        },
+        {
+            "type": "product",
+            "id": "product_2",
+            "label": "Product 2"
+        },
+        {
+            "type": "product",
+            "id": "product_3",
+            "label": "Product 3"
+        },
+        {
+            "type": "product",
+            "id": "product_4",
+            "label": "Product 4"
+        },
+        {
+            "type": "product",
+            "id": "product_5",
+            "label": "Product 5"
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": {
+        "en": "Countdown timer"
+      },
+      "settings": [
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+            "type": "select",
+            "id": "align",
+            "label": "Horizontal alignment",
+            "default": "end",
+            "options": [
+                {
+                    "value": "start",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "end",
+                    "label": "Right"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "id": "time",
+            "label": "End time",
+            "default": "2021-12-26 23:00:00",
+            "info": "Date format: YYYY-MM-DD HH:MM:ss"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+        },
+        {
+            "type": "header",
+            "content": "Button settings"
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label"
+        },
+        {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button link"
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+              { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+              { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+              { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+              { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+              { "value": "sf__btn sf__btn-link", "label": "Underline" },
+              { "value": "sf__btn-underline-2", "label": "Underline 2" },
+              { "value": "sf__btn-underline-3", "label": "Underline 3" },
+              { "value": "button-1", "label": "Button 1" },
+              { "value": "button-2", "label": "Button 2" },
+              { "value": "button-3", "label": "Button 3" },
+              { "value": "button-4", "label": "Button 4" },
+              { "value": "button-5", "label": "Button 5" },
+              { "value": "button-6", "label": "Button 6" },
+              { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "sf__btn sf__btn-primary"
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "social",
+      "name": {
+        "en": "Social profiles"
+      },
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Go to Theme settings > Store contact to update the social links."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Follow us on",
+          "label": {
+            "en": "Heading"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": {
+            "en": "Description"
+          }
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": {
+        "en": "Newsletter form"
+      },
+      "settings": [
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading tag",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": {
+            "en": "Heading"
+          },
+          "default": "Subscribe to our newsletter"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": {
+            "en": "Description"
+          },
+          "default": "<p>Shapes and proportions are for your intellect. I’ve treated the waistcoat as if it were a corset.</p>"
+        },
+        {
+          "type": "select",
+          "id": "form_design",
+          "label": "Form style",
+          "default": "1",
+          "options": [
+              {
+                  "value": "1",
+                  "label": "Bordered"
+              },
+              {
+                  "value": "2",
+                  "label": "Minimal"
+              }
+          ]
+        },
+        {
+            "type": "text",
+            "id": "placeholder",
+            "label": "Email placeholder text",
+            "default": "Enter your email address"
+        },
+        {
+            "type": "text",
+            "id": "submit_button",
+            "label": "Button label",
+            "default": "Subscribe"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "html",
+      "name": {
+        "cs": "Vlastní HTML",
+        "da": "Tilpasset HTML",
+        "de": "Personalisierte HTML",
+        "en": "Custom HTML",
+        "es": "HTML personalizado",
+        "fi": "Mukautettu HTML",
+        "fr": "HTML personnalisé",
+        "it": "HTML personalizzato",
+        "ja": "HTMLをカスタムする",
+        "ko": "사용자 지정 HTML",
+        "nb": "Tilpasset HTML",
+        "nl": "Aangepaste HTML",
+        "pl": "Niestandardowy HTML",
+        "pt-BR": "HTML personalizado",
+        "pt-PT": "HTML personalizado",
+        "sv": "Anpassa HTML",
+        "th": "HTML แบบกำหนดเอง",
+        "tr": "Özel HTML",
+        "vi": "HTML tùy chỉnh",
+        "zh-CN": "自定义 HTML",
+        "zh-TW": "自訂 HTML"
+      },
+      "settings": [
+        {
+          "type": "html",
+          "id": "code",
+          "label": {
+            "cs": "HTML",
+            "da": "HTML",
+            "de": "HTML",
+            "en": "HTML",
+            "es": "HTML",
+            "fi": "HTML",
+            "fr": "HTML",
+            "it": "HTML",
+            "ja": "HTML",
+            "ko": "HTML",
+            "nb": "HTML",
+            "nl": "HTML",
+            "pl": "HTML",
+            "pt-BR": "HTML",
+            "pt-PT": "HTML",
+            "sv": "HTML",
+            "th": "HTML",
+            "tr": "HTML",
+            "vi": "HTML",
+            "zh-CN": "HTML",
+            "zh-TW": "HTML"
+          }
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": {
+            "cs": "Šířka kontejneru",
+            "da": "Containerbredde",
+            "de": "Breite des Elements",
+            "en": "Container width",
+            "es": "Ancho del contenedor",
+            "fi": "Säiliön leveys",
+            "fr": "Largeur du conteneur",
+            "it": "Larghezza contenitore",
+            "ja": "コンテナーの幅",
+            "ko": "컨테이너 폭",
+            "nb": "Beholderbredde",
+            "nl": "Containerbreedte",
+            "pl": "Szerokość kontenera",
+            "pt-BR": "Largura do contêiner",
+            "pt-PT": "Largura do recipiente",
+            "sv": "Container-bredd",
+            "th": "ความกว้างของความจุ",
+            "tr": "Kapsayıcı genişliği",
+            "vi": "Chiều rộng khoảng chứa",
+            "zh-CN": "容器宽度",
+            "zh-TW": "容器寬度"
+          },
+          "default": "50%",
+          "options": [
+            {
+              "value": "16%",
+              "label": "16%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            },
+            {
+              "value": "33%",
+              "label": "33%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "66%",
+              "label": "66%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "83%",
+              "label": "83%"
+            },
+            {
+              "value": "100%",
+              "label": "100%"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Padding",
+          "info": "Based on Column Gap in Custom Content general settings."
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_top",
+          "label": "Top",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_right",
+          "label": "Right",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_left",
+          "label": "Left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "name": "List",
+      "settings": [
+        {
+          "type": "header",
+          "content": "General"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Container width",
+          "default": "50%",
+          "options": [
+            { "value": "16%", "label": "16%" },
+            { "value": "25%", "label": "25%" },
+            { "value": "33%", "label": "33%" },
+            { "value": "50%", "label": "50%" },
+            { "value": "66%", "label": "66%" },
+            { "value": "75%", "label": "75%" },
+            { "value": "83%", "label": "83%" },
+            { "value": "100%", "label": "100%" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "list_layout",
+          "label": "Layout",
+          "options": [
+            { "value": "default", "label": "Default" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "list_icon_library",
+          "label": "Icon library",
+          "default": "default",
+          "options": [
+            { "value": "default", "label": "Default" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "justify_content",
+          "label": "Content position",
+          "default": "center",
+          "options": [
+            { "value": "start", "label": "Start" },
+            { "value": "center", "label": "Center" },
+            { "value": "end", "label": "End" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "left",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        },
+        {
+          "type": "header",
+          "content": "Item 1"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_1",
+          "label": "Icon 1",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_1",
+          "label": "Icon color 1",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_1",
+          "label": "Icon size 1",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_1",
+          "label": "Text 1",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 2"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_2",
+          "label": "Icon 2",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_2",
+          "label": "Icon color 2",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_2",
+          "label": "Icon size 2",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_2",
+          "label": "Text 2",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 3"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_3",
+          "label": "Icon 3",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_3",
+          "label": "Icon color 3",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_3",
+          "label": "Icon size 3",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_3",
+          "label": "Text 3",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 4"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_4",
+          "label": "Icon 4",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_4",
+          "label": "Icon color 4",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_4",
+          "label": "Icon size 4",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_4",
+          "label": "Text 4",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 5"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_5",
+          "label": "Icon 5",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_5",
+          "label": "Icon color 5",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_5",
+          "label": "Icon size 5",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_5",
+          "label": "Text 5",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 6"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_6",
+          "label": "Icon 6",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_6",
+          "label": "Icon color 6",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_6",
+          "label": "Icon size 6",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_6",
+          "label": "Text 6",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 7"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_7",
+          "label": "Icon 7",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_7",
+          "label": "Icon color 7",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_7",
+          "label": "Icon size 7",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_7",
+          "label": "Text 7",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 8"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_8",
+          "label": "Icon 8",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_8",
+          "label": "Icon color 8",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_8",
+          "label": "Icon size 8",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_8",
+          "label": "Text 8",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 9"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_9",
+          "label": "Icon 9",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_9",
+          "label": "Icon color 9",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_9",
+          "label": "Icon size 9",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_9",
+          "label": "Text 9",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "header",
+          "content": "Item 10"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_10",
+          "label": "Icon 10",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "tick", "label": "Tick" },
+            { "value": "star", "label": "Star" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "brush", "label": "Brush" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "rocket", "label": "Rocket" },
+            { "value": "add", "label": "Add" },
+            { "value": "crown", "label": "Crown" },
+            { "value": "flag", "label": "Flag" },
+            { "value": "flame", "label": "Flame" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "list_icon_color_10",
+          "label": "Icon color 10",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "list_icon_size_10",
+          "label": "Icon size 10",
+          "default": "md",
+          "options": [
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "list_text_10",
+          "label": "Text 10",
+          "default": "Talk about your brand"
+        }
+      ]
+    },
+    {
+      "type": "collapsibles",
+      "name": "Collapsibles",
+      "settings": [
+        {
+          "type": "header",
+          "content": "General"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Container width",
+          "default": "50%",
+          "options": [
+            { "value": "16%", "label": "16%" },
+            { "value": "25%", "label": "25%" },
+            { "value": "33%", "label": "33%" },
+            { "value": "50%", "label": "50%" },
+            { "value": "66%", "label": "66%" },
+            { "value": "75%", "label": "75%" },
+            { "value": "83%", "label": "83%" },
+            { "value": "100%", "label": "100%" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "collapsible_layout",
+          "label": "Layout",
+          "options": [
+            { "value": "default", "label": "Default" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "justify_content",
+          "label": "Content position",
+          "default": "center",
+          "options": [
+            { "value": "start", "label": "Start" },
+            { "value": "center", "label": "Center" },
+            { "value": "end", "label": "End" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "left",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "block_custom_class",
+          "label": "Custom classes"
+        },
+        {
+          "type": "header",
+          "content": "Item 1"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_1",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_1",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_1",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 2"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_2",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_2",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_2",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 3"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_3",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_3",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_3",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 4"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_4",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_4",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_4",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 5"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_5",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_5",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_5",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 6"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_6",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_6",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_6",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 7"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_7",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_7",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_7",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 8"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_8",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_8",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_8",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 9"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_9",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_9",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_9",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Item 10"
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title_10",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content_10",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open_10",
+          "label": "Open Tab By Default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "cs": "Vlastní obsah",
+        "da": "Tilpasset indhold",
+        "de": "Personalisierter Content",
+        "en": "Custom content",
+        "es": "Contenido personalizado",
+        "fi": "Mukautettu sisältö",
+        "fr": "Contenu personnalisé",
+        "it": "Contenuto personalizzato",
+        "ja": "コンテンツをカスタムする",
+        "ko": "사용자 지정 콘텐츠",
+        "nb": "Tilpasset innhold",
+        "nl": "Aangepaste content",
+        "pl": "Zawartość niestandardowa",
+        "pt-BR": "Conteúdo personalizado",
+        "pt-PT": "Conteúdo personalizado",
+        "sv": "Anpassat innehåll",
+        "th": "เนื้อหาแบบกำหนดเอง",
+        "tr": "Özel içerik",
+        "vi": "Nội dung tùy chỉnh",
+        "zh-CN": "自定义内容",
+        "zh-TW": "自訂內容"
+      },
+      "category": {
+        "cs": "Pokročilé rozvržení",
+        "da": "Avanceret layout",
+        "de": "Komplizierteres Layout",
+        "en": "Advanced layout",
+        "es": "Diseño avanzado",
+        "fi": "Monimutkaisempi layout",
+        "fr": "Mise en page avancée",
+        "it": "Layout avanzato",
+        "ja": "高度なレイアウト",
+        "ko": "고급 레이아웃",
+        "nb": "Avansert oppsett",
+        "nl": "Geavanceerde opmaak",
+        "pl": "Zaawansowany układ",
+        "pt-BR": "Layout avançado",
+        "pt-PT": "Esquema avançado",
+        "sv": "Avancerad layout",
+        "th": "เลย์เอาท์ขั้นสูง",
+        "tr": "Gelişmiş düzen",
+        "vi": "Bố cục nâng cao",
+        "zh-CN": "高级布局",
+        "zh-TW": "進階版面配置"
+      },
+      "blocks": [
+        {
+          "type": "text"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

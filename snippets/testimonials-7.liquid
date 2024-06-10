@@ -1,0 +1,73 @@
+{% assign min = 1 %}
+{% assign max = 100 %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+{% assign swiper_control_name = "swiper-testimonial-7-control-" | append: randomNumber %}
+
+<div class="w-full" style="--section-bg: {{section.settings.background_color}}">
+        <div class="swiper-container swiper-testimonial-7-{{randomNumber}}">
+            <div class="swiper-wrapper">
+                {% for block in section.blocks %}
+                    <div class="swiper-slide sf-testimonials-7__block" {{ block.shopify_attributes }} data-index={{ forloop.index0 }}>
+                        <div class="sf-testimonials-7__block-row">
+                            {% if block.settings.image_link != blank %}<a href="{{ block.settings.image_link | default: '#' }}">{% endif %}
+                                    {% if block.settings.image == blank %}
+                                        {{ 'image' | placeholder_svg_tag: 'sf__placeholder-svg w-full h-full no-border' }}
+                                    {% else %}
+                                        {% render 'responsive-image', image: block.settings.image %}
+                                    {% endif %}
+                                    {% if block.settings.image_text %}
+                                        <div class="mt-5 text-lg">
+                                            {{ block.settings.image_text }}
+                                        </div> 
+                                    {% endif %}
+                                {% if block.settings.image_link != blank %}</a>{% endif %}                     
+                        </div>
+                        <div class="sf-testimonials-7__block-row">
+                            {% if section.settings.show_stars %}
+                            <div class="stars flex mb-3 sm:mb-7">
+                                {%- render 'testimonials__stars' -%}
+                            </div>
+                            {% endif %}
+                            {% render 'heading-tag' 
+                                heading: block.settings.title_tag,
+                                content: block.settings.title, 
+                                custom_classes: 'tes-title'
+                            %}
+                            <p-medium class="tes-desc mt-5 mb-8">
+                                {{ block.settings.description }}
+                            </p-medium>
+                            <p-large class="tes-author">{{ block.settings.footer }}</p-large>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+                {% render 'slider-controls', show_nav: false, show_pagination: true, swiper_control_name: swiper_control_name %}
+</div>
+<style>
+    .sf-testimonials__container.testimonials-7 {
+        height: -webkit-max-content;
+    }
+    .how-they-work-together.testimonials-7 {
+        margin-bottom: 0 !important;
+    }
+</style>
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var swiper = new Swiper('.swiper-testimonial-7-{{randomNumber}}', {
+            loop: true,
+            slidesPerView: 1,
+            autoplay: false,
+            navigation: { 
+                nextEl: document.querySelector('.sf-slider__controls-next.swiper-testimonial-7-control-{{randomNumber}}'),
+                prevEl: document.querySelector('.sf-slider__controls-prev.swiper-testimonial-7-control-{{randomNumber}}')
+            },
+            pagination: {
+                el: document.querySelector('.swiper-pagination.swiper-testimonial-7-control-{{randomNumber}}'),
+                clickable: true
+            }
+        });
+    }, false);
+</script>
+

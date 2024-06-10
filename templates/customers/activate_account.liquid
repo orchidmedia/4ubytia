@@ -1,0 +1,11 @@
+{{ 'account.css' | asset_url | stylesheet_tag }}
+
+{%comment%}Make Shopify translations available to JavaScript{%endcomment%}
+{%- render 'react-i18n' translation_key: 'account' -%}
+{%- render 'react-i18n' translation_key: 'onboard' -%}
+{%- render 'react-i18n' translation_key: 'accessibility' -%}
+{%- render 'react-i18n' translation_key: 'livestream' -%}
+
+<div class="container mx-auto xl:pb-16 sm:pb-10 pb-16">
+    {% render 'react-root' %}
+</div>

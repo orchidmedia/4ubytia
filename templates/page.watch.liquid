@@ -1,0 +1,17 @@
+{%comment%}Make Shopify translations available to JavaScript{%endcomment%}
+{% render 'react-i18n' translation_key: 'account' %}
+{% render 'react-i18n' translation_key: 'livestream' %}
+{% render 'react-i18n' translation_key: 'shop' %}
+{%- render 'react-i18n' translation_key: 'accessibility' -%}
+{%- render 'react-i18n' translation_key: 'onboard' -%}
+{{ 'liveshopping.css' | asset_url | stylesheet_tag }}
+{%- render 'liveshopping-collection-json' -%}
+{%- section 'liveshopping-links' %}
+
+{%- comment -%}
+    Deliberately avoid wrapping in another div to allow fullscreen content
+{%- endcomment -%}
+{% render 'react-root' %}
+<div id="react-liveshopping-show-card-buttons" class="bl-core-sticky"></div>
+<div id="react-liveshopping-purchase-reminder"></div>
+<div id="react-liveshopping-account-form"></div>

@@ -1,0 +1,100 @@
+{% style %}
+  {% if block.settings.body_color != 'rgba(0,0,0,0)' and block.settings.body_color != blank %}
+    body #sf-custom__block--{{ block.id }},
+    body #sf-custom__block--{{ block.id }} p,
+    body #sf-custom__block--{{ block.id }} text {
+      color: {{ block.settings.body_color }};
+    }
+  {% endif %}
+  {% if block.settings.heading_color != 'rgba(0,0,0,0)' and block.settings.heading_color != blank %}
+    body #sf-custom__block--{{ block.id }} .content__heading  {
+      color: {{ block.settings.heading_color }};
+    }
+  {% endif %}
+{% endstyle %}
+
+{% assign st = block.settings %}
+{% capture hide_section %}
+    {% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}
+{% endcapture %}
+
+{% capture p_top %}{% if block.settings.padding_top_custom %}{{block.settings.padding_top_custom}}px{% elsif block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right_custom %}{{block.settings.padding_right_custom}}px{% elsif block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom_custom %}{{block.settings.padding_bottom_custom}}px{% elsif block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left_custom %}{{block.settings.padding_left_custom}}px{% elsif block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+
+<div id="sf-custom__text" 
+  class="sf-custom__block-text text-{{ block.settings.align_text }} {{ hide_section }}"
+  style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }};"
+>
+  {% if block.settings.subheading != blank %}
+    {% capture custom_classes %}mb-5 content__subheading{% endcapture %}
+    {% capture subtitle_padding %}padding: {{block.settings.subtitle_padding}}px 0;{% if block.settings.heading_tag == "quote-3" %}display: block;{% endif %}{% endcapture %}
+    {% render 'heading-tag'
+      heading: block.settings.subheading_tag,
+      content: block.settings.subheading,
+      custom_classes: custom_classes,
+      custom_styles: subtitle_padding
+    %}
+  {% endif %}
+
+  {% if block.settings.title != blank %}
+    {% capture custom_classes %}content__heading pb-3{% endcapture %}
+    {% capture title_padding %}padding: {{block.settings.title_padding}}px 0;{% if block.settings.heading_tag == "quote-3" %}display: block;{% endif %}{% endcapture %}
+    {% render 'heading-tag'
+      heading: block.settings.heading_tag,
+      content: block.settings.title,
+      custom_classes: custom_classes,
+      custom_styles: title_padding
+    %}
+  {% endif %}
+
+  {%- capture custom_styles -%}
+    {%- if block.settings.text_color !='rgba(0,0,0,0)' and block.settings.text_color != blank -%}
+      color:{{ block.settings.text_color }};
+    {%- endif -%}
+    padding: {{block.settings.text_padding}}px 0;
+  {%- endcapture -%}
+
+  {% if block.settings.text != blank %}
+    {% capture custom_classes %}block{% endcapture %}
+    {% render 'heading-tag'
+      heading: block.settings.text_tag,
+      content: block.settings.text,
+      custom_classes: custom_classes
+      custom_styles: custom_styles
+    %}
+  {% endif %}
+
+  {% if block.settings.button_label != blank %}
+    {%- case block.settings.align_text -%}
+      {%- when 'left' -%}
+        {%- assign btn_pos = 'start' -%}
+      {%- when 'center' -%}
+        {%- assign btn_pos = 'center' -%}
+      {%- when 'right' -%}
+        {%- assign btn_pos = 'end' -%}
+    {%- endcase -%}
+    
+    <div class="sf-custom__text-cta mt-8 gap-{{ block.settings.buttons_gap }} flex flex-wrap justify-{{ btn_pos }}" style="margin-top: {{block.settings.button_mt}}px;">
+      {% render 'button-link'
+        link: block.settings.button_link,
+        style: block.settings.button_style,
+        text: block.settings.button_label,
+        width: block.settings.button_width,
+        override_width: block.settings.override_width,
+        target: block.settings.button_target
+      %}
+      {% if block.settings.show_second_button and block.settings.button_label_2 != blank %}
+        {% render 'button-link'
+          link: block.settings.button_link_2,
+          style: block.settings.button_style_2,
+          text: block.settings.button_label_2,
+          width: block.settings.button_width_2,
+          override_width: block.settings.override_width_2,
+          target: block.settings.button_target
+        %}
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

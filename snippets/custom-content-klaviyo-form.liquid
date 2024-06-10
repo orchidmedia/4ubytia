@@ -1,0 +1,69 @@
+<div class="{{ block.settings.block_custom_class }}" style="padding: 0;">
+    <form id="email_signup" class="klaviyo_styling klaviyo_gdpr_embed_UegMC2" action="//manage.kmail-lists.com/subscriptions/subscribe" data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe" method="GET" target="_blank">
+        <input type="hidden" name="g" value="UegMC2">
+        <input type="hidden" name="$fields" value="$consent, $first_name, $phone_number, Birthday, Story">
+        <div class="klaviyo_field_group klaviyo_form_actions">
+            <label for="$first_name">First Name<sup>*</sup></label>
+            <input type="text" id="name" name="$first_name" placeholder="Enter first name" pattern="[A-Za-z ]{1,32}" title="Invalid name. Example: 'Jane Doe' - Letters only."required />
+            <label for="k_id_email">Email Address<sup>*</sup></label>
+            <input type="text" value="" name="email" id="k_id_email" placeholder="name@youremail.com" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address. Example: name@youremail.com" required/>  
+            <label for="$phone_number">Phone number <span>(optional)</span></label>
+            <input id="telNo" name="$phone_number" type="tel" placeholder="Enter your phone number" pattern="^(1\s?)?(\d{3}|\(\d{3}\))[\s\-]?\d{3}[\s\-]?\d{4}$" title="Invalid American phone number. Example: 555-555-5555 or (555)555-5555">
+            <label for="Birthday">Tell us your birthday <span class="present">(We’ll send you a present)</span> <span>(optional)</span></label>
+            <input type="date" name="Birthday" pattern="\d{4}-\d{2}-\d{2}" max='2015-01-01'>
+            <label for="Story">Tell us your menopause story<sup>*</sup></label>
+            <textarea id="story" name="Story" required></textarea>
+            <div class="klaviyo_helptext klaviyo_gdpr_text"> 
+                <p>Amyris, Stripes’s parent company, is committed to protecting and respecting your privacy. We'll only use your personal information to administer your account and provide the products, services, or resources you have requested from us.</p>
+                <br>
+                <p>By clicking submit below, you consent to allow Amyris to store and process the personal information submitted above to complete your request.</p>
+                <div class="consent-wrapper"><input class="consent" type="checkbox" name="$consent" id="consent-email" value="email" required /><label for="$consent">I accept the <a target="_blank" href="https://www.iamstripes.com/pages/privacy-policy">Privacy Policy</a> and <a target="_blank" href="https://www.iamstripes.com/pages/terms-conditions">Terms of Service</a><sup>*</sup></label></div>
+            </div>
+        </div>
+        <div class="klaviyo_messages">
+          <div class="success_message" style="display:none;"></div>
+          <div class="error_message" style="display:none;"></div>
+        </div>
+        <div class="klaviyo_form_actions">
+          <button type="submit" class="sf-custom__text-cta {{block.settings.button_style}}">{{block.settings.button_text}}</button>
+          {% if block.settings.button_label != blank %}
+          {%- case block.settings.align_text -%}
+            {%- when 'left' -%}
+              {%- assign btn_pos = 'start' -%}
+            {%- when 'center' -%}
+              {%- assign btn_pos = 'center' -%}
+            {%- when 'right' -%}
+              {%- assign btn_pos = 'end' -%}
+          {%- endcase -%}
+        {% endif %}
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="//www.klaviyo.com/media/js/public/klaviyo_subscribe.js"></script>
+<script type="text/javascript">
+    KlaviyoSubscribe.attachToForms('#email_signup', {
+      hide_form_on_success: true,
+      success_message: "{{ block.settings.success_message }}",
+      extra_properties: {
+        $source: 'Capture Your Story LP Form',
+        $consent_version: 'I accept the Privacy Policy and Terms of Service'
+      }
+    });
+  </script>
+
+  <style>
+    .sf-custom__block--klaviyo_form form label{
+      font-size: {{ block.settings.label_font_size }}px;
+    }
+
+    .sf-custom__block--klaviyo_form form{
+      padding: {{ block.settings.form_padding }};
+    }
+
+    @media screen and (max-width: 991px) {
+      .sf-custom__block--klaviyo_form form{
+        padding: {{ block.settings.form_padding_mb }};
+      }
+    }
+  </style>

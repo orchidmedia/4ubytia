@@ -1,0 +1,392 @@
+{% include 'global-vars' %}
+<!DOCTYPE html>
+<html lang="{{ locale }}" dir="{{ direction }}" class="{{ checkout_html_classes }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
+    <meta name="referrer" content="origin">
+
+    <title>{{ page_title }}</title>
+
+    {{ content_for_header }}
+
+    {{ checkout_stylesheets }}
+    {{ checkout_scripts }}
+
+    <!-- ADDRESS VALIDATOR -->
+    <script async src="https://d3ox8tdk614ykk.cloudfront.net/pobox_checker.js"></script>
+
+    {% render 'react-i18n' translation_key: 'shop' %}
+    {% render 'react-i18n' translation_key: 'global' %}
+    <style>
+      :root {
+        --color-btn-bg:  {{ settings.color_btn_bg }};
+        --color-btn-bg-hover: {{ settings.color_btn_bg_hover }};
+        --color-btn-text: {{ settings.color_btn_text }};
+        --color-btn-text-hover: {{ settings.color_btn_text_hover }};
+        --color-btn-border: {{ settings.color_btn_border }};
+        --color-btn-border-hover: {{ settings.color_btn_border_hover }};
+        --color-btn-shadow-hover: {{ settings.color_btn_shadow_hover }};
+      }
+    </style>
+    {{ 'buttons.css' | asset_url | stylesheet_tag }}
+
+  {%- if request.host == "4ubytia.com" -%}
+    {%- assign onetrust_key = 'fd3778df-de88-4644-8eb0-8117ef098ca5' -%}
+  {%- elsif request.host == "4ubytia-hair.myshopify.com" -%}
+    {%- assign onetrust_key = 'bf3f7bc8-c046-448a-a760-cf3e9090d0dc' -%}
+  {%- else -%}
+    {%- assign onetrust_key = 'c1963ade-7fac-4779-89ed-59056f50cc5f' -%}
+  {%- endif -%}
+  
+  <!-- OneTrust Cookies Consent Notice start for 4ubytia -->
+  <script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js"  type="text/javascript" charset="UTF-8" data-domain-script="{{ onetrust_key }}" ></script>
+  <script type="text/javascript">
+      function OptanonWrapper() { }
+  </script>
+  <!-- OneTrust Cookies Consent Notice end for 4ubytia -->
+    
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M36ZFW9');</script>
+  <!-- End Google Tag Manager -->
+
+    {%- render 'react-app' -%}
+  </head>
+  <body 
+  {% if settings.enable_gwp_auto_add_threshold %}data-codeless="true"{% endif %}
+  {% if settings.enable_gwp_auto_add_threshold %} 
+  data-code-thresh="{{ settings.gwp_auto_add_threshold_amount | times: 100 }}" 
+  data-code-thresh-tiered="{{ settings.gwp_auto_add_threshold_amount_tiered | times: 100 }}" 
+  data-code-product-1="{{ settings.gwp_auto_add_threshold_variant_id_1}}" 
+  data-code-product-2="{{ settings.gwp_auto_add_threshold_variant_id_2}}"
+  {% endif %}
+  >
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M36ZFW9"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+    {{ skip_to_content_link }}
+
+    <header class="banner" data-header role="banner">
+      <div class="wrap">
+        {{ content_for_logo }}
+      </div>
+    </header>
+
+    {{ order_summary_toggle }}
+    <div class="content" data-content>
+      <div class="wrap">
+        <div class="main">
+          <header class="main__header" role="banner">
+            {{ content_for_logo }}
+            {{ breadcrumb }}
+            {{ alternative_payment_methods }}
+          </header>
+          <main class="main__content" role="main">
+            {{ content_for_layout }}
+          </main>
+          <footer class="main__footer" role="contentinfo">
+            {{ content_for_footer }}
+          </footer>
+        </div>
+        <aside class="sidebar" role="complementary">
+          <div class="sidebar__header">
+            {{ content_for_logo }}
+          </div>
+          <div class="sidebar__content">
+            {{ content_for_order_summary }}
+            {% for line in order.line_items reversed %}
+              {% assign show_id = line.properties._showId %}
+              {% if show_id %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+            <script>
+              document.data = document.data || {}
+              document.data.showId = {{ show_id | json }}
+            </script>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    {{ tracking_code }}
+
+
+    {% comment %}
+
+    This adds a couple of attributes to the order that contain the device / session ID recorded
+    in AnalyticsManager.tsx, so that we can match up what people were doing before they had a customer ID
+    or email address.
+
+    {% endcomment %}
+    <script lang='text/JavaScript'>
+
+      //open default summary - checkout - mobile 
+      if (window.location.pathname.includes("/checkouts/")) {
+        window.onload = () => {
+          document.querySelector('.order-summary-toggle').click();
+        }
+      }
+
+      window.Shopify.Checkout.id = {{ checkout.id }}
+
+      function createAttributeInput(name, value) {
+        let attributeInput = document.createElement('input')
+        attributeInput.type = 'hidden'
+        attributeInput.name = 'checkout[attributes][' + name + ']'
+        attributeInput.value = value
+        return attributeInput
+      }
+
+      function addExtraAttributes() {
+        const formTags = document.getElementsByTagName('form')
+        if (formTags[0]) {
+          const formTag = formTags[0]
+          try {
+            const deviceId = window.localStorage.getItem('analytics.deviceId')
+            if (deviceId) {
+              formTag.appendChild(createAttributeInput('analytics.deviceId', deviceId))
+            }
+            const sessionId = window.sessionStorage.getItem('analytics.sessionId')
+            if (sessionId) {
+              formTag.appendChild(createAttributeInput('analytics.sessionId', sessionId))
+            }
+          }
+          catch (e) {
+            console.warn("Failed to add tracking data", e)
+          }
+        }
+      }
+      (function($) {
+        $(document).on("page:load", function() {
+          addExtraAttributes();
+          checkoutGWPState();
+          checkoutUtills();
+          window.location.search.includes('previous_step') ? pushDataLayerStep() : pushDataLayerCheckout()
+        })
+
+
+        const Steps = {
+          contact_information: 1,
+          shipping_method: 2,
+          payment_method: 3,
+          processing: 4,
+          review: 5
+      }
+
+      const pushDataLayerCheckout = () => {
+          $.getJSON('/cart.js', function(cart) {
+              const dataLayerObj = {
+                  'event': 'checkout',
+                  'ecommerce': {
+                      'currencyCode': Shopify.Checkout.currency,
+                      'checkout': {
+                          'actionField': {
+                              'step': Steps[Shopify.Checkout.step],
+                              'option': Shopify.Checkout.step
+                          },
+                          'products': cart.items.map(cartLineItem => {
+                              return {
+                                  'name': cartLineItem.product_title,
+                                  'id': cartLineItem.product_id,
+                                  'quantity': cartLineItem.quantity,
+                                  'price': cartLineItem.price,
+                                  'category': cartLineItem.product_type,
+                                  'brand': cartLineItem.vendor,
+                                  'variant': cartLineItem.variand_id,
+                              }
+                          })
+                      }
+                  }
+              }
+              dataLayer.push(dataLayerObj)
+          })
+      }
+
+      const pushDataLayerStep = () => {
+          const dataLayerObj = {
+              'event': 'checkoutOption',
+              'ecommerce': {
+                  'checkout_option': { 
+                      'actionField': {
+                          'step': Steps[Shopify.Checkout.step],
+                          'option': Shopify.Checkout.step
+                      }
+                  } 
+              }
+          }
+          dataLayer.push(dataLayerObj)
+      }
+
+        function rewriteLogout() {
+          {% comment %} console.log('rewriteLogout', new Date().toISOString()) {% endcomment -%}
+          $('a[href*="/account/logout?"]').each(function() {
+            {% comment %} console.log('found a link to rewrite', this, new Date().toISOString()) {% endcomment -%}
+            this.href = this.href.replace('/account/logout?', '/pages/myaccount?operation=signOut&')
+          })
+          $('a[href$="/account/logout"]').each(function() {
+            {% comment %} console.log('found a link to rewrite', this, new Date().toISOString()) {% endcomment -%}
+            this.href = this.href.replace('/account/logout', '/pages/myaccount?operation=signOut')
+          })
+        }
+        {% comment %} Listen for page:load and page:change as recommended at
+        https://shopify.dev/themes/architecture/layouts/checkout-liquid/customize-checkout. {% endcomment -%}
+        $(document).on("page:load page:change", rewriteLogout)
+        {% comment %} In practice, page:load and page:change are somewhat delayed,
+        and the logout link seems to have been created moments before this script runs,
+        so we get a much snappier rewrite if we just do it now. {% endcomment -%}
+        rewriteLogout()
+        {%- comment %}
+        We can experiment with MutationObserver if the above ever proves to be insufficient.
+        However, this means watching all adds and removes - not efficient - see for example
+        https://github.com/whatwg/dom/issues/77.
+
+        new MutationObserver(function (mutationsList, observer) {
+          for (const mutation of mutationsList) {
+            console.log(mutation, new Date().toISOString())
+            // if (mutation.type === 'childList') {
+            //   console.log('A child node has been added or removed.');
+            // }
+            // else if (mutation.type === 'attributes') {
+            //   console.log('The ' + mutation.attributeName + ' attribute was modified.');
+            // }
+          }
+        }).observe(document, {subtree: true, childList: true, attributeFilter: ['href']})
+        {% endcomment %}
+      
+
+      // GWP funcationitly starts here ====================
+
+      function checkoutGWPState(){
+        cartTotal = getCheckoutCartTotal();
+        cartTotal.then(function(cartTotal) {
+
+            // GWP Variables
+            let $body = document.body;
+            const isGWP = $body.dataset.codeless
+            const codeless_gwp_thresh = $body.dataset.codeThresh;
+            const codeless_gwp_thresh_tiered = $body.dataset.codeThreshTiered;
+            const codeless_gwp_id_1 = $body.dataset['codeProduct-1'] !== '' ? $body.dataset['codeProduct-1'] : null;
+            const codeless_gwp_id_2 = $body.dataset['codeProduct-2'] !== '' ? $body.dataset['codeProduct-2'] : null;
+
+            // GWP Product 1
+            if(isGWP && codeless_gwp_id_1 !== null ){
+              codeless_gwp(cartTotal, codeless_gwp_thresh, codeless_gwp_id_1);
+            }
+
+            // GWP Product 2
+            if(isGWP && codeless_gwp_id_2 !== null ){
+              codeless_gwp(cartTotal, codeless_gwp_thresh_tiered, codeless_gwp_id_2);
+            }
+
+        });
+      }
+
+      // GWP generalize function for GWP
+      function codeless_gwp(cartTotal, thresh, variant_id){
+        fetch('/cart.js').then(response => {
+          return response.json();
+        }).then(cart => {
+          // Work with JSON data here
+          var PRO_GWP = "GWP";
+          var gwpVariant, gwpElement, gwpInCart;
+          for(item of cart.items){
+            if(item.id == variant_id && item.product_type === PRO_GWP){
+              gwpVariant = item.id;
+              gwpElement = $('.product-table tr[data-variant-id='+gwpVariant+']');
+              gwpInCart = gwpElement ? true : false;
+            }
+          }
+
+          if (cartTotal < thresh && gwpInCart == true)  {
+              gwpElement.remove()
+              var gwpData= JSON.parse(`{"updates": {"` + gwpVariant + `": 0} }`);
+              updateCartCodelessGWP(gwpData, false);
+
+          }else if(cartTotal > thresh && gwpInCart == false){
+              var gwpData= JSON.parse(`{"updates": {"` + gwpVariant + `": 1} }`);
+              updateCartCodelessGWP(gwpData, true);
+          }
+
+        }).catch(err => {
+          console.log(err);
+        });
+      }
+
+      function getCheckoutCartTotal(){
+            cart_price = parseInt($('.total-line__price .order-summary__emphasis').attr('data-checkout-subtotal-price-target'));
+            return new Promise(function (resolve, reject) {
+                $.getJSON('/cart.js').then(function(cart) {
+                    //Remove gift card items from GWP threshold
+                    var subTotalCartPrice = cart_price;
+                    var excludeAmount = 0;
+                    cart.items.forEach(function (product) {
+                        if(product.product_type === 'GWP' || product.product_type === 'Gift Card' || product.product_type === 'Sample Program'){
+                            excludeAmount = excludeAmount + product.final_line_price;
+                        }
+                    });
+
+                    cart_discount_box = $('[data-checkout-discount-amount-target]');
+                    if (cart_discount_box.length > 0) {
+                        excludeAmount += parseInt($('[data-checkout-discount-amount-target]').attr('data-checkout-discount-amount-target'));
+                    }
+
+                    subTotalCartPrice -= excludeAmount;
+                    resolve(subTotalCartPrice);
+                });
+            });
+        }      
+    
+        function updateCartCodelessGWP(product_data, redirect=true){
+            $.post('/cart/update.js', product_data);
+            if(redirect){
+                setTimeout(() => { window.location.href = $(location).attr("href"); }, 500);
+            }
+        }
+
+        /**
+         * This function is called on checkout page
+         * Handle discount functionality Add/Remove
+         */
+        function checkoutUtills(){
+            // CHECKING IF DISCOUNT IS APPLIED BY CLICKING APPLY BUTTON
+            $('body').on('submit', '.order-summary__section--discount .edit_checkout', (e) => {
+                e.preventDefault();
+                prepareURLRedirect();
+            });
+
+            // REMOVE DISCOUNT CODE BY CLICKING 'X'
+            $('body').on('click', '.tag__button', (e) => {
+                prepareURLRedirect();
+            });
+        }
+
+
+        /**
+         * Redirect Page once discount code is added/removed to verify GWP
+         *
+         */
+        function prepareURLRedirect(){
+            const code = $(this).parent().children('.field__input-wrapper').find('input').val();
+            let newUrl = window.location.href.split('?')[0];
+            if (code) {
+                const variable = newUrl.indexOf('?');
+                const type = variable > -1 ? '&' : '?';
+                newUrl =  newUrl + type+'discount=' + code;
+            }
+            setTimeout(() => { window.location = newUrl; }, 500);
+        }
+
+        // GWP funcationitly ends here ====================
+
+      })(Checkout.$)
+
+    </script>
+  </body>
+</html>

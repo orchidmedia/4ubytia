@@ -1,0 +1,445 @@
+{% assign menu = mobile_menu %}
+{% if mobile_menu == blank %}
+  {% assign menu = main_menu %}
+{% endif %}
+{%- if mobile_design == "collapse-menu" -%}
+  
+<div class='offset-mobile-wrapper lg:hidden'>
+  {{ design }}
+  <div class='close-menu-mobile'>
+    <svg
+      width='35'
+      height='35'
+      viewBox='0 0 35 35'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'>
+      <line
+        x1="1.56843"
+        y1="1"
+        x2="33.8613"
+        y2="33.2929"
+        stroke="black"
+        stroke-linecap="round" />
+      <line
+        x1="33.8613"
+        y1="1.70711"
+        x2="1.56844"
+        y2="34"
+        stroke="black"
+        stroke-linecap="round" />
+    </svg>
+  </div>
+  <div class='offset-menu-mobile'>
+    <ul class='offset-level-1'>
+      {% for link in linklists[menu].links %}
+        {% assign title_handle = link.title | handleize %}
+        {% if link.links != blank %}
+        <li>
+            {% assign mobile_link_handle = link.handle | replace: '-', '_' %}
+            <a class="mobile-menu__accordion">
+              <h5>{{ link.title }}</h5>
+            </a>
+              <ul class='mobile-menu__panel'>
+                {% for childlink in link.links %}
+                  <li>
+                    <a href='{% if childlink.url == "#" or childlink.url == blank %}javascript:void(0);{% else %}{{ childlink.url }}{% endif %}'>
+                      <p>{{- childlink.title }}</p>
+                    </a>
+                  </li>
+                {% endfor %}
+                {% for block in section.blocks %}
+                  {% assign menu_title = block.settings.heading | handleize %}
+                  {% if menu_title == blank or menu_title != title_handle %}
+                      {% continue %}
+                  {% endif %}
+                  {% render 'header-menu-featured-banner', block: block %}
+                {% endfor %}
+              </ul>
+            </li>
+            {% else %}
+            <li>
+              <a href='{{ link.url }}'>
+                <h5>{{ link.title }}</h5>
+              </li>
+            {% endif %}
+      {% endfor %}
+    </ul>
+
+    <div class='offset-customer-links'>
+      {% if customer %}
+        <a href='{{ routes.account_url }}' class='w-full py-3 mb-3 rounded-md flex items-center'>
+          <div class='flex flex-grow'>
+            {% render 'icon', name: 'user' %}
+            <span class='ml-2'>{{ customer.first_name }}</span>
+          </div>
+        </a>
+        <button class='w-full text-center btn-logout rounded-md border border-black whitespace-nowrap'>
+          <a href='/account/logout' class='block p-3'>
+            {{- 'customer.account.log_out' | t -}}
+          </a>
+        </button>
+      {% else %}
+        <div class='flex flex-row gap-2'>
+          {%- render 'icon', name: 'user', size: 18 -%}
+          <a href='/account'>Account</a>
+        </div>
+        <div class='flex flex-row gap-2 sf-cart-icon'>
+          {%- render 'icon', name: 'cart', size: 18 -%}
+          <a href='/cart'>Bag</a>
+        </div>
+        <br>
+
+        <div class='flex gap-4'>
+          {%- if settings.social_facebook_link != blank -%}
+            <a href='{{ settings.social_facebook_link }}'>
+              {%- render 'icon', name: 'facebook', size: 14, icon_select: 'icon-3' -%}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_instagram_link != blank -%}
+            <a href='{{settings.social_instagram_link}}'>
+              {%- render 'icon', name: 'instagram', size: 14, icon_select: 'icon-3' -%}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_twitter_link != blank -%}
+            <a href='{{settings.social_twitter_link}}'>
+              {%- render 'icon', name: 'twitter', size: 14, icon_select: 'icon-3' -%}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_tiktok_link != blank -%}
+            <a href='{{settings.social_tiktok_link}}'>
+              {%- render 'icon', name: 'tiktok', size: 14, icon_select: 'icon-3' -%}
+            </a>
+          {%- endif -%}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelector('.offset-toggle').addEventListener('click', function(e) {
+    document
+      .querySelector('.offset-mobile-wrapper')
+      .classList
+      .add('open')
+      document
+      .children[0]
+      .classList
+      .add('prevent-scroll')
+  })
+
+  var resetState = document.querySelectorAll('.sf-header .offset-level-2 > li.back-to-level-1, .sf-header .offset-level-2 > li:nth-child(2)')
+  var resetMenuScroll = document
+    .querySelectorAll('.offset-menu-mobile, .offset-level-2')
+    document
+    .querySelector('.close-menu-mobile')
+    .addEventListener('click', function(e) {
+      document
+        .querySelector('.offset-mobile-wrapper')
+        .classList
+        .remove('open')
+        document
+        .children[0]
+        .classList
+        .remove('prevent-scroll')
+
+      setTimeout(() => {
+
+      resetState.forEach((elem, indx) => {
+          elem.click()
+        })
+        resetMenuScroll.forEach((elem, indx) => {
+          elem.scrollTop = 0
+        })
+      }, 500)
+    })
+
+    var acc = document.getElementsByClassName("mobile-menu__accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("mobile-menu__active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null; } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";} 
+      });
+    }
+</script>
+
+{%- elsif mobile_design == "offset-menu" -%}
+
+<div class="offset-mobile-wrapper lg:hidden">
+  {{ design }}
+<div class="close-menu-mobile">
+  <svg width="55px" height="55px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+</div>
+<div class="offset-menu-mobile">
+  <ul class="offset-level-1">
+      {% for link in linklists[menu].links %}
+              <li>
+                  <a href="{{ link.url }}"><span>{{ link.title }}</span>
+                      {% if link.links != blank %}<span class="ml-2 sf-menu__arrow">{% render 'icon', name: 'chevron-right-solid', size: 'custom', class: 'w-5 h-5' %}</span>{% endif %}
+                  </a>
+                  {% if link.links != blank %}
+                      <ul class="offset-level-2">
+                          <li class="back-to-level-1"><span class="sf-menu__arrow mr-2">{% render 'icon', name: 'chevron-left-solid', size: 'custom', class: 'w-4 h-4' %}</span> Back</li>
+                          {% for childlink in link.links %}
+                      <li {% if forloop.index == 1 %} class="active" {% endif %}>
+                          <a href="{% if childlink.url == "#" or childlink.url == blank %}javascript:void(0);{% else %}{{ childlink.url }}{% endif %}">{{ childlink.title }}
+                              {% if childlink.links != blank %}
+                                  <span class="ml-2 sf-menu__arrow">{% render 'icon', name: 'chevron-down-solid', size: 'custom', class: 'w-4 h-4' %}</span>
+                              {% endif %}
+                          </a>
+                          {% if childlink.links != blank %}
+                              <ul class="offset-level-3">
+                                  {% for grandlink in childlink.links %}
+                                      <li><a href="{{ grandlink.url }}">{{ grandlink.title }}</a></li>
+                                  {% endfor %}
+                              </ul>
+                          {% endif %}
+                      </li> 
+                      {% endfor %}
+
+                          <div class="flex offset-menu-banner">
+                              {% assign title_handle = link.title | handleize %}
+                              {%- assign has_mega_item = false -%}
+                              {% for block in section.blocks %}
+                                  {% assign menu_title = block.settings.heading | handleize %}
+              
+                                  {% if menu_title == blank or menu_title != title_handle %}
+                                      {% continue %}
+                                  {% endif %}
+                                  {% if menu_title == title_handle %}
+                                      {%- assign has_mega_item = true -%}
+                                      {% if block.settings.container != 'inherit' %}
+                                          {% assign dropdown_container = block.settings.container %}
+                                      {% endif %}
+              
+                                      {% if block.type == 'banner' %}
+                                          {% render 'mega-menu-banner', block: block %}
+                                      {% endif %}
+              
+                                      {% if block.type == 'product-list' %}
+                                          {% assign stretch_width = block.settings.stretch_width %}
+                                          {% assign collection = block.settings.collection %}
+                                          {% if collection != blank %}
+                                              {% render 'mega-menu-products' with block as product_list %}
+                                          {% endif %}
+                                      {% endif %}
+              
+                                      {% if block.type == 'collection-list' %}
+                                          {% assign stretch_width = true %}
+                                          {% render 'mega-menu-collections', block: block %}
+                                      {% endif %}
+
+                                      {% if block.type == 'links-list' %}
+                                          {% assign stretch_width = true %}
+                                          {% render 'mega-menu-links', block: block %}
+                                      {% endif %}
+              
+                                      {% if block.type == 'bloglist' %}
+                                          {% render 'mega-menu-blog-list' with block as bloglist %}
+                                      {% endif %}
+              
+                                      {% if block.type == 'custom_html' %}
+                                          <div class="menu-item__html text-black">
+                                              {{ block.settings.html }}
+                                          </div>
+                                      {% endif %}
+                                      
+                                  {% endif %}
+                              {% endfor %}
+                          </div>
+
+                      </ul>
+                  {% endif %}
+              </li>
+      {% endfor %}
+  </ul>
+
+  <div class="offset-customer-links">
+      {% if customer %}
+          <a href="{{ routes.account_url }}" class="w-full py-3 mb-3 rounded-md flex items-center">
+              <div class="flex flex-grow">
+                  {% render 'icon', name: 'user' %}
+                  <span class="ml-2">{{ customer.first_name }}</span>
+              </div>
+          </a>
+          <button class="w-full text-center btn-logout rounded-md border border-black whitespace-nowrap">
+              <a href="/account/logout" class="block p-3">{{ 'customer.account.log_out' | t }}</a>
+          </button>
+      {% else %}
+          <a href="/account">Sign In</a> <span>|</span> 
+          <a href="/account/register">Create Account</a>
+      {% endif %}
+  </div>
+
+</div>
+</div>
+
+<style>
+.offset-mobile-wrapper{
+  background: #fff;
+  padding: 15px;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 100;
+  transform: translate(-100%, 0px);
+  left: 0;
+  top: 100px;
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.offset-mobile-wrapper.open{
+  transform: translate(0%, 0px);
+}
+.offset-mobile-wrapper .offset-menu-banner{
+  opacity: 1;
+  transform: translate(0%); 
+  margin-top: 0px;
+}
+.close-menu-mobile{
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.offset-menu-mobile{
+  overflow-x: hidden;
+  height: calc(100vh - 115px);
+  overflow-y: auto;
+}
+
+.offset-level-1{
+  padding-top: 0px;
+}
+
+.offset-level-1 > li, .offset-level-2 > li{
+  border-bottom: 1px solid #ccc;
+  padding: 24px 0;
+}
+
+.offset-level-1 > li > a, .offset-level-2 > li > a, .back-to-level-1{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-to-level-1{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.offset-level-2{
+  background: #fff;
+  position: absolute;
+  width: 100%;
+  height: calc(100vh - 90px);
+  top: 60px;
+  transform: translate(-100%, 0px);
+  left: 0;
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
+  overflow: auto;
+  padding: 15px;
+  padding-top: 0;
+  z-index: 1;
+}
+.offset-level-2>li.active .offset-level-3 {
+  display: block;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+.offset-level-2>li.active>a .sf-menu__arrow {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+.offset-level-1>li.active .offset-level-2{
+  transform: translate(0%, 0px);
+}    
+
+.offset-level-3{
+  padding: 10px 0 0 12px;
+  display: none;
+}
+
+.offset-level-3 > li > a {
+  font-family: 'ITC Franklin Gothic Medi';
+}
+
+.back-to-level-1{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.offset-customer-links{
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+  margin-top: 24px;
+  display: flex;
+}
+.offset-customer-links span{
+  padding: 0 10px;
+  margin: 0;
+}
+
+@media (max-width:1023px) {
+  .offset-menu-banner>div{
+      margin-top: 32px;
+      width: 50%;
+      padding: 10px;
+  }
+}
+</style>
+
+<script>
+document.querySelector('.offset-toggle').addEventListener('click', function(e) {
+  document.querySelector('.offset-mobile-wrapper').classList.add('open');
+  document.children[0].classList.add('prevent-scroll'); 
+});
+
+var resetState = document.querySelectorAll('.sf-header .offset-level-2 > li.back-to-level-1, .sf-header .offset-level-2 > li:nth-child(2)');
+var resetMenuScroll = document.querySelectorAll('.offset-menu-mobile, .offset-level-2');
+document.querySelector('.close-menu-mobile').addEventListener('click', function(e) {
+  document.querySelector('.offset-mobile-wrapper').classList.remove('open');
+  document.children[0].classList.remove('prevent-scroll'); 
+
+  setTimeout(() => {
+      //document.querySelector('.sf-header .offset-level-2 > li:not(.back-to-level-1)').click();
+      resetState.forEach((elem, indx) => {
+          elem.click();
+      });
+      resetMenuScroll.forEach((elem, indx) => {
+          elem.scrollTop = 0;
+      });
+  }, 500);
+})
+
+document.querySelectorAll('.offset-level-1>li>a').forEach(function(ele, idx) {
+  ele.addEventListener('click', function(e) {
+      this.parentElement.classList.add('active');
+      document.querySelectorAll('.back-to-level-1').forEach(function(ele, idx) {
+          ele.classList.remove('active');
+          ele.nextElementSibling.classList.add('active');
+          ele.nextElementSibling.click();
+      });
+  })
+});
+
+document.querySelectorAll('.back-to-level-1').forEach(function(ele, idx) {
+  ele.addEventListener('click', function(e) {
+      this.parentElement.parentNode.classList.remove('active');
+  })
+});
+</script>
+
+{%- endif -%}

@@ -1,0 +1,354 @@
+{%- assign st = section.settings -%}
+{% case section.settings.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+{%- if section.settings.bg_color_override -%}
+  {%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+{% assign has_bg = false %}
+
+{% unless bg_color == "rgba(0,0,0,0)" or bg_color == blank %}
+    {% assign has_bg = true %}
+{% endunless %}
+
+{% capture container %}
+    {{ st.container }}
+{% endcapture %}
+
+{% assign columns = st.grid_columns %}
+{% assign images_count = st.images_count %}
+
+{% if st.layout == 'metro' %}
+    {% if columns >= 8 %}
+        {% assign columns = 8 %}
+    {% else %}
+        {% assign columns = 6 %}
+    {% endif %}
+{% endif %}
+<section
+    id="sf__instagram-{{ section.id }}"
+    class="sf-instagram section-pv-{{ section.settings.margin_vertical }} {{ section.settings.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}"
+    data-section-type="instagram"
+    data-section-id="{{ section.id }}"
+    data-access-token="{{ settings.instagram_token }}"
+    data-images-count="{{ st.images_count }}"
+    data-layout="{{ st.layout }}"
+    {% if has_bg %}
+        data-bg="{{ bg_color | color_to_hsl }}"
+    {% endif %}
+    style="background-color: {{ bg_color }};"
+>
+    <div class="{{ container }}" style="--column-gap: {{ st.gap }}px; --row-gap: {{ st.gap }}px; --row-gap-mobile: {{ st.mobile_gap }}px; --column-gap-mobile: {{ st.mobile_gap }}px;">
+        <div class="section__header text-{{ section.settings.header_alignment }}{% if st.layout == 'metro' %} pt-10 lg:pt-0 px-5 lg:hidden{% endif %}">
+            {% if st.subheading != blank %}
+                <h5 class="section__subheading mb-2">{{ st.subheading }}</h5>
+            {% endif %}
+            {% if st.heading != blank %}
+                <h2 class="section__heading">{{ st.heading }}</h2>
+            {% endif %}
+            {% if st.description != blank %}
+                <div class="section__description rte">{{ st.description }}</div>
+            {% endif %}
+            {% if st.profile != blank and st.button_label != blank %}
+                <div class="mt-5">
+                    <a href="{{ st.profile }}" target="_blank" class="sf__btn sf__btn-secondary uppercase text-xs font-weight--bold">{{ st.button_label }}</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="sf-instagram__wrapper">
+            <div class="sf__ms">
+                <div class="sf__ms-wrapper instagram-images sf-grid grid-{{ section.id }} md:grid md:grid-cols-{{ columns | minus: 2 }} xl:grid-cols-{{ columns }}">
+                    {% if st.layout == 'metro' %}
+                        {% assign header_class = 'col-start-3 col-end-5' %}
+                        {% if columns == 8 %}
+                            {% assign header_class = 'col-start-3 col-end-5 xl:col-start-4 xl:col-end-6' %}
+                        {% endif %}
+                        {% assign row_end = 3 %}
+                        {% if images_count > 12 and columns == 8 %}
+                            {% assign row_end = 4 %}
+                        {% endif %}
+                        {% if images_count > 8 and columns == 6 %}
+                            {% assign row_end = 4 %}
+                        {% endif %}
+                        <div class="hidden sf-instagram__header text-center px-4 lg:px-6 lg:flex flex-col justify-center items-center row-start-1 row-end-{{ row_end }} {{ header_class }}">
+                            {% if st.subheading != blank %}
+                                <h5 class="section__subheading mb-2">{{ st.subheading }}</h5>
+                            {% endif %}
+                            {% if st.heading != blank %}
+                                <h2 class="section__heading">{{ st.heading }}</h2>
+                            {% endif %}
+                            {% if st.description != blank %}
+                                <div class="section__description rte">{{ st.description }}</div>
+                            {% endif %}
+
+                            {% if st.profile != blank and st.button_label != blank %}
+                                <a href="{{ st.profile }}" target="_blank" class="sf__btn sf__btn-secondary uppercase text-xs lg:text-sm font-weight--bold mt-0 md:mt-18 lg:mt-20{% if st.container == 'container' %} 2xl:mt-24{% else %} 2xl:mt-32{% endif %}">{{ st.button_label }}</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "Instagram",
+    "settings": [
+        {
+            "type": "paragraph",
+            "content": "Go to: \"Theme settings > Integration\" to update Instagram token"
+        },
+        {
+            "type": "header",
+            "content": "Section header"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "On the Gram"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading"
+        },
+        {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description"
+        },
+        {
+            "type": "select",
+            "id": "header_alignment",
+            "label": "Text alignment",
+            "default": "center",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_desktop",
+            "label": "Hide on Desktop",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_tablet",
+            "label": "Hide on Tablet",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_mobile",
+            "label": "Hide on Mobile",
+            "default": false
+        },
+        {
+          "type": "select",
+          "id": "margin_vertical",
+          "label": "Section margin (vertical)",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            }
+          ]
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "Container type",
+            "default": "container-fluid",
+            "options": [
+                {
+                    "value": "container-fluid",
+                    "label": "Default"
+                },
+                {
+                    "value": "w-full",
+                    "label": "Full width"
+                },
+                {
+                    "value": "container",
+                    "label": "Use container box"
+                }
+            ]
+        },
+        {
+          "type": "select",
+          "id": "bg_color_selector",
+          "label": "Section Background",
+          "default": "color_section1_bg",
+          "options": [
+            {
+              "value": "color_section1_bg",
+              "label": "Section 1"
+            },
+            {
+              "value": "color_section2_bg",
+              "label": "Section 2"
+            },
+            {
+              "value": "color_section3_bg",
+              "label": "Section 3"
+            },
+            {
+              "value": "color_section4_bg",
+              "label": "Section 4"
+            },
+            {
+              "value": "color_section5_bg",
+              "label": "Section 5"
+            },
+            {
+              "value": "color_section6_bg",
+              "label": "Section 6"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "bg_color_override",
+          "label": "Override Background",
+          "default": false
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color",
+            "default": "rgba(0,0,0,0)"
+        },
+        {
+            "type": "header",
+            "content": "Settings"
+        },
+        {
+            "type": "select",
+            "id": "layout",
+            "label": "Layout",
+            "default": "grid",
+            "options": [
+                {
+                    "value": "grid",
+                    "label": "Grid"
+                },
+                {
+                    "value": "metro",
+                    "label": "Metro"
+                }
+            ]
+        },
+        {
+            "type": "range",
+            "min": 4,
+            "max": 24,
+            "step": 1,
+            "id": "images_count",
+            "label": "Images to show",
+            "default": 4
+        },
+        {
+            "type": "header",
+            "content": "Grid settings"
+        },
+        {
+            "type": "range",
+            "id": "grid_columns",
+            "label": "Images per row",
+            "min": 4,
+            "max": 12,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "range",
+            "id": "gap",
+            "label": "Image gap",
+            "min": 0,
+            "max": 50,
+            "default": 30,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "mobile_gap",
+            "label": "Image gap on mobile",
+            "min": 0,
+            "max": 30,
+            "step": 2,
+            "default": 10,
+            "unit": "px"
+        },
+        {
+            "type": "header",
+            "content": "Follow button",
+            "info": "This button show only on Metro layout"
+        },
+        {
+            "type": "text",
+            "id": "profile",
+            "label": "Profile URL",
+            "default": "https://www.instagram.com/terasana/"
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "Custom classes"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Instagram",
+            "category": "Image"
+        }
+    ]
+}
+
+{% endschema %}

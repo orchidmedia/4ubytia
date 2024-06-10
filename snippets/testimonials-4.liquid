@@ -1,0 +1,77 @@
+{% assign min = 1 %}
+{% assign max = 100 %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+{% assign swiper_control_name = "swiper-testimonial-4-control-" | append: randomNumber %}
+
+<div class="sf-testimonials__inner">
+    <div class="swiper-container swiper-testimonial-4-{{randomNumber}}">
+        <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+                <div class="swiper-slide" {{ block.shopify_attributes }}>
+                    <div data-index={{ forloop.index0 }} class="review-block px-[22px] md:px-0 select-none lg:transition-opacity md:opacity-40 text-center">
+                    {% if section.settings.show_stars %}
+                        <div class="stars flex mb-7 justify-center">
+                            {%- render 'testimonials__stars' -%}
+                        </div>
+                    {% endif %}
+                    <div class="sf-testimonials-description text-xl xl:text-3xl leading-normal mb-7 sm:mb-10 rte tes-desc">
+                        {{ block.settings.description }}
+                    </div>
+                    <div class="sf-testimonials-footer tes-author">{{ block.settings.footer }}</div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <div class="indexes text-center mt-5 text-sm font-medium">
+            <span class="sf-slider-index sf-slider-index-{{randomNumber}}">1</span>
+            <span class="mx-2">/</span>
+            <span>{{ section.blocks | size }}</span>
+        </div>
+    </div>
+</div>
+{% render 'slider-controls', show_nav: section.settings.show_navigation, show_pagination: section.settings.show_pagination, absolute: true, nav_class: '', swiper_control_name: swiper_control_name %}
+
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var gutter_container;
+        if ('{{container_type}}' === 'container-fluid') {
+            gutter_container = 200;
+        }
+        if ('{{container_type}}' === 'container') {
+            gutter_container = 150;
+        }
+        var swiper = new Swiper('.swiper-testimonial-4-{{randomNumber}}', {
+            slidesPerView: 1,
+            centeredSlides: true,
+            slideToClickedSlide: true,
+            gutter: gutter_container,
+            navigation: { 
+                nextEl: document.querySelector('.sf-slider__controls-next.swiper-testimonial-4-control-{{randomNumber}}'),
+                prevEl: document.querySelector('.sf-slider__controls-prev.swiper-testimonial-4-control-{{randomNumber}}')
+            },
+            pagination: {
+                el: document.querySelector('.swiper-pagination.swiper-testimonial-4-control-{{randomNumber}}'),
+                clickable: true
+            },
+            breakpoints: {
+            768: {
+              spaceBetween: parseInt(gutter_container / 4),
+              slidesPerView: 3
+            },
+            992: {
+              spaceBetween: gutter_container / 2,
+              slidesPerView: 3
+            },
+            1920: {
+              spaceBetween: gutter_container,
+              slidesPerView: 3
+            }
+          }
+        });
+        swiper.on('slideChange', function () {
+            console.log(this.activeIndex)
+            document.querySelector('.sf-slider-index-{{randomNumber}}').innerHTML = this.activeIndex + 1;
+            });
+    }, false);
+</script>

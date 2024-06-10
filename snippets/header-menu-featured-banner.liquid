@@ -1,0 +1,31 @@
+{% if block.settings.featured_banner_text != blank %}
+    <div class="featured-banner">
+        {% if block.settings.featured_banner_text_side == "left" %}
+        <div class="featured-banner__text"
+            style="background-color: {{block.settings.featured_banner_text_background_color}};">
+            <h2>{{block.settings.featured_banner_text}}</h2>
+            {% render 'button-link'
+            link: block.settings.featured_banner_cta_link,
+            text: block.settings.featured_banner_cta_text
+            %}
+        </div>
+        <div class="featured-banner__image featured-banner__image--right"
+            style="background-image:url(https:{{block.settings.featured_banner_image | img_url: '220x'}});">
+            <span>{{block.settings.featured_banner_badge_text}}</span>
+        </div>
+        {%else%}
+        <div class="featured-banner__image featured-banner__image--left"
+            style="background-image:url(https:{{block.settings.featured_banner_image | img_url: '220x'}});">
+            <span>{{block.settings.featured_banner_badge_text}}</span>
+        </div>
+        <div class="featured-banner__text"
+            style="background-color: {{block.settings.featured_banner_text_background_color}};">
+            <h2>{{block.settings.featured_banner_text}}</h2>
+            {% render 'button-link'
+            link: block.settings.featured_banner_cta_link,
+            text: block.settings.featured_banner_cta_text
+            %}
+        </div>
+        {%endif%}
+    </div>
+{% endif %}

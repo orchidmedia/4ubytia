@@ -1,0 +1,73 @@
+{%- assign st = section.settings -%}
+<section 
+  class="sf-custom-liquid section-pv-{{ section.settings.margin_vertical }} {{ st.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}"
+  data-section-type="custom-liquid"
+  data-section-id={{ section.id }}>
+  {{ st.custom_liquid }}
+</section>
+
+{% schema %}
+{
+  "name": "Custom liquid",
+  "class": "custom-liquid",
+  "settings": [
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom liquid"
+    },
+    {
+        "type": "text",
+        "id": "custom_class",
+        "label": "Custom classes"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Hide on Desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_tablet",
+      "label": "Hide on Tablet",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Hide on Mobile",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "margin_vertical",
+      "label": "Section margin (vertical)",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom liquid"
+    }
+  ]
+}
+{% endschema %}

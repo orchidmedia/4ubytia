@@ -1,0 +1,15 @@
+{% if settings.sticky_show_swatch_option %}
+    {%- for option in product.options_with_values -%}
+        {% assign option_name = option.name | downcase %}
+        {% assign sticky_option_name_setting_downcase = settings.sticky_option_name | downcase %}
+            {% if option_name == sticky_option_name_setting_downcase %}
+                <div class="sticky-variant-option mx-5 flex flex-wrap items-center {% if product.variants.size == 1 %}flex-grow{% endif %}">
+                    {% render 'product-option-design', 
+                        design: settings.sticky_option_design, 
+                        option: option, 
+                        product_handle: product.handle
+                    %}
+                </div>
+            {% endif %}
+    {%- endfor -%}
+  {% endif %}

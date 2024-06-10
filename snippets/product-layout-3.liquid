@@ -1,0 +1,38 @@
+<div class="sf-prod__layout-3">
+    <div class="flex flex-wrap sf-prod__container sf-prod__block">
+        <div class="w-full {%if section_layout == 'fifty_fifty'%} col-lg-6 {%elsif section_layout == 'sixty_forty'%} col-lg-8 {%elsif section_layout == 'seventy_thirty'%} col-lg-9{%else%} md:w-1/2 {%endif%} flex-1">
+            <div class="sf-prod-media__wrapper hidden md:block">
+                {% render 'product-badges', product: product %}
+                <div class="sf-product-media__desktop">
+                  <div class="grid grid-cols-2 gap-8">
+                    {% for media in product.media %}
+                      <div class="sf-prod-media-item media-type-{{ media.media_type }} overflow-hidden relative" data-index={{ forloop.index0 }}>
+                        {% render 'media', media: media, aspect_ratio: media.aspect_ratio %}
+                        {% render 'product-zoom-button' %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-full {%if section_layout == 'fifty_fifty'%} col-lg-6 {%elsif section_layout == 'sixty_forty'%} col-lg-4 {%elsif section_layout == 'seventy_thirty'%} col-lg-3{%else%} md:w-1/2  {%endif%} sf-prod__summary">
+            {% render 'product-page__info' %}
+        </div>
+    </div>
+</div>
+<style>
+.sf-prod-media.media-video > iframe {
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+}
+</style>
+<script>
+  window.addEventListener("DOMContentLoaded", (event) => {
+    window._ThemeEvent.subscribe("ON_PLYR_LOADED", () => {
+      var plyrContainers = document.getElementsByClassName('sf-prod-media media-video');
+      for (var i=0; i < plyrContainers.length ; i++) {
+          new window.spratlyLibs.Plyr('.sf-prod-media.media-video')[i]
+      }
+    });
+  });
+</script>

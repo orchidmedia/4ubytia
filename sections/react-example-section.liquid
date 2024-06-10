@@ -1,0 +1,25 @@
+<section
+    id="react-example-section-{{ section.id }}"
+    class="react-example-section"
+    data-example-property="{{ section.settings.example_property }}"
+>
+</section>
+
+{% schema %}
+{
+  "name": "React Example Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "example_property",
+      "label": "Text to render"
+    }
+  ],
+  "presets": [
+    {
+      "name": "React Example Section",
+      "category": "Example"
+    }
+  ]
+}
+{% endschema %}

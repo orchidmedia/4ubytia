@@ -1,0 +1,58 @@
+{%- assign sort_by = collection.sort_by | default: 'best-selling' -%}
+
+
+<div class="sf-toolbar-sorting" data-toolbar-sorting>
+<div class="sf__custom-sort-by select-box">
+  <div class="select-box__current" tabindex="1">
+    {%- for option in collection.sort_options -%}
+      {% unless option.value == 'manual' or option.value == 'created-ascending' %}
+      <div class="select-box__value">
+        <input class="select-box__input" type="radio" id="{{ forloop.index0 }}" value="{{option.value | escape }}" name="sort_by" aria-describedby="a11y-refresh-page-message" 
+        {% if option.value == sort_by %} checked="checked"{% endif %} 
+        data-index="{{ forloop.index0 }}"
+        />
+        <p class="select-box__input-text">
+          {% if option.name == 'Alphabetically, A-Z' %}
+          From A to Z
+          {% elsif option.name == 'Alphabetically, Z-A' %}
+          From Z to A
+          {% elsif option.name == 'Price, low to high' %}
+          Price Low to High
+          {% elsif option.name == 'Price, high to low' %}
+          Price High to Low
+          {% elsif option.name == 'Date, new to old' %}
+          Newest
+          {% else %}
+          {{ option.name | escape }}
+          {% endif %}
+        </p>
+      </div>
+      {% endunless %}
+    {%- endfor -%}
+    <span class="select-box__icon"></span>
+  </div>
+  <ul class="select-box__list hide-mobile">
+    {%- for option in collection.sort_options -%}
+    {% unless option.value == 'manual' or option.value == 'created-ascending' %}
+    <li>
+        <label class="select-box__option" for="{{ forloop.index0 }}" aria-hidden="aria-hidden">
+          {% if option.name == 'Alphabetically, A-Z' %}
+          From A to Z
+          {% elsif option.name == 'Alphabetically, Z-A' %}
+          From Z to A
+          {% elsif option.name == 'Price, low to high' %}
+          Price Low to High
+          {% elsif option.name == 'Price, high to low' %}
+          Price High to Low
+          {% elsif option.name == 'Date, new to old' %}
+          Newest
+          {% else %}
+          {{ option.name | escape }}
+          {% endif %}
+        </label>
+      </li>
+      {% endunless %}
+    {%- endfor -%}
+  </ul>
+</div>
+</div>

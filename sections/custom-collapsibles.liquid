@@ -1,0 +1,338 @@
+{%- liquid
+  assign st = section.settings
+  assign bg_img_enabled = st.bg_img_enabled
+  assign bg_position = st.bg_position
+  assign parallax = st.bg_parallax
+  assign text_color = st.text_color
+  assign margin_vertical = st.margin_vertical
+
+  case st.bg_color_selector
+    when 'color_section1_bg'
+      assign bg_color = settings.color_section1_bg
+    when 'color_section2_bg'
+      assign bg_color = settings.color_section2_bg
+    when 'color_section3_bg'
+      assign bg_color = settings.color_section3_bg
+    when 'color_section4_bg'
+      assign bg_color = settings.color_section4_bg
+    when 'color_section5_bg'
+      assign bg_color = settings.color_section5_bg
+    when 'color_section6_bg'
+      assign bg_color = settings.color_section6_bg
+    else
+      assign bg_color = settings.color_section1_bg
+  endcase
+  
+  if st.bg_color_override
+    assign bg_color = st.bg_color
+  endif
+
+  assign has_bg = false
+  unless bg_color == 'rgba(0,0,0,0)' or bg_color == blank
+    assign has_bg = true
+  endunless
+-%}
+
+{% capture hide_section %}
+  {% if st.hide_mobile %}hide-mobile{% endif %} {% if st.hide_tablet %}hide-tablet{% endif %} {% if st.hide_desktop %}hide-desktop{% endif %}
+{% endcapture %}
+
+<section
+    id="sf-custom-{{ section.id }}"
+    {% if bg_img_enabled %}
+        class="sf__custom-list section-pv-{{ margin_vertical }} {{ hide_section }} sf-custom__bg lazyload js bg-no-repeat bg-{{ bg_position }} bg-initial {% if parallax %}bg-fixed{% endif %}"
+    {% else %}
+        class="sf__custom-list section-pv-{{ margin_vertical }} {{ hide_section }} sf-custom {% if section.blocks.size == 0 %}hidden{% endif %}"
+    {% endif %}
+    data-section-type="custom-list"
+    data-section-id="{{ section.id }}"
+    {% if bg_img_enabled %}
+        data-bg="{{ st.bg_image | img_url: '300x' }}"
+        data-bgset="{% render 'bgset', image: st.bg_image %}"
+        data-parent-fit="contain"
+        data-sizes="auto" data-image-loading
+    {% elsif has_bg %}
+        data-bg="{{ bg_color | color_to_hsl }}"
+    {% endif %}
+>
+  <div class="inner-list w-full" {% unless text_color == 'rgba(0,0,0,0)' or text_color == blank %}style="color: {{ text_color }}"{% endunless %}>
+    <ul>
+      {% for block in section.blocks %}
+        <li>
+          <div class="prod__accordion">
+            <div class="sf-collapsible" data-section-type="sf-collapsible" data-section-id="{{ block.id }}">
+              {% render 'collapsible-item',
+                block: block,
+                collapsible_title: block.settings.collapsible_title,
+                collapsible_content: block.settings.collapsible_content,
+                justify_content: block.settings.justify_content,
+                text_alignment: block.settings.text_alignment,
+                collapsible_open: block.settings.collapsible_open
+              %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Custom Collapsibles",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Hide on Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_tablet",
+      "label": "Hide on Tablet",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Hide on Desktop",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "bg_color_selector",
+      "label": "Background section",
+      "default": "color_section1_bg",
+      "options": [
+        {
+          "value": "color_section1_bg",
+          "label": "Section 1"
+        },
+        {
+          "value": "color_section2_bg",
+          "label": "Section 2"
+        },
+        {
+          "value": "color_section3_bg",
+          "label": "Section 3"
+        },
+        {
+          "value": "color_section4_bg",
+          "label": "Section 4"
+        },
+        {
+          "value": "color_section5_bg",
+          "label": "Section 5"
+        },
+        {
+          "value": "color_section6_bg",
+          "label": "Section 6"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_color_override",
+      "label": "Override background",
+      "default": false
+    },
+    {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_img_enabled",
+      "label": "Enable background image",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Image alignment",
+      "default": "center",
+      "options": [
+        {
+          "label": "Top left",
+          "value": "left-top"
+        },
+        {
+          "label": "Top center",
+          "value": "top"
+        },
+        {
+          "label": "Top right",
+          "value": "right-top"
+        },
+        {
+          "label": "Middle left",
+          "value": "left"
+        },
+        {
+          "label": "Middle center",
+          "value": "center"
+        },
+        {
+          "label": "Middle right",
+          "value": "right"
+        },
+        {
+          "label": "Bottom left",
+          "value": "left-bottom"
+        },
+        {
+          "label": "Bottom center",
+          "value": "bottom"
+        },
+        {
+          "label": "Bottom right",
+          "value": "right-bottom"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_parallax",
+      "label": "Parallax effect",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "margin_vertical",
+      "label": "Section margin (vertical)",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collapsible-item",
+      "name": "Collapsible item",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "select",
+          "id": "collapsible_layout",
+          "label": "Layout",
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "collapsible_title",
+          "label": "Title",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "collapsible_content",
+          "label": "Content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "collapsible_open",
+          "label": "Open Tab By Default",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "justify_content",
+          "label": "Content position",
+          "default": "center",
+          "options": [
+            {
+              "value": "start",
+              "label": "Start"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "End"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name":"Custom Collapsibles",
+      "category": "Advanced layout",
+      "blocks": [
+        {
+          "type": "collapsible-item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

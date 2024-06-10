@@ -1,0 +1,54 @@
+{%- comment -%}
+  It creates a separator
+  Accepts:
+  - style: {String} class of the separator - each class is customizable on general settings
+
+  Usage:
+  In your liquid template file, copy the following line
+  - {% render "separator" style: separator_style %}
+{%- endcomment -%}
+
+{%- comment -%}Add bottom lines if enabled{%- endcomment -%}
+<style>
+  {% if settings.sep1_bottom_enabled %}
+    hr.separator-1 {
+      height: var(--sep1-height, 0);
+      border-bottom-color: var(--sep1-bottom-color, var(--sep-color));
+		  border-bottom-style: var(--sep1-bottom-style, var(--sep-style));
+		  border-bottom-width: var(--sep1-bottom-border-width, var(--sep-border-width));
+    }
+  {% endif %}
+  {% if settings.sep2_bottom_enabled %}
+    hr.separator-2 {
+      height: var(--sep2-height, 0);
+      border-bottom-color: var(--sep2-bottom-color, var(--sep-color));
+		  border-bottom-style: var(--sep2-bottom-style, var(--sep-style));
+		  border-bottom-width: var(--sep2-bottom-border-width, var(--sep-border-width));
+    }
+  {% endif %}
+  {% if settings.sep3_bottom_enabled %}
+    hr.separator-3 {
+      height: var(--sep3-height, 0);
+      border-bottom-color: var(--sep3-bottom-color, var(--sep-color));
+		  border-bottom-style: var(--sep3-bottom-style, var(--sep-style));
+		  border-bottom-width: var(--sep3-bottom-border-width, var(--sep-border-width));
+    }
+  {% endif %}
+  {% if settings.sep4_bottom_enabled %}
+    hr.separator-4 {
+      height: var(--sep4-height, 0);
+      border-bottom-color: var(--sep4-bottom-color, var(--sep-color));
+		  border-bottom-style: var(--sep4-bottom-style, var(--sep-style));
+		  border-bottom-width: var(--sep4-bottom-border-width, var(--sep-border-width));
+    }
+  {% endif %}
+  {% if settings.sep5_bottom_enabled %}
+    hr.separator-5 {
+      height: var(--sep5-height, 0);
+      border-bottom-color: var(--sep5-bottom-color, var(--sep-color));
+		  border-bottom-style: var(--sep5-bottom-style, var(--sep-style));
+		  border-bottom-width: var(--sep5-bottom-border-width, var(--sep-border-width));
+    }
+  {% endif %}
+</style>
+<hr class="{{ style }}" />

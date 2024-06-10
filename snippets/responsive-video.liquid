@@ -1,0 +1,42 @@
+{%- comment -%}
+    It creates a style tag and it restricts a video from growing larger than its max resolution.
+    Accepts:
+    - video: {Object} Video object
+    - video_attributes: {String} additional HTML attributes of the <video />
+    - wrapper_class: {String} class name of the <div> wrapper
+    - wrapper_attributes: {String} additional HTML attributes of the <div> wrapper
+    - outer_style: {String} additional CSS styles of the <div> wrapper
+    - max_width: {Number} Max width of the image container
+    - max_height: {Number} Max height of the image container
+
+    Usage:
+    In your liquid template file, copy the following line
+    -   {% include 'responsive-video'
+            video: featured_video,
+            wrapper_class: "wrapper-css-class",
+            max_width: 700,
+            max_height: 800
+        %}
+{%- endcomment -%}
+
+{% liquid
+    if outer_style != blank
+        assign styles = outer_style
+    endif
+
+    assign max_width = "auto"
+    if max_width != blank
+        assign max_width = max_width | append: "px"
+    endif
+
+    assign min_width = "auto"
+    if min_width != blank
+        assign min_width = min_width | append: "px"
+    endif
+%}
+
+<div {% if styles != blank%}style="{{ styles }}"{% endif %}>
+  <div class="sf-video {{ wrapper_class }}" {{ wrapper_attributes }}>
+    {{ video | video_tag: autoplay: true, loop: true, muted: true, controls: false, width: max_width, height: max_height }}
+  </div>
+</div>

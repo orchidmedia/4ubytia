@@ -1,0 +1,18 @@
+{% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+<div class="sf-custom__social px-4 md:px-14 pt-5 md:pt-0 {{ block.settings.block_custom_class }}"
+  style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+  {% if block.settings.heading != blank %}
+    <h3 class="text-2xl">{{ block.settings.heading }}</h3>
+  {% endif %}
+  {% if block.settings.description != blank %}
+    <div class="mt-3 rte">
+      {{ block.settings.description }}
+    </div>
+  {% endif %}
+  <div class="flex justify-center">
+    {% render 'social-media-links' %}
+  </div>
+</div>

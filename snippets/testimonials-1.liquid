@@ -1,0 +1,93 @@
+{% assign outer_class = '' %}
+{% assign inner_class = 'sf__slider' %}
+{% if section.blocks.size <= 3 %}
+    {% assign outer_class = 'sf__ms' %}
+    {% assign inner_class = 'sf__ms-wrapper' %}
+{% endif %}
+
+{% assign min = 1 %}
+{% assign max = 100 %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+{% assign swiper_control_name = "swiper-testimonial-1-control-" | append: randomNumber %}
+
+<div class="swiper-container swiper-testimonial-1-{{randomNumber}}">
+    <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+            <div class="swiper-slide" {{ block.shopify_attributes }} data-index={{ forloop.index0 }}>
+                <div class="review-block cursor-[grab] select-none transition-opacity md:opacity-100 px-4 md:px-0">
+                    <div class="bg-white py-12 px-6 md:px-9 text-center rounded-[5px]">
+                        {% if section.settings.show_stars %}
+                            <div class="stars flex mb-[18px] justify-center">
+                                {%- render 'testimonials__stars' -%}
+                            </div>
+                        {% endif %}
+
+                        {% render 'heading-tag' 
+                            heading: block.settings.title_tag,
+                            content: block.settings.title
+                        %}
+                        <div class="sf__tes-desc mb-6 text-color-subtext rte not-change tes-desc">{{ block.settings.description }}</div>
+                        <div class="sf__tes-name not-change tes-author">{{ block.settings.footer }}</div>
+
+                        {% if block.settings.image != blank %}
+                            {% if block.settings.image_link != blank %}<a href="{{ block.settings.image_link | default: '#' }}">{% endif %}
+                            <div class="mt-[18px] block cursor-pointer hover:text-color-subtext">
+                                {% render 'responsive-image', image: block.settings.image, wrapper_class: 'w-12 mx-auto' %}
+                                {% if block.settings.image_text != blank %}
+                                    <div class="sf__tes-image-text mt-2.5 text-sm not-change">
+                                        {{ block.settings.image_text }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if block.settings.image_link != blank %}</a>{% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% render 'slider-controls', show_nav: section.settings.show_navigation, show_pagination: section.settings.show_pagination, absolute: true, swiper_control_name: swiper_control_name %}
+
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var swiper = new Swiper('.swiper-testimonial-1-{{randomNumber}}', {
+          pagination: {
+            el: document.querySelector('.swiper-pagination.swiper-testimonial-1-control-{{randomNumber}}'),
+            clickable: true
+          },
+          navigation: {
+            nextEl: document.querySelector('.sf-slider__controls-next.swiper-testimonial-1-control-{{randomNumber}}'),
+            prevEl: document.querySelector('.sf-slider__controls-prev.swiper-testimonial-1-control-{{randomNumber}}')
+          },
+          centeredSlides: false,
+          spaceBetween: 20,
+          speed: 300,
+          slideToClickedSlide: true,
+          loop: true,
+          gutter: 1000,
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+          breakpoints: {
+            768: {
+              slidesPerView: 3,
+              slidesPerGroup: 3,
+              spaceBetween: 20,
+              speed: 1000
+            },
+            1280: {
+              slidesPerView: 5,
+              slidesPerGroup: 3,
+              spaceBetween: 30
+            },
+            2560: {
+              slidesPerView: 7,
+              slidesPerGroup: 3
+            }
+          }
+        });
+    }, false);
+
+</script>

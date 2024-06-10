@@ -1,0 +1,16 @@
+{% assign review_app = settings.review_app %}
+<div class="sf__product-reviews">
+  {% if custom_liquid != blank %}
+    {{ custom_liquid }}
+  {% else %}
+    {% case review_app %}
+      {% when 'shopify' %}
+        <div id="shopify-product-reviews" data-id="{{product.id}}">
+          {{ product.metafields.spr.reviews }}
+        </div>
+      {% when 'bazaarvoice' %}
+        {% render 'bv-ratings-reviews' %}
+    {% endcase %}
+  {% endif %}
+</div>
+

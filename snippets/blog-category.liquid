@@ -1,0 +1,48 @@
+{%- for block in section.blocks -%}
+    {%- assign item = section.settings -%}
+    {%- assign b_s = block.settings -%}
+
+    {% assign tag = b_s.tag %}
+
+    {% if b_s.title != blank %}
+        {% assign loadTagorTitle = b_s.title %}
+    {% else %}
+        {% assign loadTagorTitle = b_s.tag %}
+    {% endif %}
+    {%- if block.type  == 'tagged-categories' -%}
+
+    <div>
+        <div class="flex justify-between items-end">
+            {%- capture custom_styles -%}
+            {%- if item.category_color !='rgba(0,0,0,0)' and item.category_color != blank -%}
+                color:{{ item.category_color }};
+            {%- endif -%}
+            {%- endcapture -%}
+
+            {% render 'heading-tag'
+            heading: item.category_tag,
+            content: tag,
+            custom_styles: custom_styles
+            %}
+
+            <!-- <a href="{{ blog.url }}/tagged/{{ tag | handle }}" role="button" class="{{b_s.link_style}}">View All</a>  -->
+        </div>
+        {% render 'separator' style: item.separator_style %}
+    </div>
+
+    <div class="grid grid-cols-1 {% if section.settings.view == 'grid' %}grid-cols-2 md:grid-cols-{{ section.settings.show_item_per_row | minus: 1 }} lg:grid-cols-{{ section.settings.show_item_per_row }}{% endif %} gap-9 {% if blog.handle == 'menoguides'%}menoguides-articles-grid{% endif %}">
+        <!-- {% if forloop.index >= 5 %} -->
+        {%- for article in blog.articles -%}
+            {%- for tag in article.tags -%}
+                {% if tag == loadTagorTitle %}
+                    {% render 'article-card', article: article, view: item.view %}
+                {%- endif -%}
+            {%- endfor -%}
+        {%- endfor -%}
+        <!-- {% endif %} -->
+    </div>
+    {%- endif -%}
+{%- endfor -%}
+
+
+

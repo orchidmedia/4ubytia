@@ -1,0 +1,29 @@
+{% assign menu_align = section.settings.menu_align %}
+{% assign container = section.settings.container %}
+{% assign button_style =  %}
+{% assign collection_handle = "/collections/" | append: collection.handle %}
+{% assign menu_id = menu %}
+
+{% if container == 'w-full' %}
+    {% assign container = container | append: ' px-4' %}
+{% endif %}
+
+<ul class="sf-nav flex items-center swiper-slide swiper-slide-active menu-{{menu_align}}" > 
+    {% for link in linklists[section.settings.main_menu].links %}  
+            
+        {%if link.url == collection_handle %}
+            {% assign button_style = section.settings.button_style_active %}
+        {% else %}
+            {% assign button_style = section.settings.button_style %}
+        {%endif%}
+
+        <li class="sf-menu__link {{ li_class }} sf__menu-item-level1 sf-menu-item-parent{% if is_mega %} sf-menu-item--mega{% endif %}" data-index="{{ forloop.index0 }}">
+            <a href="{{ link.url }}" class="button {{button_style}}">{{ link.title }}</a>
+        </li>
+
+    {% endfor %}
+</ul>
+
+<script>
+
+</script>

@@ -1,0 +1,599 @@
+
+    <style>   
+        .promoCodeWrap {}
+        .promoCodeWrap .addpromocode {color:#254A23;letter-spacing: inherit; text-transform: capitalize;}
+        .promoCodeDetails {position: relative;}
+        .promoCodeDetails .promoCodeInput {text-transform: uppercase; background: transparent; border: none; border-bottom: 1px solid #CBC2AC; color: #000000; padding: 0;  width: 100%;}
+        .promoCodeDetails .promoCodeInput::placeholder {color:##CBC2AC; font-weight:100; text-transform:none;}
+        .promoCodeDetails .promoBtn {background: transparent; border: none; color:#254A23 ; position:absolute; right: 0; padding: 0;cursor: pointer;}
+        .promoCodeDetails .notValueError,.promoCodeDetails .notEligibleError {color:#A50050;  position:absolute; right: 0;}
+        
+        .promoCodeTagged {}
+        .promoCodeTagged h4 {margin-top: 14px; display: inline-block; vertical-align: middle;}
+        .promoCodeTagged .txtTagWrap {display: inline-block; background:#254A23; padding: 5px 10px; color: #F8F1E0; border-radius: 5px; float: right; margin: 9px 0px 2px 2px;}
+        .promoCodeTagged .txtTagWrap .removeTag {cursor: pointer; color: #F8F1E0; display: inline-block; margin: 0 0 0 5px;}
+        .savingpromo {color: #254A23;}
+
+        .savingsparent.hidden{display: none !important;}
+
+        .savings_on_front .savingsparent{
+            justify-content: space-between;
+            margin-top: 0;
+            margin-bottom: 0px;
+        }
+        .loading-mini-cart {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(248,241,224,.80);
+            /* background-size: 50px !important; */
+            right: 0;
+            top: 0;
+            z-index: 20000;
+            background-size: 100px;
+        }
+    </style>
+
+    
+    <div class="promoCodeWrap">
+    <a href="javascript:;" class="addpromocode font-public-p-16">Add Promo Code +</a>
+    
+        <div class="promoCodeDetails hidden">
+            <span class="font-public-p-16">Promo code</span>
+            <input type="text" name="discount" class="promoCodeInput font-solina-heading-style-3 font-weight-700" placeholder="Enter promo code"/>
+            <input type="hidden" class="promoCodeInputToSubmit" />
+            <input type="button" class="promoBtn font-public-p-14 hidden" value="Apply" />
+            <span class="notValueError font-public-p-14 hidden">{{ settings.minicart_empty_promo_error }} Not Valid</span>
+            <span class="notEligibleError font-public-p-14 hidden">{{ settings.minicart_empty_promo_not_eligible }} Not Valid For Current Items</span>
+    
+        </div>
+        <!-- promoCodeDetails -->
+        <div class="promoCodeTagged hidden">
+            <div class="row items-center">
+                    <div class="col-4">
+                        <p class="font-public-p-16 mb-0 mr-2">Promo Code</p>
+                    </div>
+                        <!-- col -->
+                    <div class="col">
+                            <span class="txtTagWrap font-public-p-14"> <span class="txtTag uppercase"></span>
+                                <span class="removeTag">
+                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect y="1.08682" width="1.53667" height="12.6007" transform="rotate(-45 0 1.08682)" fill="#F8F1E0"/>
+                            <rect x="8.9126" width="1.53667" height="12.6007" transform="rotate(45 8.9126 0)" fill="#F8F1E0"/>
+                            </svg>
+                            </span> 
+                        </span>
+                    </div>
+                <!-- col -->
+                </div>
+                <!-- row -->
+    
+            <!-- row -->
+        </div>
+        <!-- promoCodeDetails -->
+     <div class="row mt-5 savingsparent hidden">
+         <div class="col-4">
+             <p-small class="font-public-p-16 mb-0">Savings</p-small>
+         </div>
+         <!-- col -->
+         <!-- col -->
+         <div class="col">
+             <p-small class="font-h5ublic-p-16 savingpromo text-right pl-3"></p-small>
+         </div>
+     </div>
+    
+    
+    </div>
+    <!--promoCodeWrap-->
+        <script>
+            let emptyDiscountObject = {
+                targetProductsHandles: [],
+                percentageValue: 0,
+                fixedValue: 0
+            }
+            $(document).ready(function (){
+                var promoCodeFromStorage = sessionStorage['discount_code'];
+                if(promoCodeFromStorage)
+                {
+                    $(".promoCodeInput").val(promoCodeFromStorage);
+                    $(".promoCodeInputToSubmit").val(promoCodeFromStorage);
+                    $("#promoToSubmit").val(promoCodeFromStorage);
+    
+                    if(!sessionStorage['discount_object'] || sessionStorage['discount_object'] == '{}' || JSON.stringify(emptyDiscountObject) == sessionStorage['discount_object']) {
+                        sessionStorage['discount_code'] = '';
+                        console.log('init');
+                    }
+                    handlePromoCode();
+                }
+    
+                $(document).on("keydown", ".promoCodeInput", function(event) {
+                    if($('.promoBtn').hasClass('hidden') && event.target.value) {
+                        $('.promoBtn').removeClass('hidden');
+                        $('.notValueError').addClass('hidden');
+                        $('.notEligibleError').addClass('hidden');
+                    }
+                  
+                    if (event.key === "Enter") {
+                        $("#promoToSubmit").val($(this).val());
+                        $('.promoBtn').addClass('hidden');
+                        handlePromoCode();
+                        return false
+                    }
+                });
+    
+                $(document).on("keyup", ".promoCodeInput", function(event) {
+                   if(!event.target.value) {
+                       $('.promoBtn').addClass('hidden');
+                    } else if($('.promoBtn').hasClass('hidden')){
+                     $('.promoBtn').removeClass('hidden');
+                    }
+                });
+    
+                
+    
+                $(document).on("click", ".addpromocode", function(){
+                    $(this).hide();
+                    $('.promoBtn').addClass('hidden');
+                    $(".promoCodeDetails").removeClass("hidden");
+                });
+    
+    
+    
+                $(document).on("click", ".promoBtn", function(){
+                    //avoid sending empty space
+                    if($('.promoCodeInput').val() == ""){
+                        return;
+                    }
+                    handlePromoCode();
+    
+                });
+    
+                $(document).on("click", ".removeTag", function(){
+                    resetPromoFieldValues();
+                    handlePromoCode();
+                });
+            });
+            function resetPromoFieldValues(){
+                $(".promoCodeInput").val("");
+                $(".promoCodeInputToSubmit").val("");
+                $(".addpromocode").show();
+                $(".promoCodeTagged").addClass("hidden");
+                $(".promoCodeDetails").addClass("hidden");
+                $(".notEligibleError").addClass("hidden");
+                $('.scd-item__price--discount').text("");
+                saving_price_fixed = 0;
+            }
+            let discountObject = {}; //STATE VARIABLE: DISCOUNT OBJECT.
+    
+            const getCart = async () => {
+                const request = await fetch("/cart.js");
+                return await request.json();
+            };
+            function handlePromoCode(currentCart = false, _callback = false){
+                $('.loading-mini-cart').removeClass('hidden');
+                var cartItems = null;
+                console.log(typeof handlePromoCode, 'handlePromoCode')
+                $.getJSON('/cart.js', function (new_cart) {
+                    applyPromo(new_cart).then(
+                    discountObject => {
+                        if(!currentCart){
+                            getCart().then(cartData => {
+                                updateCartPromo(cartData, discountObject, _callback);
+                            });
+                        } else{
+                            updateCartPromo(currentCart, discountObject, _callback);
+                        }
+                    }
+                    );
+                });
+            }
+    
+            function updateCartPromo(currentCart, discountObject, _callback = false){
+                if(currentCart.item_count == 0){
+                    resetDiscountsession();
+                    //refreshCart(currentCart);
+                    return;
+                }
+                let originalCart = currentCart;
+                let subTotalCartPrice = currentCart.total_price; //ORIGINAL SUBTOTAL
+                const [discountedSubtotal, cartWithDiscounts] = calculateDiscounted_Subtotal(currentCart, discountObject);
+    
+                let reducedSubTotalCartPrice = subTotalCartPrice; //Subtotal to calculate Gift Cards.
+                currentCart.items = cartWithDiscounts.items;
+                currentCart.total_price = discountedSubtotal; //update CART object to render the new subtotal with discounts.
+                let cartTotal = Math.round(currentCart.total_price/100)
+                currentCart.items.forEach(function (product) {
+    
+                    if(product.final_price == 0 && (
+                        $("body").data("gwp-threshold-product-one") > cartTotal ||
+                        $("body").data("gwp-threshold-product-two") > cartTotal || $("body").data("buy-x-get-y-auto-add-product") > cartTotal)
+                    ){
+                        handleGwp(currentCart);
+                    }
+                });
+    
+                //updateCart(currentCart);
+                Shopify.onCartUpdate(currentCart).then((data) => {
+                    console.log('Cart Updated');
+                    //$('#scd-coupon .btn-cancel').get(0).click();
+                });
+                //$('.scd__subtotal-price').text('$'+Math.round(discountedSubtotal/100));
+                updateSavings(discountedSubtotal, cartWithDiscounts);
+                if (_callback) {
+                    //run loadProductRecommendationsIntoSection to avoid glitches
+                    _callback(originalCart);
+                } else {
+                    $('.loading-mini-cart').addClass('hidden');
+                }
+            }
+    
+            var savings_price = 0;
+            var savings_price_final = 0;
+            var saving_price_fixed = 0;
+            function updateSavings(discountedSubtotal, cartWithDiscounts){
+                let savings = Math.round((discountedSubtotal-cartWithDiscounts.original_total_price)/100);
+                let savingWithOutHyphen = 0;
+    
+                savings = savings.toString().replaceAll('-', '')
+                savings_price = savings_price.toString().replaceAll('-', '')
+    
+                //global variable check if cut price total exist or not
+                savingWithOutHyphen = Math.round(savings)+Math.round(savings_price);
+    
+                if(savingWithOutHyphen == 0 && saving_price_fixed == 0){
+                    $('.savingsparent').addClass('hidden');
+                } else {
+                    $('.savingsparent').removeClass('hidden');
+                }
+                //$('.savingpromo').text('-$'+savingWithOutHyphen.toString().replaceAll('-', ''));
+                 savings_price_final = savingWithOutHyphen;
+                // console.log(discountedSubtotal, 'discountedSubtotal');
+                // console.log(cartWithDiscounts.original_total_price/100 - savings_price_final, 'cartWithDiscounts');
+                if(saving_price_fixed > 0){
+                    $('.savingpromo').html('-$' + Math.round(saving_price_fixed) + ' <p-small>FIXED</p-small>'); 
+                }else if(savings_price_final > 0){
+                  $('.savingpromo').text('-$' + Math.round(cartWithDiscounts.original_total_price/100 - savings_price_final));
+                }
+                $('.scd__addon, .scd__overlay').removeClass('open')
+                console.log('Triger updateSavings funcation');
+            }
+    
+            function showTag(promoCode, cartItems = false, discountObject = false){
+               
+                if(cartItems && discountObject) { 
+                    var isCartEligible = false;
+                    cartItems.items.forEach((line_item,index) => {
+                        if ( isProductEligible(discountObject['targetProductsHandles'], line_item)) {
+                            isCartEligible = true;
+                        }
+                    })
+
+                    console.log(discountObject['allItems'], 'SHOW TAGS');
+                    if(isCartEligible) {
+                        $(".txtTag").text(promoCode);
+                        $(".addpromocode").hide();
+                        $(".promoCodeDetails").addClass("hidden");
+                        $(".promoCodeTagged").removeClass("hidden");
+                    } else if (discountObject['allItems']) {
+                        $(".txtTag").text(promoCode);
+                        $(".addpromocode").hide();
+                        $(".promoCodeDetails").addClass("hidden");
+                        $(".promoCodeTagged").removeClass("hidden");
+                        sessionStorage['discount_object'] = JSON.stringify(discountObject);
+                        return discountObject;
+                    } else {
+                        $('.promoBtn').addClass('hidden');
+                        $(".promoCodeTagged").addClass("hidden");               
+                        $('.notEligibleError').removeClass('hidden'); 
+                        $(".promoCodeDetails").removeClass("hidden");
+                        $('.promoCodeInputToSubmit').val("");
+                        console.log('ShowTag');
+                        sessionStorage['discount_code'] = "";
+                        discountObject = {
+                            targetProductsHandles: [],
+                            percentageValue: 0,
+                            fixedValue: 0
+                        };
+                        sessionStorage['discount_object'] = JSON.stringify(discountObject);
+                    }            
+                } else {
+                    $(".txtTag").text(promoCode);
+                    $(".addpromocode").hide();
+                    $(".promoCodeDetails").addClass("hidden");
+                    $(".promoCodeTagged").removeClass("hidden");
+                }
+            }
+    
+            function isProductEligible( targetProductsHandles , line_item) {
+                return !!targetProductsHandles.includes(line_item.handle);
+            }
+    
+            async function applyPromo(cartItems){
+                let promoCode = $(".promoCodeInput").val();
+                $(".promoCodeInputToSubmit").val(promoCode)
+    
+                $("#promoToSubmit").val(promoCode);
+                if(!promoCode){
+                    let discountObject = resetDiscountsession();
+                    return new Promise((res) => {
+                        res(discountObject)
+                    })
+                }
+    
+                //set session stoage if user landing first time
+                if (!sessionStorage['discount_code']) {
+                    sessionStorage['discount_code'] = promoCode;
+                } else if (sessionStorage['discount_code'] !== promoCode) {
+                    sessionStorage['discount_code'] = promoCode;
+                } else if (sessionStorage['discount_code'] === promoCode) {
+                    //if discount code already then just show the details    
+                    if(sessionStorage['discount_object'] && sessionStorage['discount_object'] != '{}' && JSON.stringify(emptyDiscountObject) != sessionStorage['discount_object']) {
+                        let parsedDiscounted_object = JSON.parse(sessionStorage['discount_object']);
+                        showTag(promoCode, cartItems, parsedDiscounted_object);
+                        return new Promise((res) => {
+                            res(parsedDiscounted_object)
+                        })
+                    }
+                }
+
+                let brandName = "STRIPES";
+                //let cloudUrl = "https://mocki.io/v1/f628c1ac-bc8c-4ec6-9811-0e950946fd62";
+                let cloudUrl = "https://prod-discountcodesshopify.azurewebsites.net/api/webhook?code=fk7AEFFOhXpXNtdGEQTFPS1fnAaihJt026aBl/4Z9JG7JqbWq5rXCA==";
+                let body_data = {code: promoCode, brand: brandName}
+    
+                return fetch(cloudUrl,{
+                    method: 'POST',
+                    body: JSON.stringify(body_data)
+                }).then( res => res.json()).then( data => {
+                            let path = data?.codeDiscountNodeByCode?.codeDiscount;
+                            let isCartEligible = false;
+                            if (path?.status === "ACTIVE"){
+                                discountObject['targetProductsHandles'] = [];
+                                path.customerGets?.items?.collections?.edges[0].node.products.edges.forEach(node => discountObject['targetProductsHandles'].push(node.node.handle))                            
+                                
+                                cartItems.items.forEach((line_item,index) => {
+                                    if ( isProductEligible(discountObject['targetProductsHandles'], line_item)) {
+                                        isCartEligible = true;
+                                    }
+                                })
+                            }
+    
+                            if (path?.status === "ACTIVE" && path?.customerGets?.items?.allItems){
+                                console.log('AllDiscountItems');
+                                showTag(promoCode);
+                                discountObject['percentageValue'] = path.customerGets?.value.percentage || (path.customerGets?.value.effect?.percentage || 0)
+                                discountObject['fixedValue'] = path.customerGets?.value.amount?.amount || 0;
+                                discountObject['allItems'] = path.customerGets?.items?.allItems || false;
+                                sessionStorage['discount_object'] = JSON.stringify(discountObject);
+                                return discountObject;
+
+                            }else if (path?.status === "ACTIVE" && isCartEligible){
+                                showTag(promoCode);
+                                //path.customerGets?.items?.products?.edges.forEach(node => discountObject['targetProductsHandles'].push(node.node.handle))
+                                discountObject['percentageValue'] = path.customerGets?.value.percentage || (path.customerGets?.value.effect?.percentage || 0)
+                                discountObject['fixedValue'] = path.customerGets?.value.amount?.amount || 0;
+                                path.customerBuys?.items?.products?.edges.forEach(node => discountObject.bxgy.customerBuys.push(node.node.handle));
+                                discountObject['minAmount'] = (Number(path.minimumRequirement?.greaterThanOrEqualToSubtotal?.amount) * 100) || 0;
+                                discountObject['minQty'] = path.minimumRequirement?.greaterThanOrEqualToQuantity || 0;
+                                discountObject['allItems'] = path.customerGets?.items?.allItems || false;
+                                discountObject['freeShipping'] = (path.__typename === "DiscountCodeFreeShipping");
+                                sessionStorage['discount_object'] = JSON.stringify(discountObject);
+                                return discountObject;
+                                //return discountObject;
+    
+                            } else if (path?.status === "ACTIVE" && !isCartEligible ) {
+                                $('.notEligibleError').removeClass('hidden');
+                                $('.promoBtn').addClass('hidden');
+                                $('.promoCodeInputToSubmit').val("");
+                                console.log('notEligibleError');
+                                sessionStorage['discount_code'] = "";
+                                discountObject = {
+                                    targetProductsHandles: [],
+                                    percentageValue: 0,
+                                    fixedValue: 0
+                                };
+                                sessionStorage['discount_object'] = JSON.stringify(discountObject);
+                                return discountObject
+                            } else {
+                                $('.notValueError').removeClass('hidden');
+                                $('.promoBtn').addClass('hidden');
+                                $('.promoCodeInputToSubmit').val("");
+                                console.log('notValueError');
+                                sessionStorage['discount_code'] = "";
+                                discountObject = {
+                                    targetProductsHandles: [],
+                                    percentageValue: 0,
+                                    fixedValue: 0
+                                };
+                                sessionStorage['discount_object'] = JSON.stringify(discountObject);
+                                return discountObject
+                            }
+                        });
+            }
+            function calculateDiscounted_Subtotal(currentCart, {targetProductsHandles, percentageValue, fixedValue, bxgy, minQty, minAmount, allItems, freeShipping} ){
+                let eligiblesSubTotal = 0;
+                let discountedSubtotal = 0;
+                let isAtLeastOneEligible = false;
+                let cartWithDiscounts = currentCart;
+                let copyOfCurrentCart = JSON.parse(JSON.stringify(currentCart))
+                if (currentCart.total_price === 0) return [discountedSubtotal, cartWithDiscounts]; // return early if the cart is empty.
+                let customerBuysInCart = 0;
+                let customerBuysProducts = [];
+                let customerGetsProducts = [];
+                let eligibleProducts = []; //array of prices of products included in BXGY promo - [BXGY Algorithm]
+                let nonFreeProductsInCart = 0;
+                currentCart.items.forEach((line_item, index, array) => {
+                    //Check buy requirements.[BXGY algorithm]
+                    if (bxgy?.customerBuys?.includes(line_item.handle)) {
+                        customerBuysInCart += line_item.quantity; //counter of buy requirement products.
+                        if (line_item.quantity > 1) {
+                            let count = 0;
+                            while(count < line_item.quantity) {
+                                customerBuysProducts.push([line_item.handle, line_item.id, line_item.original_price]); //adding each individual product to the array.
+                                count++;
+                            }
+                        } else if (line_item.quantity === 1 && line_item.original_price !== 0) {
+                            customerBuysProducts.push([line_item.handle, line_item.id, line_item.original_price]);
+                        }
+                    }
+                    //Check for customerGets(eligibles) PRODUCTS OR COLLECTIONS. [AllPRODUCTS case is below.]
+                    if ( isProductEligible(targetProductsHandles, line_item) ) {  //Check product eligibility for discount.
+                        eligiblesSubTotal += (line_item.original_price * line_item.quantity); //make subtotal only from eligibles.
+                        if (percentageValue) {
+                            discountedSubtotal += (line_item.original_price * (1 - percentageValue))  * line_item.quantity //% type discount
+                            if (line_item.quantity > 1) {
+                                let count = 0;
+                                while(count < line_item.quantity) {
+                                    eligibleProducts.push([line_item.original_price, line_item.id]);
+                                    customerGetsProducts.push(line_item.handle);
+                                    count++;
+                                }
+                            } else if (line_item.quantity === 1 && line_item.original_price !== 0) {
+                                eligibleProducts.push([line_item.original_price, line_item.id]);
+                                customerGetsProducts.push(line_item.handle);
+                            }
+                            cartWithDiscounts.items[index].final_line_price = (line_item.original_price * (1 - percentageValue))  * line_item.quantity;
+                            //FIXED VALUE CASE
+                        } else if (fixedValue) {
+                            isAtLeastOneEligible = true;
+                            discountedSubtotal += (line_item.original_price * line_item.quantity);
+                        }
+                        //product not eligible - excluded from discounts.
+                    } else {
+                        discountedSubtotal += line_item.original_price * line_item.quantity;
+                        if (line_item.final_line_price !== 0) {
+                            nonFreeProductsInCart += line_item.quantity; //FREE SHIPPING AND ALL PRODUCTS ALGORITHM. (NO ELIGIBLES LIST)
+                        }
+                    }
+
+                    //ALL PRODUCTS ELIGIBLES CASE.
+                    console.log(allItems);
+                    if(allItems) {
+                        if (percentageValue) {
+                            discountedSubtotal += (line_item.original_price * (1 - percentageValue))  * line_item.quantity //% type discount
+                            if (line_item.quantity > 1) {
+                                let count = 0;
+                                while(count < line_item.quantity) {
+                                    eligibleProducts.push([line_item.original_price, line_item.id]);
+                                    customerGetsProducts.push(line_item.handle);
+                                    count++;
+                                }
+                            } else if (line_item.quantity === 1 && line_item.original_price !== 0) {
+                                eligibleProducts.push([line_item.original_price, line_item.id]);
+                                customerGetsProducts.push(line_item.handle);
+                            }
+                            cartWithDiscounts.items[index].final_line_price = (line_item.original_price * (1 - percentageValue))  * line_item.quantity;
+                            //FIXED VALUE CASE
+                        } else if (fixedValue) {
+                            isAtLeastOneEligible = true;
+                            console.log(fixedValue);
+                            saving_price_fixed = parseInt(fixedValue);
+                            discountedSubtotal += (line_item.original_price * line_item.quantity);
+                            // setTimeout(function(){
+                            //     console.log(savings_price_final, 'FIXED VALUE');
+                            //     savings_price_final = (cartWithDiscounts.original_total_price / 100 - fixedValue*100 / 100);
+                            //     // $('.savingsparent').removeClass('hidden');
+                            //     // $('.savingpromo').text('$'+discountedSubtotal/100);
+                            // }, 500);
+                        }
+                    }
+                });
+                //loop end
+                if (freeShipping) {
+                    if (currentCart.total_price >= minAmount && nonFreeProductsInCart >= Number(minQty)) {
+                        $('#succesfull_msg').text('Free Shipping code applied.');
+                        $('.shipping-text').text('You qualify for free shipping!')
+                        return [currentCart.total_price, cartWithDiscounts];
+                    } else if (currentCart.total_price < minAmount) {
+                        $('#succesfull_msg').text(`Minimum to spent: $${minAmount / 100}`);
+                        return [currentCart.total_price, copyOfCurrentCart];
+                    } else if (nonFreeProductsInCart < Number(minQty)) {
+                        $('#succesfull_msg').text(`Minimum purchase: ${minQty} products`);
+                        return [currentCart.total_price, copyOfCurrentCart];
+                    }
+                }
+    
+                if (allItems) {
+                    if(percentageValue) {
+                        if (currentCart.total_price >= minAmount && nonFreeProductsInCart >= Number(minQty)) {
+                            return [(currentCart.total_price * (1 - percentageValue)), cartWithDiscounts];
+                        } else if (currentCart.total_price < minAmount){
+                            $('#succesfull_msg').text(`Minimum to spent: $${minAmount / 100}`);
+                            return [currentCart.total_price, copyOfCurrentCart];
+                        } else if (nonFreeProductsInCart < Number(minQty)) {
+                            $('#succesfull_msg').text(`Minimum purchase: ${minQty} products`);
+                            return [currentCart.total_price, copyOfCurrentCart];
+                        }
+                    } else if (fixedValue) {
+                        if (currentCart.total_price >= minAmount && nonFreeProductsInCart >= Number(minQty)) {
+                            discountedSubtotal = currentCart.total_price - (fixedValue * 100)
+                            if (discountedSubtotal < 0) discountedSubtotal = 0;
+                            return [discountedSubtotal, cartWithDiscounts];
+                        } else if (currentCart.total_price < minAmount){
+                            $('#succesfull_msg').text(`Minimum to spent: $${minAmount / 100}`);
+                            return [currentCart.total_price, copyOfCurrentCart];
+                        } else if (nonFreeProductsInCart < Number(minQty)) {
+                            $('#succesfull_msg').text(`Minimum purchase: ${minQty} products`);
+                            return [currentCart.total_price, copyOfCurrentCart];
+                        }
+                    }
+                }
+    
+                if (bxgy?.bxgy) {
+                    if (customerBuysInCart >= Number(bxgy.min_quantity)) {
+                        discountedSubtotal += calculate_bxgy_discountSubtotal(cartWithDiscounts, eligibleProducts, percentageValue, bxgy.min_quantity, customerGetsProducts, customerBuysProducts, customerBuysInCart);
+                    } else {
+                        discountedSubtotal += eligiblesSubTotal;
+                    }
+                }
+                if (fixedValue) {
+                    if(isAtLeastOneEligible && eligiblesSubTotal >= minAmount) {
+                        discountedSubtotal = discountedSubtotal - (fixedValue * 100);
+                        let percentageFromFixed = (fixedValue * 100)/ eligiblesSubTotal;
+                        currentCart.items.forEach((line_item,index) => {
+                            if ( isProductEligible(targetProductsHandles, line_item)) {
+                                cartWithDiscounts.items[index].final_line_price =  (line_item.original_price * (1 - percentageFromFixed))  * line_item.quantity;
+                                if (cartWithDiscounts.items[index].final_line_price < 0) {
+                                    discountedSubtotal += (cartWithDiscounts.items[index].final_line_price * -1);
+                                    cartWithDiscounts.items[index].final_line_price = 0;
+                                }
+                            }
+                        })
+                    } else if (eligiblesSubTotal < minAmount) {
+                        $('#succesfull_msg').text(`Minimum to spent on eligible products: $${minAmount / 100}`);
+                        discountedSubtotal = currentCart.total_price
+                    } else {
+                        $('#succesfull_msg').text('No products to apply discount');
+                        discountedSubtotal = currentCart.total_price
+                    }
+                    if (discountedSubtotal < 0) discountedSubtotal = 0;
+                    return [discountedSubtotal, cartWithDiscounts];
+                }
+    
+                if(currentCart.total_price === discountedSubtotal){
+                    $('#succesfull_msg').text('No products to apply discount');
+                }
+    
+                if (currentCart.total_price >= minAmount && customerGetsProducts.length >= Number(minQty)) {
+                    return [discountedSubtotal, cartWithDiscounts];
+                } else if (currentCart.total_price < minAmount) {
+                    $('#succesfull_msg').text(`Minimum to spent: $${minAmount / 100}`);
+                    return [currentCart.total_price, copyOfCurrentCart]
+                } else if (customerGetsProducts.length < Number(minQty)) {
+                    $('#succesfull_msg').text(`You need to buy at least ${minQty} products`);
+                    return [currentCart.total_price, copyOfCurrentCart]
+                }
+                return [discountedSubtotal, cartWithDiscounts]
+    
+    
+    
+            }
+            function resetDiscountsession(){
+                resetPromoFieldValues();
+                //reset session storage
+                sessionStorage['discount_code'] = "";
+                sessionStorage['discount_object'] = JSON.stringify(emptyDiscountObject);
+                return emptyDiscountObject;
+            }
+    
+        </script>

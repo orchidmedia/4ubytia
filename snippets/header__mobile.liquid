@@ -1,0 +1,66 @@
+{% assign show_cart_icon = section.settings.show_cart_icon %}
+{% assign search_settings = section.settings.search %}
+{% assign show_account_icon = section.settings.show_account_icon %}
+{% assign design = section.settings.header_design %}
+{% assign size_mobile = section.settings.icon_size_mobile %}
+{% assign icon_size_override = section.settings.icon_size_override %}
+
+<header
+    class="flex lg:hidden sf-header__mobile container-fluid bg-white items-center"
+    data-screen="sf-header__mobile"
+    data-transparent="{{ transparent_on_top }}"
+>
+
+    {%- if design == "logo-left-menu-left-offset" -%}
+      {% render 'header-option-item__hamburger-button', box_size: 'flex mr-2' %}
+      {% assign openSearchTrigger = 'data-open-search-popup-offsetmenu' %}
+      {% assign offsetMenu = true %}
+    {%- else -%}
+      {% render 'header-option-item__hamburger-button', box_size: 'flex flex-1 w-1/4' %}
+      {% assign openSearchTrigger = 'data-open-search-popup' %}
+      {% assign offsetMenu = false %}
+    {%- endif -%}
+
+    {% render 'header-logo-mobile', header_settings: section.settings %}
+    {% if show_cart_icon or search_settings != 'hide' %}
+        <div class="w-1/4 flex flex-1 items-center justify-end sf-header__mobile-right" mobile-search>
+            {% if search_settings != 'hide' %}
+              <div class="flex justify-center items-center p-3" {{ openSearchTrigger }}>
+                <span class="sf__search-mb-icon">{% render 'icon', name: 'search', size_mobile: size_mobile, icon_size_override: icon_size_override %}</span>
+              </div>
+            {% endif %}
+            {% if show_account_icon %}
+                {% render 'header-option-item__account', display_by: 'icon', size_mobile: size_mobile, icon_size_override: icon_size_override %}
+            {% endif %}
+            {% if show_cart_icon %}
+              {% render 'cart', section: section %}
+            {% endif %}
+        </div>
+    {% endif %}
+</header>
+
+{% if offsetMenu %}
+  <div class="container-fluid pt-2 pb-5 bg-white hidden lg:hidden" offset-mobile-search>
+    <form action="/search" method="GET" novalidate class="relative w-full md:mx-28 flex border border-black rounded-md">
+      <input type="hidden" name="type" value="product">
+      <input type="hidden" name="options[unavailable_products]" value="last">
+      <input type="hidden" name="options[prefix]" value="last">
+      <input type="hidden" name="options[fields]" value="title,vendor,product_type,variants.title">
+
+      <input
+        type="text" name="q" required autocomplete="off"
+        placeholder="I’m looking for..."
+        aria-label="I’m looking for..."
+        class="w-full h-11 rounded-md" style="border: none;"
+        data-search-input
+      />
+
+      <button type="submit" class="absolute top-px left-0 py-2.5 px-3.5">
+        {% render 'icon', name: 'search', size: 'large' %}
+      </button>
+      <button data-close-search-offset class="absolute top-px right-0 py-2.5 px-3.5">
+        {% render 'icon', name: 'times', size: 'large' %}
+      </button>
+    </form>
+  </div>
+{% endif %}

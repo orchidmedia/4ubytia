@@ -1,0 +1,48 @@
+{%- assign search_display = header_settings.search -%}
+{% assign design = section.settings.header_design %}
+{% if design == "logo-left-menu-left-offset" or design == "logo-left-menu-left"%}
+    {% assign offsetMenu = true %}
+{% endif %}
+
+{% unless search_display == 'hide' %}
+    <div
+      class="sf-search-form flex items-center{% if icon_left == true %} pr-4{% endif %} {{ box_size }} {%- if search_display == 'show_full' -%} sf-search-form--full border border-color-border hover:border-gray-400 rounded-md{%- endif -%}"
+      {% if offsetMenu %}data-open-search-popup-offset-desktop{% else %}data-open-search-popup{% endif %}
+    >
+      {% if icon_left == true %}
+          <button class="flex items-center py-2 px-3">
+              <span class="sf__tooltip-item block sf__tooltip-bottom sf__tooltip-style-2">
+                  {% render 'icon', name: 'search', size: size, size_mobile: size_mobile, icon_size_override: icon_size_override %}
+                  <span class="sf__tooltip-content">{{ 'general.search.placeholder_short' | t }}</span>
+              </span>
+          </button>
+      {% endif %}
+      {%- if search_display == 'show_full' -%}
+        <span class="pl-3 text-[#666] whitespace-nowrap">{{ 'general.search.placeholder' | t }}</span>
+      {%- endif -%}
+      {% if icon_left == blank or icon_left == false %}
+            {% if offsetMenu %}
+                <form action="/search" method="GET" novalidate class="offsetField invisible">
+                    <input type="hidden" name="type" value="product">
+                    <input type="hidden" name="options[unavailable_products]" value="last">
+                    <input type="hidden" name="options[prefix]" value="last">
+                    <input type="hidden" name="options[fields]" value="title,vendor,product_type,variants.title">
+              
+                    <input
+                      type="text" name="q" required autocomplete="off"
+                      placeholder="I’m looking for..."
+                      aria-label="I’m looking for..."
+                      class="offsetDesktopSearchField"
+                      data-search-input
+                    />
+                </form>
+            {% endif %}
+            <button type="submit" class="py-2 px-3">
+                <span class="sf__tooltip-item block sf__tooltip-bottom sf__tooltip-style-2">
+                    {% render 'icon', name: 'search', size: size, size_mobile: size_mobile, icon_size_override: icon_size_override %}
+                    <span class="sf__tooltip-content">{{ 'general.search.placeholder_short' | t }}</span>
+                </span>
+            </button>
+      {% endif %}
+    </div>
+{% endunless %}

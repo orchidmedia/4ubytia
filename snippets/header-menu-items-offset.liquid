@@ -1,0 +1,101 @@
+{% assign menu_id = menu | default: 'main_menu' %}
+{% assign dropdown_container = section.settings.container | default: 'container' %}
+
+<ul class="sf-nav flex text-base font-medium whitespace-nowrap clearfix sf-no-scroll-bar {{ nav_class }}">
+    {% for link in linklists[section.settings[menu_id]].links %}
+
+        
+
+    <li class="offset-menu-item" data-index="{{ forloop.index0 }}">
+        <a href="{{ link.url }}" class="block px-4 py-5 sf__sub-menu-link1 flex items-center sf__parent-item uppercase">{{ link.title }}</a>
+        
+        {% if link.links != blank %}
+        <div class="custom-offset-menu-dd-wrapper">
+            <div class="close-menu">
+                <svg width="55px" height="55px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="offset-drawer-overlay"></div>
+            <div class="offset-menu">
+                <ul class="offset-menu-parent">
+                    {% for childlink in link.links %}
+                       <li {% if forloop.index == 1 %} class="active" {% endif %}>
+                        <a href="{% if childlink.url == "#" or childlink.url == blank %}javascript:void(0);{% else %}{{ childlink.url }}{% endif %}">{{ childlink.title }}
+                            {% if childlink.links != blank %}
+                                <span class="ml-2 sf-menu__arrow">{% render 'icon', name: 'chevron-down-solid', size: 'custom', class: 'w-3 h-3' %}</span>
+                            {% endif %}
+                        </a>
+                        {% if childlink.links != blank %}
+                            <ul class="offset-menu-child">
+                                {% for grandlink in childlink.links %}
+                                    <li class="list-none sf__menu-item-level3">
+                                        <a href="{{ grandlink.url }}" class="sf-sub-menu__link">
+                                            {{ grandlink.title }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                       </li> 
+                    {% endfor %}
+                </ul>
+                
+                <div class="flex offset-menu-banner">
+                    {% assign title_handle = link.title | handleize %}
+                    {%- assign has_mega_item = false -%}
+                    {% for block in section.blocks %}
+                        {% assign menu_title = block.settings.heading | handleize %}
+
+                        {% if menu_title == blank or menu_title != title_handle %}
+                            {% continue %}
+                        {% endif %}
+                        {% if menu_title == title_handle %}
+                            {%- assign has_mega_item = true -%}
+                            {% if block.settings.container != 'inherit' %}
+                                {% assign dropdown_container = block.settings.container %}
+                            {% endif %}
+
+                            {% if block.type == 'banner' %}
+                                {% render 'mega-menu-banner', block: block %}
+                            {% endif %}
+
+                            {% if block.type == 'product-list' %}
+                                {% assign stretch_width = block.settings.stretch_width %}
+                                {% assign collection = block.settings.collection %}
+                                {% if collection != blank %}
+                                    {% render 'mega-menu-products' with block as product_list %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if block.type == 'collection-list' %}
+                                {% assign stretch_width = true %}
+                                {% render 'mega-menu-collections', block: block %}
+                            {% endif %}
+
+                            {% if block.type == 'links-list' %}
+                                {% assign stretch_width = true %}
+                                {% render 'mega-menu-links', block: block %}
+                            {% endif %}
+
+                            {% if block.type == 'bloglist' %}
+                                {% render 'mega-menu-blog-list' with block as bloglist %}
+                            {% endif %}
+
+                            {% if block.type == 'custom_html' %}
+                                <div class="menu-item__html text-black">
+                                    {{ block.settings.html }}
+                                </div>
+                            {% endif %}
+                            
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,11 @@
+<div class="quantity-input atc-qty-input-sele prod-atc-qty-input h-[46px] flex {{ class }} {{ atc_mobile }}">
+  {% render 'overlay-select',
+    wrapper_class: "atc-qty-input-sele",
+    options: "1,2,3,4,5",
+    classes: "quantity-input__element w-10 productQuantity  text-center flex-grow flex-shrink appearance-none",
+    id="item-quantity_sticky",
+    name: "quantity",
+    custom_styles: "background:none",
+    aria_label: "{{ 'products.product.product_quantity' | t }}",
+    custom_attributes: 'data-quantity-input data-product-id="{{ product.id }}"' %}
+</div>

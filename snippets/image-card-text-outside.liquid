@@ -1,0 +1,179 @@
+<div
+  class="image-card__inner relative sm:overflow-hidden flex flex-col h-full w-full {% if block.settings.show_overlay %} sf-hero--has-overlay{% endif %}">
+  
+  {% if block.settings.image_layout == 'layout-2' or block.settings.image_layout == 'layout-3' %}
+    <div class="image-card__content flex z-10 {{ content_class }}">
+      <div
+        class="image-card__content-inner {% if stack_on_mobile == true %}text-center sm:text-{{ block.settings.content_alignment }}{% else %}text-{{ block.settings.content_alignment }}{% endif %}">
+        <div class="image__card-heading-group"
+          {% if subheading_color !='rgba(0,0,0,0)' and subheading_color != blank %}style="color:{{ subheading_color }};"{% endif %}>
+          {% if block.settings.image_layout == 'layout-2' %}
+            {% if block.settings.title != blank %}
+              {% capture custom_classes %}image__card-heading {% if block.settings.button_label == blank %}mb-4{% endif %}{% endcapture %}
+              {%- capture custom_styles -%}
+                {%- if heading_color !='rgba(0,0,0,0)' and heading_color != blank -%}
+                  color:{{ heading_color }};
+                {%- endif -%}
+                padding: {{ block.settings.heading_padding}}px;
+                display: block;
+              {%- endcapture -%}
+
+              {% render 'heading-tag'
+                heading: heading_size,
+                content: block.settings.title,
+                custom_classes: custom_classes,
+                custom_styles: custom_styles
+              %}
+            {% endif %}
+            {% if block.settings.subtitle != blank %}
+              <p class="image__card-subheading text-sm md:text-base mb-2" style="padding: {{ block.settings.subheading_padding}}px 0;">
+                {{ block.settings.subtitle }}
+              </p>
+            {% endif %}
+          {% elsif block.settings.image_layout == 'layout-3' %}
+            {% if block.settings.subtitle != blank %}
+              <p class="image__card-subheading text-sm md:text-base mb-2" style="padding: {{ block.settings.subheading_padding}}px 0;">
+                {{ block.settings.subtitle }}
+              </p>
+            {% endif %}
+            {% if block.settings.title != blank %}
+              {% capture custom_classes %}image__card-heading {% if block.settings.button_label == blank %}mb-4{% endif %}{% endcapture %}
+              {%- capture custom_styles -%}
+                {%- if heading_color !='rgba(0,0,0,0)' and heading_color != blank -%}
+                  color:{{ heading_color }};
+                {%- endif -%}
+                padding: {{ block.settings.heading_padding}}px 0;
+                display: block;
+              {%- endcapture -%}
+
+              {% render 'heading-tag'
+                heading: heading_size,
+                content: block.settings.title,
+                custom_classes: custom_classes,
+                custom_styles: custom_styles
+              %}
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if image != blank or block.settings.image_svg != blank %}
+    <{% if block.settings.link %}a{% else %}div{% endif %} class="image-card__img block text-{{ block.settings.content_alignment }}"
+      href="{{ block.settings.link | default: " #" }}"
+    >
+      {%- if block.settings.image_svg != blank -%}
+        {% liquid
+          if block.settings.image_max_w > 0
+            assign img_width = 'max-width: ' | append: block.settings.image_max_w | append: 'px;'
+          endif
+          if block.settings.image_max_h > 0
+            assign img_height = 'max-height: ' | append: block.settings.image_max_h | append: 'px;'
+          endif
+        %}
+        <img src="{{ block.settings.image_svg }}" 
+          alt="{{ block.settings.svg_alt_text }}"
+          class="w-full h-full" 
+          style="{{ img_width }}{{ img_height }}"
+        >
+      {%- else -%}
+        {% render 'responsive-image',
+          image: image,
+          wrapper_class: 'w-full h-full',
+          max_width: block.settings.image_max_w,
+          max_height: block.settings.image_max_h,
+          outer_style: styles,
+          preload: block.settings.section_preload
+          
+        %}
+      {%- endif -%}
+    </{% if block.settings.link %}a{% else %}div{% endif %}>
+  {% else %}
+    <div class="image-card__img  h-full w-full sf__placeholder-wrapper sf-image--loaded">
+      {% capture current %}{% cycle 1, 2, 3, 4, 5 %}{% endcapture %}
+      {{ 'collection-' | append: current | placeholder_svg_tag: 'sf__placeholder-svg sf__placeholder-svg-no-border object-cover w-full h-full' }}
+    </div>
+  {% endif %}
+
+  {% if block.settings.image_layout == 'layout-4' or block.settings.image_layout == 'layout-5' %}
+    <div class="image-card__content flex z-10 {{ content_class }} pt-{{block.settings.title_padding}}">
+      <div
+        class="image-card__content-inner {% if stack_on_mobile == true %}text-center sm:text-{{ block.settings.content_alignment }}{% else %}text-{{ block.settings.content_alignment }}{% endif %}">
+        <div class="image__card-heading-group"
+          {% if subheading_color !='rgba(0,0,0,0)' and subheading_color != blank %}style="color:{{ subheading_color }};"{% endif %}>
+          {% if block.settings.image_layout == 'layout-4' %}
+            {% if block.settings.title != blank %}
+              {% capture custom_classes %}image__card-heading{% endcapture %}
+              {%- capture custom_styles -%}
+                {%- if heading_color !='rgba(0,0,0,0)' and heading_color != blank -%}
+                  color:{{ heading_color }};
+                {%- endif -%}
+                padding: {{ block.settings.heading_padding}}px 0;
+                display: block;
+              {%- endcapture -%}
+
+              {% render 'heading-tag'
+                heading: heading_size,
+                content: block.settings.title,
+                custom_classes: custom_classes,
+                custom_styles: custom_styles
+              %}
+            {% endif %}
+            {% if block.settings.subtitle != blank %}
+              <p class="image__card-subheading text-sm md:text-base" style="padding: {{ block.settings.subheading_padding}}px 0;">
+                {{ block.settings.subtitle }}
+              </p>
+            {% endif %}
+          {% elsif block.settings.image_layout == 'layout-5' %}
+            {% if block.settings.subtitle != blank %}
+              <p class="image__card-subheading text-sm md:text-base" style="padding: {{ block.settings.subheading_padding}}px 0;">
+                {{ block.settings.subtitle }}
+              </p>
+            {% endif %}
+            {% if block.settings.title != blank %}
+              {% capture custom_classes %}image__card-heading{% endcapture %}
+              {%- capture custom_styles -%}
+                {%- if heading_color !='rgba(0,0,0,0)' and heading_color != blank -%}
+                  color:{{ heading_color }};
+                {%- endif -%}
+                padding: {{ block.settings.heading_padding}}px 0;
+                display: block;
+              {%- endcapture -%}
+
+              {% render 'heading-tag'
+                heading: heading_size,
+                content: block.settings.title,
+                custom_classes: custom_classes,
+                custom_styles: custom_styles
+              %}
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.button_label != blank %}
+    <div class="sf-custom__text-cta gap-{{ block.settings.buttons_gap }} flex flex-wrap {{ button_position }}" style="margin-top: {{block.settings.button_mt}}px;">
+      {% render 'button-link' 
+        link: block.settings.button_link,
+        style: block.settings.button_style,
+        text: block.settings.button_label,
+        width: block.settings.button_width,
+        override_width: block.settings.override_width,
+        classes: 'pointer-events-auto'
+      %}
+      {% if block.settings.show_second_button and block.settings.button_label_2 != blank %}
+        {% render 'button-link' 
+          link: block.settings.button_link_2,
+          style: block.settings.button_style_2,
+          text: block.settings.button_label_2,
+          width: block.settings.button_width_2,
+          override_width: block.settings.override_width_2,
+          classes: 'pointer-events-auto'
+        %}
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

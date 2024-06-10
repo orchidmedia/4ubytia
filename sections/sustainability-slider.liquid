@@ -1,0 +1,317 @@
+{% comment %}slider starts here{% endcomment %}
+{% assign showspacing = section.settings.showspacing %}
+<link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"
+    />
+<div class="sustainability-slider__container" style="{%if showspacing %} margin: 80px 0 80px;  {% endif %} ">
+    <div class="container">
+      <div class="row">
+        <div class="sustainability-slider__container-header col">
+          <h2 class="col-12 stripes-heading-2 cream-font text-sm-left pb-10">{{section.settings.title | strip_html}}</h2>
+          <p class="col-12 col-md-10 sustainability-slider__sub-header font-public-p cream-font text-sm-left">
+            {{section.settings.text_under_title  | remove: '<p>'  | remove: '</p>'  }}
+          </p>
+        </div>
+    </div>
+  </div>
+  <div class="w-full ml-4 lg:ml-0">
+    <div class="swiper mySwiper w-12/12 lg:w-10/12 flex justify-center">
+      <div role="region" aria-label="Sustainability slider" class="swiper-wrapper">       
+        {%- for block in section.blocks -%}
+  
+        <div class="swiper-slide">
+            <div>{{ block.settings.image | img_url: '2048x' | img_tag }}</div>
+            <div class="flex lg:flex-row flex-col sustainability-slider-content-container">
+                <div class="sustainability-slider-content text-left">
+                    <h3 class=""><span>1</span>{{ block.settings.header_one }}</h3>
+                    <p class="">{{ block.settings.text_one | remove: '<p>'  | remove: '</p>'  }}</p>
+                </div>
+                <div class="sustainability-slider-content text-left">
+                    <h3 class=""><span>2</span>{{ block.settings.header_two }}</h3>
+                    <p class="">{{ block.settings.text_two | remove: '<p>'  | remove: '</p>'  }}</p>
+                </div>
+            </div>
+        </div>
+   
+  {%- endfor -%}
+  </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div> 
+    <div role="region" aria-label="Sustainability carousel" class="swiper-pagination"></div>
+    </div>
+</div>
+
+{% comment %}slider ends here{% endcomment %}
+ <!-- Swiper JS -->
+ <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+<!-- Initialize Swiper -->
+<script>
+  var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1.2,
+    spaceBetween: 10,
+    navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+          enabled: false,
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+      enabled: true
+    },
+        breakpoints: {
+          768: {
+            slidesPerView: 1,
+            spaceBetween: 40,
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+              enabled: true
+            },
+            pagination: {
+              enabled: false
+            }
+          },
+          1024: {
+            slidesPerView: 2,
+            spaceBetween: 50,
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+              enabled: true
+            },
+            pagination: {
+              enabled: false
+            }
+          },
+        },
+  });
+</script>
+
+<style>
+  .sustainability-slider__container {
+    text-align: center;
+    padding: 120px 0 40px 0;
+    position: relative;
+    color: {{ section.settings.text_color }};
+    background-color: {{ section.settings.bg_color }};
+  }
+  .sustainability-slider__container-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 50px;
+    flex: auto;
+  }
+
+  .sustainability-slider__container-header .sustainability-slider__sub-header {
+    max-width: 635px;
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  
+  
+  .sustainability-slider__container-header > span {
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.21;
+    letter-spacing: normal;
+  }
+  
+  .sustainability-slider__slide-text-container {
+    width: 50%;
+  }  
+  
+  .sustainability-slider-content-container .sustainability-slider-content{
+    color: #fffef4; 
+    padding-top: 40px;
+    padding-right: 50px;
+  }
+
+    .sustainability-slider-content-container .sustainability-slider-content h3{
+        margin-bottom: 10px;
+    }
+
+    .sustainability-slider-content-container .sustainability-slider-content h3 span{
+        display: inline-block;
+        width: 38px;
+        height: 38px;
+        background: #e08a73;
+        border-radius: 100%;
+        color: #fff;
+        font-size: 30px;
+        font-weight: bold;
+        text-align: center;
+        padding: 0 10px;
+        margin-right: 15px;
+        line-height: 40px
+    }
+
+    .swiper-button-prev, .swiper-button-next{
+        width: 42px;
+        height: 42px;
+        background: #d7e1db;
+        padding: 10px;
+        border-radius: 100%;
+        top: 42%;
+    }
+
+    .swiper-button-prev:after, .swiper-button-next:after{
+        color: #254a23;
+        font-size: 20px;
+    }
+
+    .sustainability-slider__container .swiper-pagination-bullet:after{
+      display: none;
+    }
+    .sustainability-slider__container .swiper-pagination-bullet{
+      width: 13px;
+      height: 13px;
+      border: 1px solid #fff;
+      opacity: 1;
+      background: none;
+    }
+    .sustainability-slider__container .swiper-pagination-bullet.swiper-pagination-bullet-active{
+      background: #fff !important;
+    }
+    .sustainability-slider__container .swiper-pagination-bullets.swiper-pagination-horizontal{
+      bottom: 25px;
+    }
+    
+  
+  @media only screen and (max-width: 748px) {
+    
+    .sustainability-slider__container{
+        padding: 50px 0 80px 0;
+    }
+
+    .sustainability-slider__container-header h2{
+        font-size: 36px;
+    }
+
+    .sustainability-slider-content-container .sustainability-slider-content{
+        padding-right: 20px;
+        text-align: left;
+    }
+    
+    .sustainability-slider__slide-text-container {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+      width: 100%;
+    }
+  }
+  .sustainability-slider__controls svg{
+    height: 51px;
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
+  .sustainability-slider__controls .prev svg{
+    left: 0;
+  }
+  .sustainability-slider__controls .next svg{
+    right: 0;
+  }
+</style>
+
+
+{% schema %}
+{
+  "name": "Sustainability Slider",
+  "settings": [
+    {
+      "label": "Background Color",
+      "type": "color",
+      "id": "bg_color"
+    },
+    {
+      "label": "Text Color",
+      "type": "color",
+      "id": "text_color"
+    },
+    {
+      "id": "enable_autoslide",
+      "type": "checkbox",
+      "label": "Enable Autoslide"
+    },
+    {
+      "id": "autoslide_time",
+      "type": "range",
+      "min":       2,
+      "max":       12,
+      "step":      1,
+      "label": "Autoslide Time (Seconds)",
+      "default":   5
+    },
+    {
+      "id": "autoplayHoverPause",
+      "type": "checkbox",
+      "label": "Pause Autoslide on hover"
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "label": "Title"
+    },
+    {
+      "id": "text_under_title",
+      "type": "text",
+      "label": "Text under title"
+    },
+    {
+      "type": "checkbox",
+      "id": "showspacing",
+      "label": "Show Spacing Top Bottom",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Slide",
+      "type": "slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "id": "header_one",
+          "type": "text",
+          "label": "Header One"
+        },
+        {
+          "id": "text_one",
+          "type": "richtext",
+          "label": "Text One"
+        },
+        {
+          "id": "header_two",
+          "type": "text",
+          "label": "Header two"
+        },
+        {
+          "id": "text_two",
+          "type": "richtext",
+          "label": "Text two"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sustainability Slider"
+    }
+  ]
+}
+{% endschema %}
+

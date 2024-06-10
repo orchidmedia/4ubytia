@@ -1,0 +1,45 @@
+<div class="quantity-input h-[53px] flex {{ class }} {{ atc_mobile }}"
+  style="border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:#fff"
+>
+  <button
+    class="quantity-input__button flex items-center justify-center h-[53px] w-[53px]"
+    type="button"
+    id="sub-item-quantity_quickView"
+    aria-label="{{ 'products.product.decrease_quantity' | t: title: product.title }}"
+    data-quantity-selector="decrease"
+    data-product-id="{{ product.id }}"
+  >
+    <span id="minus_input__button_quickView" class="minus_input__button" disabled>-</span>
+  </button>
+  <input
+    class="quantity-input__element w-10 productQuantity  text-center flex-grow flex-shrink appearance-none"
+    type="number"
+    name="quantity"
+    id="item-quantity_quickView"
+    maxlength="2"
+    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+    onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+    value="1"
+    min="1"
+    aria-label="{{ 'products.product.product_quantity' | t }}"
+    data-quantity-input
+    data-product-id="{{ product.id }}"
+    style="background:none"
+  />
+  <button
+    class="quantity-input__button flex items-center justify-center h-[53px] w-[53px]"
+    type="button"
+    id="add-item-quantity_quickView"
+    aria-label="{{ 'products.product.increase_quantity' | t: title: product.title }}"
+    data-quantity-selector="increase"
+    data-product-id="{{ product.id }}"
+  >
+    <span  class="plus_input__button">+</span>
+  </button>
+</div>

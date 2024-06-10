@@ -1,0 +1,58 @@
+{%- comment -%}
+    It creates a style tag and it restricts an image from growing larger than its max resolution.
+    Accepts:
+    - svg: {String} Upload url to SVG
+    - image: {Object} Image object
+    - max_width: {Number} Max width of the image container
+    - max_height: {Number} Max height of the image container
+    - class: {String} class name of the <img />
+    - attributes: {String} additional HTML attributes of the <img />
+    - style: {String} styles of the <img />
+
+    Usage:
+    In your liquid template file, copy the following line
+    - {% include 'simple-image' svg: image_svg, max_width: 700, max_height: 800 %}
+{%- endcomment -%}
+
+{% liquid
+    if svg_code != blank
+        assign img_code = svg_code
+        assign img_alt = svg_text
+    elsif svg != blank
+        assign img_url = svg
+        assign img_alt = svg_text
+    else
+        assign img_url = image | image_url
+        assign img_alt = image.alt | default: 'simple-image'
+    endif
+
+    assign img_style = ''
+    if max_width > 0
+        assign max_width = max_width
+    endif
+    
+    if max_height > 0
+        assign max_height = max_height
+    endif
+
+    if style != blank 
+        assign img_style = img_style | append: style
+    endif
+%}
+
+{% if img_code != blank %}
+    <div
+        class="w-full h-full {{ class }}"
+        style=" max-height:{{max_height | strip}}px; max-width:{{max_width | strip}}px; {{img_style}}"
+        title="{{ img_alt }}">
+        {{ img_code }}
+    </div>
+{% else %}
+    <img
+        src="{{ img_url }}"
+        class="w-full h-full {{ class }}"
+        alt="{{ img_alt }}"
+        {{ attributes }}
+        style=" max-height:{{max_height | strip}}px; max-width:{{max_width | strip}}px; {{img_style}}"
+    />
+{% endif %}

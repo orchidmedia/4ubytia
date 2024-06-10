@@ -1,0 +1,182 @@
+{% comment %}
+   /snippets/breadcrumb.liquid
+  Documentation - http://docs.shopify.com/support/your-website/navigation/creating-a-breadcrumb-navigation
+{% endcomment %}
+
+{%- capture separator -%}
+  {%if link_icon == 'chevron-right' %}
+    <span aria-hidden="true" class="sf__breadcrumb-separator py-2 px-1" style="margin-bottom: 3px;">
+      {% render 'icon', name: 'chevron-right', size: 'extra-small' %}
+    </span>
+  {%else%}
+    <span class="{{custom_links}} px-1 hover-none">/</span>
+  {%endif%}
+{%- endcapture -%}
+
+{%- capture home -%}
+  <a href="{{ routes.root_url }}" class="bread-crumb__item uppercase {{custom_links}}" title="{{ 'general.breadcrumbs.home_link_title' | t }}">
+    {{ 'general.breadcrumbs.home' | t }}
+  </a>
+{%- endcapture -%}
+
+ {% comment %} Query String to get relevant collection {% endcomment %}
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{% comment %} Use string splitting to pull the value from content_for_header and apply some string clean up {% endcomment %}
+{%- assign pageUrl = contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last |
+   replace:'\/','/' | 
+   replace:'%20',' ' | 
+   replace:'\u0026','&'
+-%}
+
+{%- assign pageQuerystring = pageUrl | split:'?' | last -%}
+{% assign collectionQuery = pageQuerystring | split: "&" %} 
+
+{% assign collectionHandleByQuery = collectionQuery[0] | split: "=" | last %}
+{% assign collectionTitleByQuery = collectionQuery[1] | split: "=" | last %}
+
+{% if container == nil %}
+  {% assign container = 'container-fluid' %}
+{% endif %}
+
+{% unless template == 'index' %}
+  <nav class="sf-breadcrumb w-full{% if template == 'collection' %} flex{% endif %} {{ class }}" role="navigation" aria-label="breadcrumbs">
+    <div class="{{ container }}">
+      <div class="flex justify-{{ justify | default: 'start' }}">
+        {% unless template.name == 'product' or template.name == 'collection'%}
+          {{ home }}
+        {% endunless %}
+
+        {% if template.name == 'product' %}
+          <!-- Breadcrumb by Tag -->
+          {% assign isBreadcrumbByTag = false %}
+          {% for tag in product.tags %}
+            {% if tag contains "breadcrumb" %}
+              {% assign collectionHandleInTag = tag | split: ":" | last %}
+              {% assign isBreadcrumbByTag = true %}
+            {% endif %}
+            {% for collection in product.collections %}
+                {% if collectionHandleInTag == collection.handle %}
+                  {% assign collectionHandleByTag = collection.handle %}
+                  {% assign collectionTitleByTag = collection.title %}
+                {% endif %}
+            {% endfor %}
+          {% endfor %}
+
+          <div class="sf-breadcrumb__nav flex flex-wrap items-center">
+            {{ home }}
+            {% assign current_collection = null %}
+            {% if collection %}
+              {% assign current_collection = collection %}
+            {% elsif product and product.collections.size > 0 %}
+              {% assign current_collection = product.collections.last %}
+            {% endif %}
+            {% if current_collection %}
+              {{ separator }}
+              {% if current_collection.handle %}
+                {% if pageQuerystring contains "collection_handle" %}
+                  {% capture url %}/collections/{{ collectionHandleByQuery }}{% endcapture %}
+                {% elsif isBreadcrumbByTag %}
+                  {% capture url %}/collections/{{ collectionHandleByTag }}{% endcapture %}
+                {% else %}
+                  {% capture url %}/collections/{{ current_collection.handle }}{% endcapture %}
+                {% endif %}
+                <a href="{{ url }}" class="bread-crumb__item uppercase {{custom_links}}">
+                  {% if pageQuerystring contains "collection_title" %}
+                    {{ collectionTitleByQuery | url_decode }}
+                  {% elsif isBreadcrumbByTag %}
+                    {{ collectionTitleByTag }}
+                  {% else %}
+                    {{ current_collection.title }}
+                  {% endif %}
+              </a>
+              {% endif %}
+            {% endif %}
+            {% unless hide_current == true %}
+              {{ separator }}
+              <span class="sf__breabcrumb-page-title uppercase {{custom_links}} hover-none">{{ product.title }}
+              </span>
+            {% endunless %}
+          </div>
+        {% elsif template.name == 'collection' and collection.handle %}
+          <a href="{{ routes.root_url }}" class="{{custom_links}}" title="{{ 'general.breadcrumbs.home_link_title' | t }}">
+            {{ 'general.breadcrumbs.home' | t }}
+          </a>
+          {{ separator }}
+          {% if current_tags %}
+            {% capture url %}/collections/{{ collection.handle }}
+            {% endcapture %}
+            <a href="{{ url }}" class="{{custom_links}}">{{ collection.title }}
+            </a>
+            {{ separator }}
+            <span>{{ current_tags | join: " + " }}
+            </span>
+          {% else %}
+            <span class="{{custom_links}}">{{ collection.title }}
+            </span>
+          {% endif %}
+
+        {% elsif template.name == 'blog' %}
+
+          {{ separator }}
+          {% if current_tags %}
+            <a href="{{blog.url}}" class="bread-crumb__item {{custom_links}}">{{ blog.title }}
+            </a>
+            {{ separator }}
+            <span>{{ current_tags | join: " + " }}
+            </span>
+          {% else %}
+            <span class="sf__breabcrumb-page-title {{custom_links}} hover-none">{{ blog.title }}
+            </span>
+          {% endif %}
+
+        {% elsif template == 'article' %}
+
+          {{ separator }}
+          <a href="{{ blog.url }}" class="bread-crumb__item {{custom_links}}">{{ blog.title }}
+          </a>
+
+        {% elsif template == "customers/addresses" %}
+
+          {{ separator }}
+          <a href="{{ routes.account_url }}" class="bread-crumb__item {{custom_links}}">{{ 'customer.account.page_title' | t }}
+          </a>
+          {{ separator }}
+          <span class="sf__breabcrumb-page-title {{custom_links}} hover-none">{{ page_title }}
+          </span>
+
+        {% elsif template contains 'page' %}
+          {{ separator }}
+
+          {% if section.settings.custom_link_text != blank %}
+            <a href="{{ section.settings.custom_link_url }}" class="bread-crumb__item {{custom_links}}">
+              {{ section.settings.custom_link_text }}
+            </a>
+            {{ separator }}
+          {% endif %}
+
+          {% if block.settings.custom_link_text != blank %}
+            <a href="{{ block.settings.custom_link_url }}" class="bread-crumb__item {{custom_links}}">
+              {{ block.settings.custom_link_text }}
+            </a>
+            {{ separator }}
+          {% endif %}
+          <span class="sf__breabcrumb-page-title bread-crumb__item {{custom_links}} hover-none">{{ page.title }}
+          </span>
+
+        {% elsif template contains 'search' %}
+          {{ separator }}
+          <span class="sf__breabcrumb-page-title {{custom_links}} hover-none">{{ 'general.search.heading' | t: count: search.results_count, terms: search.terms }}
+          </span>
+
+        {% else %}
+
+          {{ separator }}
+          <span class="sf__breabcrumb-page-title {{custom_links}} hover-none">{{ page_title }}
+          </span>
+
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+{% endunless %}
+

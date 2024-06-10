@@ -1,0 +1,33 @@
+{%- for filter in collection.filters -%}
+    {%- if filter.active_values.size > 0 -%}
+    {%- assign has_filters = true -%}
+    {%- endif -%}           
+{%- endfor -%}
+
+<div class="sf__modal-filter collection-filter-modal">
+    <div class="collection-filter-header">
+        <div class="sf__filter-close">
+            <span class="hide-tablet mr-2">HIDE FILTERS</span>
+            <span class="hide-desktop mr-2">FILTERS</span>
+            <span class="hide-tablet filter-icon">+</span>
+        </div>
+        <div class="filter-clear-modal">  
+        {%- if has_filters == true -%}
+            <facet-remove class="filtered-item">
+            <a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="filter-clear">
+                <span>{{ 'collections.sidebar.clear_all' | t }}</span>
+            </a>
+            </facet-remove>
+        {%- endif -%}
+        <a class="sf__filter-close">
+            <span class="filter-icon pointer-events-none">
+                {% render 'icon', name: 'x' %}
+            </span>
+        </a>
+        </div>
+    </div>
+    <hr class="filter-separator">
+    <div class="sf__modal-filter-content">
+        {%- render 'storefront-filters', section: section -%}
+    </div>
+</div>

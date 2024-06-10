@@ -1,0 +1,334 @@
+{%- assign st = section.settings -%}
+{% case section.settings.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+{%- if section.settings.bg_color_override -%}
+  {%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+{% assign has_bg = false %}
+
+{% unless bg_color == "rgba(0,0,0,0)" or bg_color == blank %}
+    {% assign has_bg = true %}
+{% endunless %}
+
+{% capture container %}
+    {{ st.container }}
+    {% if st.background_image == blank%}
+    {% endif %}
+{% endcapture %}
+
+{% assign section_height = st.section_height %}
+
+{% case section_height %}
+    {% when 'small' %}
+        {% assign height = '40vh' %}
+    {% when 'large' %}
+        {% assign height = '62vh' %}
+    {% when 'medium' %}
+        {% assign height = '50vh' %}
+{% endcase %}
+
+{% assign content_class = 'w-full' %}
+{% if st.container == 'w-full' %}
+    {% assign content_class = 'container' %}
+{% endif %}
+
+{% style %}
+    {% if st.mb_image != blank %}
+        @media(min-width: 640px) {
+            #sf__countdown-timer-{{ section.id }} {
+                {% if st.background_image != blank %}
+                --bg-img: url({{ st.background_image | img_url: '1920x' }});
+                {% endif %}
+                --bg-color: {{ bg_color }};
+                --section-height: {{ height }};
+                background-image: var(--bg-img);
+                background-color: var(--bg-color);
+            }
+        }
+    {% else %}
+        #sf__countdown-timer-{{ section.id }} {
+            {% if st.background_image != blank %}
+            --bg-img: url({{ st.background_image | img_url: '1920x' }});
+            {% endif %}
+            --bg-color: {{ bg_color }};
+            --section-height: {{ height }};
+            background-image: var(--bg-img);
+            background-color: var(--bg-color);
+        }
+    {% endif %}
+{% endstyle %}
+
+<section
+  id="sf__countdown-timer-{{ section.id }}"
+	data-section-type="countdown-timer"
+	data-section-id="{{ section.id }}"
+  {% if has_bg %}
+      data-bg="{{ bg_color | color_to_hsl }}"
+  {% endif %}
+  class="section-pv-{{ section.settings.margin_vertical }} bg-cover bg-center bg-no-repeat {{ section.settings.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}"
+>
+    <div
+        id="countdown-timer-{{ section.id }}"
+        class="{{ container | strip }} sf__cdt"
+    >
+        {% assign content_class = 'w-full' %}
+        {% if st.container == 'w-full' %}
+            {% assign content_class = 'container w-full' %}
+        {% endif %}
+
+        {% if st.mb_image != blank %}
+            <div class="block sm:hidden -mx-4">
+                {% render 'responsive-image', image: st.mb_image %}
+            </div>
+        {% endif %}
+        <div class="sf__cdt-inner flex items-center md:py-0 pb-10 md:pb-12 lg:pb-16{% if st.mb_image != blank %} pt-8 hide-bg{% else %} pt-16{% endif %} {% if st.container != 'w-full' %} md:px-28{% endif %}">
+            {% render 'countdown-timer', settings: st, containerId: section.id, content_class: content_class %}
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "Countdown timer",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_desktop",
+            "label": "Hide on Desktop",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_tablet",
+            "label": "Hide on Tablet",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_mobile",
+            "label": "Hide on Mobile",
+            "default": false
+        },
+        {
+          "type": "select",
+          "id": "margin_vertical",
+          "label": "Section margin (vertical)",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            }
+          ]
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "Container type",
+            "default": "container-fluid",
+            "options": [
+                {
+                    "value": "container-fluid",
+                    "label": "Default"
+                },
+                {
+                    "value": "w-full",
+                    "label": "Full width"
+                },
+                {
+                    "value": "container",
+                    "label": "Use container box"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "section_height",
+            "label": "Section height",
+            "default": "medium",
+            "options": [
+                {
+                    "value": "small",
+                    "label": "Small"
+                },
+                {
+                    "value": "medium",
+                    "label": "Medium"
+                },
+                {
+                    "value": "large",
+                    "label": "Large"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "align",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+                {
+                    "value": "start",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "end",
+                    "label": "Right"
+                }
+            ]
+        },
+        {
+          "type": "select",
+          "id": "bg_color_selector",
+          "label": "Section Background",
+          "default": "color_section1_bg",
+          "options": [
+            {
+              "value": "color_section1_bg",
+              "label": "Section 1"
+            },
+            {
+              "value": "color_section2_bg",
+              "label": "Section 2"
+            },
+            {
+              "value": "color_section3_bg",
+              "label": "Section 3"
+            },
+            {
+              "value": "color_section4_bg",
+              "label": "Section 4"
+            },
+            {
+              "value": "color_section5_bg",
+              "label": "Section 5"
+            },
+            {
+              "value": "color_section6_bg",
+              "label": "Section 6"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "bg_color_override",
+          "label": "Override Background",
+          "default": false
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color",
+            "default": "#dacfba"
+        },
+        {
+            "type": "image_picker",
+            "id": "background_image",
+            "label": "Background Image"
+        },
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+        },
+        {
+            "type": "text",
+            "id": "time",
+            "label": "End time",
+            "default": "2021-12-26 23:00:00",
+            "info": "Date format: YYYY-MM-DD HH:MM:ss"
+        },
+        {
+            "type": "header",
+            "content": "Button settings"
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label",
+            "default": "Shop now",
+            "info": "Leave blank to hide button"
+        },
+        {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button link"
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+                { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                { "value": "button-1", "label": "Button 1" },
+                { "value": "button-2", "label": "Button 2" },
+                { "value": "button-3", "label": "Button 3" },
+                { "value": "button-4", "label": "Button 4" },
+                { "value": "button-5", "label": "Button 5" },
+                { "value": "button-6", "label": "Button 6" },
+                { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "sf__btn sf__btn-primary"
+        },
+        {
+            "type": "image_picker",
+            "id": "mb_image",
+            "label": "Image on mobile"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "Custom classes"
+        }
+    ],
+    "templates": ["index"],
+    "presets": [
+        {
+            "name": "Countdown timer",
+            "category": "Promotional"
+        }
+    ]
+}
+{% endschema %}

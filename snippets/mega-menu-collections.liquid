@@ -1,0 +1,57 @@
+{% assign collection_ids = 'collection_1,collection_2,collection_3,collection_4,collection_5,collection_6,collection_7,collection_8' | split: ',' %}
+<div
+    class="sf-mega-menu-collections md:pl-4 xl:pl-12"
+    data-id="{{ block.id }}"
+>
+    <div class="sf-grid flex" style="--column-gap: 1.25rem">
+        {% for collection_id in collection_ids %}
+            {% if block.settings[collection_id] == blank %}{% continue %}{% endif %}
+            {% assign collection_handle = block.settings[collection_id] %}
+            {% assign collection = collections[collection_handle] %}
+            {% assign collection_image = collection.image %}
+            {% assign image_id = 'image_' | append: forloop.index %}
+
+            {% if block.settings[image_id] != blank %}
+                {% assign collection_image = block.settings[image_id] %}
+            {% endif %}
+            <div class="sf-column flex-1">
+                <div class="collection-card collection-card--standard">
+                    <div class="collection-card__inner">
+                        <a href="{{ collection.url }}" class="collection-card__image block group overflow-hidden w-full" onclick="dataLayer.push({ 'event': 'productClick', 'ecommerce': {
+                            'currencyCode': 'USD', 'click': {
+                            'actionField': {'list': '{{ collection.title }}'},
+                            'products': [
+                                {% for product in collection.products %}
+                                    {
+                                        'name': `{{ product.title }}`,
+                                        'id': {{ product.id }},
+                                        'price': {{ product.selected_or_first_available_variant.price | money_without_currency | remove: ',' }},
+                                        'brand': '{{ product.vendor }}',
+                                        'variant': '{{ product.selected_or_first_available_variant.title }}'
+                                    }
+                                {% endfor %}
+                            ] }
+                            } });">
+                            {% if collection_image != blank %}
+                                {% render 'responsive-image', image: collection_image, aspect_ratio: '1/1' %}
+                            {% else %}
+                                <div style="--aspect-ratio: 1/1;">
+                                    {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                                    {{ 'collection-' | append: current | placeholder_svg_tag: 'sf__placeholder-svg w-full h-full w-full h-full object-cover' }}
+                                </div>
+                            {% endif %}
+                        </a>
+                        <p-small class="mt-5 text-center uppercase">
+                            <a class="block md:pr-4 text-black" href="{{ collection.url | default: "#" }}"  onclick="">
+                                {{ collection.title | default: default_label }}
+                                {% if block.settings.show_product_counter %}
+                                    <sup class="font-semibold text-xs text-black">{{ collection.all_products_count }}</sup>
+                                {% endif %}
+                            </a>
+                        </p-small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

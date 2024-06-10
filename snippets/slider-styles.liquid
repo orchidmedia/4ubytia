@@ -1,0 +1,78 @@
+<style>
+  /* navigation */
+  [data-icon-prev],
+  [data-icon-next] {
+    --slider-icon-color-1: {{ settings.slider_icon_color_1 | default: 'none' }};
+    --slider-icon-color-2: {{ settings.slider_icon_color_2 | default: 'none' }};
+    --slider-icon-color-3: {{ settings.slider_icon_color_3 | default: 'none' }};
+  }
+
+  {% unless settings.slider_icon_disable_hover %}
+      [data-icon-prev]:hover,
+      [data-icon-next]:hover {
+        --slider-icon-color-1: {{ settings.slider_icon_color_1_hover | default: 'none' }};
+        --slider-icon-color-2: {{ settings.slider_icon_color_2_hover | default: 'none' }};
+        --slider-icon-color-3: {{ settings.slider_icon_color_3_hover | default: 'none' }};
+      }
+  {% endunless %}
+
+  /* pagination */
+  .swiper-pagination {
+    gap: 12px;
+  }
+
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 0;
+    background-color: {{ settings.slider_pagination_background | default: '#ffffff' }};
+    position: relative;
+    border: 2px solid {{ settings.slider_pagination_inside_border | default: '#ffffff' }};
+    opacity: 1;
+  }
+
+
+  .swiper-pagination-bullet-active {
+    background-color:  {{ settings.slider_pagination_active_background | default: '#000000' }};
+    border: 2px solid {{ settings.slider_pagination_active_inside_border | default: '#ffffff' }};
+  }
+
+  .swiper-pagination-bullet:after, 
+  .swiper-pagination-bullet-active:after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    z-index: -1;
+    border-radius: 50%;
+  }
+
+  .swiper-pagination-bullet:after {
+    background: {{ settings.slider_pagination_outside_border | default: '#000000' }};
+  }
+
+  .swiper-pagination-bullet-active:after {
+    background: {{ settings.slider_pagination_active_outside_border | default: '#000000' }};
+  }
+
+  /* scrollbar */
+  .swiper-scrollbar-drag {
+    background-color: var(--scrollbar-drag-color) !important;
+    border-radius: 25px;
+  }
+  .swiper-horizontal>.swiper-scrollbar, .swiper-scrollbar.swiper-scrollbar-horizontal {
+      height: var(--scrollbar-height);
+  }
+
+  .swiper-scrollbar {
+    width: 98%;
+    height: var(--scrollbar-height) !important;
+    background-color: var(--scrollbar-color)!important;
+    border-radius: 80px;
+  }
+
+</style>

@@ -1,0 +1,75 @@
+
+{% liquid 
+  assign klaviyo_fields = '$consent'
+  if block_settings.email_enabled
+    assign klaviyo_fields = klaviyo_fields | append: ', $email'
+  endif
+  if block_settings.phone_enabled
+    assign klaviyo_fields = klaviyo_fields | append: ', $phone_number'
+  endif
+%}
+
+{%- capture form_class -%}sf__footer-form-newsletter form__style-{{ block_settings.form_style }}{%- endcapture -%}
+<form id="{{ block_settings.form_id }}" 
+  class="klaviyo_styling klaviyo_gdpr_embed_{{ block_settings.list_id }}" 
+  action="//manage.kmail-lists.com/subscriptions/subscribe" 
+  data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe" 
+  method="GET" 
+  target="_blank"
+>
+    <input type="hidden" name="g" value="{{ block_settings.list_id }}">
+    <input type="hidden" name="$fields" value="{{ klaviyo_fields }}">
+    <div class="klaviyo-wrapper">
+    <p class="py-2 block-text sf__newsletter-block-desc klaviyo_form_actions">{{ block_settings.description }}</p>
+    <div class="klaviyo_field_group klaviyo_form_actions relative">
+      {%- if block_settings.email_enabled -%}
+        <input class="form-control form__control-icon py-1.5 px-12 sf__newletter__form-input" 
+          type="text" 
+          value="" 
+          name="email" 
+          id="k_id_email" 
+          placeholder="{{ block_settings.email_placeholder }}" 
+          pattern="[^@\s]+@[^@\s]+\.[^@\s]+" 
+          title="Invalid email address. Example: name@youremail.com" 
+          {% if block_settings.email_required %}required{% endif %} 
+        /> 
+      {%- endif -%}
+      {%- if block_settings.phone_enabled -%}
+        <input class="form-control form__control-icon py-1.5 px-12 sf__newletter__form-input" 
+          id="telNo" 
+          name="$phone_number" 
+          type="tel" 
+          placeholder="{{ block_settings.phone_placeholder }}" 
+          pattern="^(1\s?)?(\d{3}|\(\d{3}\))[\s\-]?\d{3}[\s\-]?\d{4}$" 
+          title="Invalid American phone number. Example: 555-555-5555 or (555)555-5555" 
+          {% if block_settings.phone_required %}required{% endif %} 
+        />
+      {%- endif -%}
+    </div>
+    <div class="klaviyo_messages">
+        <div class="success_message" style="display:none;"></div>
+        <div class="error_message" style="display:none;"></div>
+    </div>
+
+    {% if settings.agree_text != blank and block_settings.show_agree_checkbox  %}
+      {% render 'agree-terms-checkbox' %}
+    {% endif %}
+
+    <div class="klaviyo_form_actions">
+        <button type="submit" class="sf-custom__text-cta {{ block_settings.button_style }}">{{ block_settings.button_text }}</button>
+    </div>
+
+  </div>
+    <p class="consent-text items-center md:items-start justify-center md:justify-start w-full mt-8 md:mt-16 klaviyo_form_actions">{{block_settings.consent_text}}</p>
+</form>
+
+<script type="text/javascript">
+  KlaviyoSubscribe.attachToForms('#{{ block_settings.form_id }}', {
+    hide_form_on_success: true,
+    success_message: "{{ block_settings.success_message }}",
+    extra_properties: {
+      $source: 'Footer Form',
+      $consent_version: 'I accept the Privacy Policy and Terms of Service'
+    }
+  });
+</script>

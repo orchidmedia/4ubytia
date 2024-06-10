@@ -1,0 +1,35 @@
+{%- comment -%}
+  It creates a button tag with or without icon.
+    Accepts:
+    - action: {String} button action. Accepts: "button", "submit" or "reset". Default: "button"
+    - style: {String} class name of the anchor tag
+    - text: {String} button text content
+    - width: {String} defines button width
+    - icon: {String} svg tag that contains the icon
+    - icon_position: {String} position of the icon. Accepts: "left" and "right". Default: "left"
+
+    Usage:
+    In your liquid template file, copy the following lines
+    - {% render 'button' 
+        action: "button",
+        style: "css-class",
+        text: "Some Text",
+        icon: button_icon_1,
+        icon_position: "left"
+      %}
+{%- endcomment -%}
+
+{%- assign icon_pos = icon_position | default: "left" -%}
+
+<button
+  type="{{ action | default: "button" }}"
+  class="button {{ style }} w-{{ width | default: '1/2' }}"
+>
+  {% if icon and icon_pos == "left" %}
+    {{ icon }}
+  {% endif %}
+  {{ text }}
+  {% if icon and icon_pos == "right" %}
+    {{ icon }}
+  {% endif %}
+</button>

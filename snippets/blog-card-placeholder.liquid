@@ -1,0 +1,12 @@
+<div class="sf__blog-card sf__view-grid">
+    <div style="--aspect-ratio: 4/3;" class="bg-gray-100">
+        {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+        {{ 'collection-' | append: current | placeholder_svg_tag: 'object-cover sf-image--loaded w-full h-full' }}
+    </div>
+    <div class="sf__blog-cardContent">
+        <span class="sf__blog-cardDate">May 27, 2021</span>
+        <div class="sf__blog-cardTitle">{{ 'homepage.onboarding.blog_title' | t }}</div>
+        <div class="sf__blog-cardExcerpt">{{ 'homepage.onboarding.blog_excerpt' | t }}</div>
+        <a href="#" class="sf__blog-cardReadmore">{{ 'homepage.onboarding.blog_readmore' | t }}</a>
+    </div>
+</div>

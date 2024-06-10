@@ -1,0 +1,118 @@
+{% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+<div class="sf-video" style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+  <div class="sf-video__container sf-video__container--{{ section.id }} mx-auto">
+    <div class="sf-video__wrapper sf-video__wrapper--{{ section.id }}"
+      style="--aspect-ratio: {{ block.settings.ratio | replace: ':', '/' }}">
+      
+      {%- if block.settings.image != blank -%}
+      <div class="sf-video__cover bg-center"
+        style="background-image: url({{ block.settings.image | img_url: '1920x' }})">
+      </div>
+    {%- endif -%}
+
+    <div class="sf-video__inner text-center">
+      {% if block.settings.enable_play and block.settings.button_svg.size == 0 %}
+      <button type="button"
+        class="sf-video__play sf-video__play--style-{{ block.settings.play_style }} sf-video__play--size-{{ block.settings.play_size }}"
+        data-plyr="play" aria-label="Play" {% if block.settings.text_color !='rgba(0,0,0,0)' %}style="color:{{ block.settings.text_color }}"{% endif %}>
+       <svg xmlns="http://www.w3.org/2000/svg" width="74" height="72" viewBox="0 0 74 72" fill="none">
+        <g filter="url(#filter0_d_1066_3737)">
+        <path d="M36.96 0C18.7523 0 4 14.3226 4 32C4 49.6774 18.7523 64 36.96 64C55.1677 64 69.92 49.6774 69.92 32C69.92 14.3226 55.1677 0 36.96 0ZM52.2439 35.0968L28.8529 48.129C26.7265 49.2903 24.2013 47.871 24.2013 45.4194V18.5806C24.2013 16.2581 26.7265 14.8387 28.8529 15.871L52.2439 29.6774C54.5032 30.9677 54.5032 33.9355 52.2439 35.0968Z" fill="white"/>
+        </g>
+        <defs>
+        <filter id="filter0_d_1066_3737" x="0" y="0" width="73.9199" height="72" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="4"/>
+        <feGaussianBlur stdDeviation="2"/>
+        <feComposite in2="hardAlpha" operator="out"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.13 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1066_3737"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1066_3737" result="shape"/>
+        </filter>
+        </defs>
+        </svg>
+      </button>
+      {% endif %}
+      {%- if block.settings.button_svg != null and block.settings.button_svg != "" -%}
+        <button data-plyr="play" aria-label="watch video fullscreen">
+            <img style="max-width: {{ block.settings.button_svg_size }}" src="{{ block.settings.button_svg }}" alt="Play Video" />
+        </button>                                          
+      {%- endif -%}
+      {%- unless block.settings.video_title == blank -%}
+        {% capture custom_classes %}sf-video__title{% endcapture %}
+        {%- capture custom_styles -%}
+          {%- if block.settings.text_color !='rgba(0,0,0,0)' and block.settings.text_color != blank -%}
+            color:{{ block.settings.text_color }};
+          {%- endif -%}
+        {%- endcapture -%}
+
+        {% render 'heading-tag'
+          heading: block.settings.heading_tag,
+          content: block.settings.video_title,
+          custom_classes: custom_classes,
+          custom_styles: custom_styles
+        %}
+      {%- endunless -%}
+    </div>
+
+      <div id="sf-video__player-{{ section.id }}" class="plyr__video-embed" style="pointer-events: none;"
+        data-video-ratio="{{ block.settings.ratio | default: '16:9' }}" data-autoplay="{{ block.settings.autoplay }}"
+        data-loop="{{ section.settings.loop }}">
+        {% if block.settings.video_selector == 'youtube-vimeo' %}
+          {% if block.settings.video_link contains 'youtube.com/watch' %}
+            {%- liquid
+              assign video_id = block.settings.video_link | split: 'v='
+              assign video_id = video_id[1] | split: '&' | first
+            -%}
+            <iframe fetchpriority='low'
+              src="https://www.youtube.com/embed/{{ video_id }}?iv_load_policy=3&amp;modestbranding=0&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1cc_load_policy=1&hl=en&cc_lang_pref=en"
+              allowfullscreen allowtransparency allow="autoplay"></iframe>
+          {% elsif block.settings.video_link contains 'youtu.be/' %}
+            {%- liquid
+              assign video_id = block.settings.video_link | split: '.be/'
+              assign video_id = video_id[1] | split: '&' | first
+            -%}
+            <iframe fetchpriority='low'
+              src="https://www.youtube.com/embed/{{ video_id }}?iv_load_policy=3&amp;modestbranding=0&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1cc_load_policy=1&hl=en&cc_lang_pref=en"
+              allowfullscreen allowtransparency allow="autoplay"></iframe>
+          {% elsif block.settings.video_link contains 'vimeo.com' %}
+            {%- liquid
+              assign video_id = block.settings.video_link | split: '.com/'
+              assign video_id = video_id[1] | split: '/' | first
+            -%}
+            <iframe fetchpriority='low' src="https://player.vimeo.com/video/{{ video_id }}?h=69768d2afa&playsinline=1&controls=1{% if block.settings.video_cations == 'custom' %}&texttrack=en{% elsif block.settings.video_captions == 'generated' %}&texttrack=en-x-autogenerated{% endif%}" frameborder="0"
+              allowfullscreen allowtransparency allow="autoplay" allow=autoplay></iframe>
+          {% endif %}
+        {% elsif block.settings.video_selector == 'video-format' %}
+          <video  playsinline preload="auto"  >
+            {% liquid
+              assign video_url = block.settings.video | split: '?v='
+              assign video_url = video_url | first | strip_newlines
+              assign format = ''
+              if video_url contains '.mp4'
+                assign format = 'mp4'
+              endif
+              if video_url contains '.webm'
+                assign format = 'webm'
+              endif
+              if video_url contains '.mov'
+                assign format = 'mp4'
+              endif
+            %}
+            <source src="{{ video_url }}" type="video/{{ format }}">
+            {% if block.settings.video_captions %}<track label="English" kind="subtitles" srclang="en" src="{{block.settings.video_captions}}" default>{% endif %}
+            Your browser does not support the video tag.
+          </video>
+        {% else %}
+          <div class="placeholder-noblocks text-center">
+            {{ 'homepage.onboarding.no_content' | t }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

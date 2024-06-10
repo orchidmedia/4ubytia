@@ -1,0 +1,49 @@
+{%- assign item = section.settings -%}
+<div role="article" class="flex flex-col md:flex-row gap-8">
+    <article class="flex-1">
+        <div class="prose max-w-none article-4-wrapper" style="--article-4-pd-left: {{ section.settings.margin_left }}px; --article-4-pd-right: {{ section.settings.margin_right }}px; --article-4-pd-left-mobile: {{ section.settings.margin_left_mb }}px; --article-4-pd-right-mobile: {{ section.settings.margin_right_mb }}px;">
+            {{ article.content }}
+        </div>
+        {%- if item.blog_show_social or item.blog_show_tags -%}
+            <div class="flex flex-col {% if item.blog_show_social and item.blog_show_tags %}justify-between{% else %}justify-start{% endif %} gap-2 md:flex-row">
+                {% if article.tags.size > 0 and section.settings.blog_show_tags %}
+                    <div class="text-base">
+                        <span class="text-black">{{ 'blogs.article.tags' | t }}</span>
+                        <ul class="inline-block">
+                            {% for tag in article.tags %}
+                            <li class="inline-block text-gray-500">
+                                <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% unless forloop.last %},
+                                {% endunless %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if item.blog_show_pagination %}
+            {%- render 'article-next-previous' -%}
+        {% endif %}
+        {%- if item.blog_show_related -%}
+            <div class="mt-28">{%- render 'article-related-post', item: item -%}</div>
+        {% endif %}
+        {%- if item.blog_show_comment -%}
+            {%- render 'blog-comment' -%}
+        {%- endif -%}
+    </article>
+</div>
+
+<style>
+    .article-4-wrapper {
+        padding-left: var(--article-4-pd-left);
+        padding-right: var(--article-4-pd-right);
+    }
+
+    @media screen and (max-width: 991px) {
+        .article-4-wrapper {
+            padding-left: var(--article-4-pd-left-mobile);
+            padding-right: var(--article-4-pd-right-mobile);
+        }
+    }
+</style>

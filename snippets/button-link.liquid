@@ -1,0 +1,60 @@
+{%- comment -%}
+  It creates an anchor tag simulating a button with or without icon.
+  Accepts:
+  - type: {String} 'a' or 'button'
+  - link: {String} link to page
+  - style: {String} class name of the anchor tag
+  - text: {String} button text content
+  - override_width: {Boolean} override button width. Width must have a value
+  - width: {String} defines button width
+  - icon: {String} svg tag that contains the icon
+  - icon_position: {String} position of the icon. Accepts: 'left' and 'right'
+  - classes: {String} extra classes for button-link
+  - extra_styles: {String} extra styling for button-link
+  - attributes: {String} extra attributes
+  - color: {String} button color
+  - bg_color: {String} button background color
+
+  Usage:
+  In your liquid template file, copy the following lines
+  - {% render 'button-link' 
+  link: "#",
+  style: "button-1",
+  text: "Some Text",
+  icon: button_icon,
+  icon_position: 'left' || 'right'. Default: 'left'
+  %}{%- endcomment -%}
+
+{%- assign button_type = type | default: 'a' -%}
+
+{%- assign icon_pos = icon_position | default: 'left' -%}
+{% if width and override_width %}
+  {%- assign button_width = 'w-' | append: width -%}
+{% endif %}
+
+{%- capture inline_styles -%}
+  {%- if color != blank -%}
+    color:
+    {{ color }}
+    ;
+  {%- endif -%}
+  {%- if bg_color != blank -%}
+    background-color:
+    {{ bg_color }}
+    ;
+  {%- endif -%}
+{%- endcapture -%}
+
+<{{ button_type }} {% if button_type == 'a' %}href="{{ link | default: '#' }}"{% endif %}
+  class="button {{ style }} {{ button_width }} {{ classes }}" 
+  style="{{ inline_styles }} {{ extra_styles }}" 
+  {{ atrributes }} {% if button_type == 'a' and target %}target="_blank"{% endif %}
+>
+  {% if icon and icon_pos == 'left' %}
+    {{ icon }}
+  {% endif %}
+  {{ text }}
+  {% if icon and icon_pos == 'right' %}
+    {{ icon }}
+  {% endif %}
+</{{ button_type }}>

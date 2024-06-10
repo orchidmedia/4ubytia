@@ -1,0 +1,775 @@
+<!-- #region Setup -->
+{%- assign st = section.settings -%}
+
+{% liquid
+    if st.bg_color_override 
+        assign bg_color = st.background_color 
+    endif 
+%}
+
+{% liquid 
+    if st.use_bg_img
+        if st.bg_image_svg != blank or st.bg_image
+            if st.bg_image_svg != blank
+                assign img_url = st.bg_image_svg
+            else
+                assign img_url = st.bg_image | image_url
+            endif
+            assign section_bg_url = 'background-image:url(' | append: img_url | append: ');'
+
+            case st.bg_position
+                when 'top-left'
+                    assign section_bg_pos_x = 'left'
+                    assign section_bg_pos_y = 'top'
+                when 'top-center'
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'top'
+                when 'top-right'
+                    assign section_bg_pos_x = 'right'
+                    assign section_bg_pos_y = 'top'
+                when 'center-left'
+                    assign section_bg_pos_x = 'left'
+                    assign section_bg_pos_y = 'center'
+                when 'center'
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'center'
+                when 'center-right'
+                    assign section_bg_pos_x = 'right'
+                    assign section_bg_pos_y = 'center'
+                when 'bottom-left'
+                    assign section_bg_pos_x = 'left'
+                    assign section_bg_pos_y = 'bottom'
+                when 'bottom-center'
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'bottom'
+                when 'bottom-right'
+                    assign section_bg_pos_x = 'right'
+                    assign section_bg_pos_y = 'bottom'
+                else
+                    assign section_bg_pos_x = 'center'
+                    assign section_bg_pos_y = 'center'
+            endcase
+            assign section_bg_position = 'background-position-x:' | append: section_bg_pos_x | append: ';background-position-y:' | append: section_bg_pos_y | append: ';'
+
+            case st.bg_size
+                when 'auto'
+                    assign bg_size = 'auto'
+                when 'inherit'
+                    assign bg_size = 'inherit'
+                when 'cover'
+                    assign bg_size = 'cover'
+                when 'contain'
+                    assign bg_size = 'contain'
+                when '100%'
+                    assign bg_size = '100%'
+                else
+                    assign bg_size = 'cover'
+            endcase
+            assign section_bg_size = 'background-size:' | append: bg_size | append: ';'
+
+            case st.bg_repeat
+                when 'no-repeat'
+                    assign bg_repeat = 'no-repeat'
+                when 'repeat'
+                    assign bg_repeat = 'repeat'
+                when 'repeat-x'
+                    assign bg_repeat = 'repeat-x'
+                when 'repeat-y'
+                    assign bg_repeat = 'repeat-y'
+                when 'round':
+                    assign bg_repeat = 'round'
+                when 'space':
+                    assign bg_repeat = 'space'
+                else
+                    assign bg_repeat = 'no-repeat'
+            endcase
+            assign section_bg_repeat = 'background-repeat:' | append: bg_repeat | append: ';'
+
+            assign section_bg = section_bg_url | append: section_bg_position | append: section_bg_size | append: section_bg_repeat
+        endif
+    endif
+%}
+
+{% capture container %}
+    {{ st.container }}
+{% endcapture %}
+
+{% liquid
+    assign section_classes = 'sf-testimonials relative ' | append: st.custom_class | append: ' ' | append: st.design
+    if st.disable_default_margins
+        assign section_classes = section_classes | append: ' section-pv-custom'
+    else
+        assign pv = ' section-pv-' | append: st.margin_vertical
+        assign section_classes = section_classes | append: pv
+    endif
+    if st.hide_mobile
+        assign section_classes = section_classes | append: ' hide-mobile'
+    endif
+    if st.hide_tablet
+        assign section_classes = section_classes | append: ' hide-tablet'
+    endif
+    if st.hide_desktop
+        assign section_classes = section_classes | append: ' hide-desktop'
+    endif
+%}
+<!-- #endregion -->
+
+<section
+    id="st__testimonial-{{section.id}}"
+    class="{{ section_classes }}"
+    data-void-section-type="testimonials"
+    data-void-section-id="{{ section.id }}"
+    data-void-design="{{ st.design }}"
+    data-autoplay="{% if request.design_mode %}false{% else %}{{ st.autorotate }}{% endif %}"
+    data-container="{{ st.container }}"
+    style="--star-color:{{ st.star_color }};--star-stroke-color:{{ st.star_color }};{% unless st.design == 'testimonials-8' %}{{ section_bg }};{% endunless %}"
+>
+
+    {% unless st.design == 'testimonials-8' %}
+        {%- if st.use_bg_img -%}
+           <span  role="img" aria-label="[{{ st.bg_svg_alt_text }}]"> </span>
+       {%- endif -%}
+   {% endunless %}
+
+    <div class="{{ container }}">
+        <div class="sf-testimonials__header relative text-{{ section.settings.header_alignment }}">
+            {% render 'index-section-header', section_settings: section.settings, custom_styles: 'tes-heading' %}
+            {% if st.design == 'testimonials-6' %}
+                {% render 'slider-controls', show_nav: section.settings.show_navigation, show_pagination: section.settings.show_pagination %}
+            {% endif %}
+        </div>
+
+        <div class="sf-testimonials__container {{ st.design }} relative{% if section.settings.container == 'w-full' and st.design != 'testimonials-8' %} px-5{% endif %}">
+            {%- case st.design -%}
+                {%- when 'testimonials-1' -%}
+                    {% render 'testimonials-1', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-2' -%}
+                    {% render 'testimonials-2', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-3' -%}
+                    {% render 'testimonials-3', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-4' -%}
+                    {% render 'testimonials-4', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-5' -%}
+                    {% render 'testimonials-5', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-6' -%}
+                    {% render 'testimonials-6', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-7' -%}
+                    {% render 'testimonials-7', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-8' -%}
+                    {% render 'testimonials-8', section: section, container_class: section.settings.container, container_type: st.container %}
+                {%- when 'testimonials-9' -%}
+                    {% render 'testimonials-9', section: section, container_class: section.settings.container, container_type: st.container %}    
+                {%- else -%}
+            {%- endcase -%}
+    </div>
+</section>
+
+<!-- #region Styles -->
+{% style %}
+    #st__testimonial-{{ section.id }} .tes-heading {
+        color: {{ section.settings.heading_color }};
+    }
+
+    body #st__testimonial-{{ section.id }} .tes-title {
+        color: {{ section.settings.title_color }};
+    }
+    body #st__testimonial-{{ section.id }} .tes-desc {
+        color: {{ section.settings.desc_color }};
+    }
+    body #st__testimonial-{{ section.id }} .tes-author {
+        color: {{ section.settings.author_color }};
+    }
+
+    body #st__testimonial-{{ section.id }}.section-pv-custom {
+        padding: {{ section.settings.ow_margin_top}}px 0 {{ section.settings.ow_margin_bottom}}px 0;
+    }
+
+    @media screen and (max-width: {{section.settings.ow_mobile_view}}px) {
+        body #st__testimonial-{{ section.id }}.section-pv-custom {
+            padding: {{ section.settings.ow_mb_margin_top}}px 0 {{ section.settings.ow_mb_margin_bottom}}px 0;
+        }
+    }
+{% endstyle %}
+<!-- #endregion -->
+
+{% schema %}
+    {
+        "name": "Testimonials",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Section header"
+            },
+            {
+                "type": "select",
+                "id": "heading_tag",
+                "label": "Heading tag",
+                "default": "h3",
+                "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+                ]
+            },
+            {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Heading color",
+            "default": "#000000"
+            },
+            {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Featured collection"
+        },
+            {
+                "type": "select",
+                "id": "subheading_tag",
+                "label": "Subheading tag",
+                "default": "h3",
+                "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+                ]
+            },
+            {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Subheading color",
+            "default": "#000000"
+            },
+            {
+                "type": "html",
+                "id": "subheading",
+                "label": "Subheading"
+            },
+            {
+            "type": "select",
+            "id": "description_tag",
+            "label": "Description tag",
+            "default": "p-small",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+            {
+            "type": "color",
+            "id": "description_color",
+            "label": "Description color",
+            "default": "#000000"
+            },
+            {
+                "type": "textarea",
+                "id": "description",
+                "label": "Description"
+            },
+            {
+                "type": "select",
+                "id": "header_alignment",
+                "label": "Text alignment",
+                "default": "center",
+                "options": [
+                    {
+                        "value": "left",
+                        "label": "Left"
+                    },
+                    {
+                        "value": "center",
+                        "label": "Center"
+                    }
+                ]
+            },
+            {
+                "type": "header",
+                "content": "General"
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_desktop",
+                "label": "Hide on Desktop",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_tablet",
+                "label": "Hide on Tablet",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "hide_mobile",
+                "label": "Hide on Mobile",
+                "default": false
+            },
+            {
+              "type": "select",
+              "id": "margin_vertical",
+              "label": "Section margin (vertical)",
+              "default": "none",
+              "options": [
+                {
+                  "value": "none",
+                  "label": "None"
+                },
+                {
+                  "value": "sm",
+                  "label": "Small"
+                },
+                {
+                  "value": "md",
+                  "label": "Medium"
+                },
+                {
+                  "value": "lg",
+                  "label": "Large"
+                }
+              ]
+            },
+            {
+                "type": "checkbox",
+                "id": "disable_default_margins",
+                "label": "Overwrite Theme Settings Vertical Margins",
+                "default": false,
+                "info": "All fields below must be filled."
+            },
+            {
+                "type": "number",
+                "id": "ow_margin_top",
+                "label": "Desktop - Margin Top (px)"
+            },
+            {
+                "type": "number",
+                "id": "ow_margin_bottom",
+                "label": "Desktop - Margin Bottom (px)"
+            },
+            {
+                "type": "number",
+                "id": "ow_mobile_view",
+                "label": "Set Mobile Viewport Breakpoint (px)",
+                "default": 767
+            },
+            {
+                "type": "number",
+                "id": "ow_mb_margin_top",
+                "label": "Mobile - Margin Top (px)"
+            },
+            {
+                "type": "number",
+                "id": "ow_mb_margin_bottom",
+                "label": "Desktop - Margin Bottom (px)"
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "Container type",
+                "default": "w-full",
+                "options": [
+                    {
+                        "value": "container-fluid",
+                        "label": "Default"
+                    },
+                    {
+                        "value": "w-full",
+                        "label": "Full width"
+                    },
+                    {
+                        "value": "container",
+                        "label": "Use container box"
+                    }
+                ]
+            },
+            {
+                "type": "checkbox",
+                "id": "use_bg_img",
+                "label": "Use background image",
+                "default": false
+            },
+            {
+                "type": "image_picker",
+                "id": "bg_image",
+                "label": "Background image"
+            },
+            {
+              "type": "text",
+              "id": "bg_image_svg",
+              "label": "Default Image - SVG",
+              "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+            },
+            {
+                "type": "text",
+                "id": "bg_svg_alt_text",
+                "label": "Svg Alt Text"
+            },
+            {
+                "type": "select",
+                "id": "bg_size",
+                "label": "Background image size",
+                "options": [
+                    { "value": "auto", "label": "Auto" },
+                    { "value": "cover", "label": "Cover" },
+                    { "value": "contain", "label": "Contain" },
+                    { "value": "inherit", "label": "Inherit" },
+                    { "value": "100%", "label": "100%" }
+                ],
+                "default": "cover"
+            },
+            {
+                "type": "select",
+                "id": "bg_position",
+                "label": "Background image position",
+                "options": [
+                    { "value": "top-left", "label": "Top left" },
+                    { "value": "top-center", "label": "Top center" },
+                    { "value": "top-right", "label": "Top right" },
+                    { "value": "center-left", "label": "Center left" },
+                    { "value": "center", "label": "Center" },
+                    { "value": "center-right", "label": "Center right" },
+                    { "value": "bottom-left", "label": "Bottom left" },
+                    { "value": "bottom-center", "label": "Bottom center" },
+                    { "value": "bottom-right", "label": "Bottom right" }
+                ],
+                "default": "center"
+            },
+            {
+                "type": "select",
+                "id": "bg_repeat",
+                "label": "Background image repeat",
+                "options": [
+                    { "value": "repeat", "label": "Repeat" },
+                    { "value": "repeat-x", "label": "Repeat-x" },
+                    { "value": "repeat-y", "label": "Repeat-y" },
+                    { "value": "round", "label": "Round" },
+                    { "value": "space", "label": "Space" },
+                    { "value": "no-repeat", "label": "No-repeat" }
+                ],
+                "default": "no-repeat"
+            },
+            {
+              "type": "checkbox",
+              "id": "bg_color_override",
+              "label": "Override Background",
+              "default": false
+            },
+            {
+                "type": "color",
+                "id": "background_color",
+                "label": "Background color"
+            },
+            {
+                "type": "color",
+                "id": "title_color",
+                "label": "Title color"
+            },
+            {
+                "type": "color",
+                "id": "desc_color",
+                "label": "Description color"
+            },
+            {
+                "type": "color",
+                "id": "author_color",
+                "label": "Author color"
+            },
+            {
+                "type": "select",
+                "id": "design",
+                "label": "Layout",
+                "options": [
+                    {
+                        "value": "testimonials-1",
+                        "label": "Layout 1"
+                    },
+                    {
+                        "value": "testimonials-2",
+                        "label": "Layout 2"
+                    },
+                    {
+                        "value": "testimonials-3",
+                        "label": "Layout 3"
+                    },
+                    {
+                        "value": "testimonials-4",
+                        "label": "Layout 4"
+                    },
+                    {
+                        "value": "testimonials-5",
+                        "label": "Layout 5"
+                    },
+                    {
+                        "value": "testimonials-6",
+                        "label": "Layout 6"
+                    },
+                    {
+                        "value": "testimonials-7",
+                        "label": "Layout 7"
+                    },
+                    {
+                        "value": "testimonials-8",
+                        "label": "Layout 8"
+                    },
+                    {
+                        "value": "testimonials-9",
+                        "label": "Layout 9"
+                    }
+
+                ],
+                "default": "testimonials-1"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_stars",
+                "label": "Show stars",
+                "default": true
+            },
+            {
+                "type": "color",
+                "id": "star_color",
+                "label": "Stars color",
+                "default": "#000"
+            },
+            {
+                "type": "checkbox",
+                "id": "autorotate",
+                "label": {"en": "Auto-rotate content"},
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "show_navigation",
+                "label": "Show navigation",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "show_pagination",
+                "label": "Show pagination",
+                "default": true
+            },
+            {
+                "type": "text",
+                "id": "custom_class",
+                "label": "Custom classes"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "testimonial",
+                "name": "Testimonial",
+                "settings": [
+                    {
+                        "type": "select",
+                        "id": "title_tag",
+                        "label": "Title tag",
+                        "default": "h2",
+                        "options": [
+                            { "value": "p", "label": "Paragraph" },
+                            { "value": "heading-1-seo", "label": "SEO H1" },
+                            { "value": "h1", "label": "H1" },
+                            { "value": "h2", "label": "H2" },
+                            { "value": "h3", "label": "H3" },
+                            { "value": "h4", "label": "H4" },
+                            { "value": "h5", "label": "H5" },
+                            { "value": "h6", "label": "H6" },
+                            { "value": "p-xsmall", "label": "Extra small paragraph" },
+                            { "value": "p-small", "label": "Small paragraph" },
+                            { "value": "p-medium", "label": "Medium paragraph" },
+                            { "value": "p-large", "label": "Large paragraph" },
+                            { "value": "p-xlarge", "label": "Extra large paragraph" },
+                            { "value": "quote-1", "label": "Quote 1" },
+                            { "value": "quote-2", "label": "Quote 2" },
+                            { "value": "quote-3", "label": "Quote 3" }
+                        ]
+                    },
+                    {
+                        "type": "textarea",
+                        "id": "title",
+                        "label": "Title",
+                        "default": "Love it so much"
+                    },
+                    {
+                        "type": "color",
+                        "id": "title_color",
+                        "label": "Title color",
+                        "default": "#000"
+                    },
+                    {
+                        "type": "select",
+                        "id": "description_tag",
+                        "label": "Description tag",
+                        "default": "p-medium",
+                        "options": [
+                            { "value": "p", "label": "Paragraph" },
+                            { "value": "heading-1-seo", "label": "SEO H1" },
+                            { "value": "h1", "label": "H1" },
+                            { "value": "h2", "label": "H2" },
+                            { "value": "h3", "label": "H3" },
+                            { "value": "h4", "label": "H4" },
+                            { "value": "h5", "label": "H5" },
+                            { "value": "h6", "label": "H6" },
+                            { "value": "p-xsmall", "label": "Extra small paragraph" },
+                            { "value": "p-small", "label": "Small paragraph" },
+                            { "value": "p-medium", "label": "Medium paragraph" },
+                            { "value": "p-large", "label": "Large paragraph" },
+                            { "value": "p-xlarge", "label": "Extra large paragraph" },
+                            { "value": "quote-1", "label": "Quote 1" },
+                            { "value": "quote-2", "label": "Quote 2" },
+                            { "value": "quote-3", "label": "Quote 3" }
+                        ]
+                    },
+                    {
+                        "type": "textarea",
+                        "id": "description",
+                        "label": "Content",
+                        "default": "\"Short dress in a printed viscose weave with a round neckline, opening with a button at the back of the Seams with small frill trims at the waist and on the sleeves and skirt. Unlined.\""
+                    },
+                    {
+                        "type": "color",
+                        "id": "description_color",
+                        "label": "Description color",
+                        "default": "#000"
+                    },
+                    {
+                        "type": "select",
+                        "id": "footer_tag",
+                        "label": "Footer tag",
+                        "default": "p-small",
+                        "options": [
+                            { "value": "p", "label": "Paragraph" },
+                            { "value": "heading-1-seo", "label": "SEO H1" },
+                            { "value": "h1", "label": "H1" },
+                            { "value": "h2", "label": "H2" },
+                            { "value": "h3", "label": "H3" },
+                            { "value": "h4", "label": "H4" },
+                            { "value": "h5", "label": "H5" },
+                            { "value": "h6", "label": "H6" },
+                            { "value": "p-xsmall", "label": "Extra small paragraph" },
+                            { "value": "p-small", "label": "Small paragraph" },
+                            { "value": "p-medium", "label": "Medium paragraph" },
+                            { "value": "p-large", "label": "Large paragraph" },
+                            { "value": "p-xlarge", "label": "Extra large paragraph" },
+                            { "value": "quote-1", "label": "Quote 1" },
+                            { "value": "quote-2", "label": "Quote 2" },
+                            { "value": "quote-3", "label": "Quote 3" }
+                        ]
+                    },
+                    {
+                        "type": "textarea",
+                        "id": "footer",
+                        "label": "Author",
+                        "default": "Dean D. US"
+                    },
+                    {
+                        "type": "color",
+                        "id": "footer_color",
+                        "label": "Author color",
+                        "default": "#000"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Image",
+                        "info": "Optional"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "image_text",
+                        "label": "Image text",
+                        "info": "Optional"
+                    },
+                    {
+                        "type": "product",
+                        "id": "product",
+                        "label": "Product",
+                        "info": "This option is use only for layout 6."
+                    },
+                    {
+                        "type": "text",
+                        "id": "button_text",
+                        "label": "Button label",
+                        "default": "Shop Now"
+                    },
+                    {
+                        "type": "url",
+                        "id": "button_link",
+                        "label": "Button link"
+                    },
+                    {
+                        "type": "select",
+                        "id": "button_style",
+                        "label": "Button style",
+                        "options": [
+                            { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                            { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                            { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                            { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                            { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                            { "value": "button-1", "label": "Button 1" },
+                            { "value": "button-2", "label": "Button 2" },
+                            { "value": "button-3", "label": "Button 3" },
+                            { "value": "button-4", "label": "Button 4" },
+                            { "value": "button-5", "label": "Button 5" },
+                            { "value": "button-6", "label": "Button 6" },
+                            { "value": "button-7", "label": "Button 7" }
+                        ],
+                        "default": "sf__btn sf__btn-primary"
+                    }
+                ]
+            }
+        ],
+        "presets": [{
+            "name": "Testimonials",
+            "category": "Promotional",
+            "blocks": [
+                { "type": "testimonial" },
+                { "type": "testimonial" },
+                { "type": "testimonial" },
+                { "type": "testimonial" },
+                { "type": "testimonial" },
+                { "type": "testimonial" }
+            ]
+        }]
+    }
+{% endschema %}

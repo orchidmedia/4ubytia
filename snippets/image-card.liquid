@@ -1,0 +1,89 @@
+{% assign image = block.settings.image %}
+{% assign heading_size = block.settings.heading_size %}
+{% assign subheading_color = block.settings.subheading_color %}
+{% assign heading_color = block.settings.heading_color %}
+{{ text-color }}
+
+{% assign content_position = '' %}
+{% case block.settings.content_position %}
+    {% when 'top_left' %}
+        {% assign content_position = ' items-start justify-start' %}
+        {% assign button_position = 'justify-start' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-start sm:justify-start' %}
+        {% endif %}
+    {% when 'top_right' %}
+        {% assign content_position = ' justify-end items-start' %}
+        {% assign button_position = 'justify-end' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-start sm:justify-end' %}
+        {% endif %}
+    {% when 'top_center' %}
+        {% assign content_position = ' items-start justify-center' %}
+        {% assign button_position = 'justify-center' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-start sm:justify-center' %}
+        {% endif %}
+    {% when 'bottom_left' %}
+        {% assign content_position = ' items-end justify-start' %}
+        {% assign button_position = 'justify-start' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-end sm:justify-start' %}
+        {% endif %}
+    {% when 'bottom_right' %}
+        {% assign content_position = ' items-end justify-end' %}
+        {% assign button_position = 'justify-end' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-end sm:justify-end' %}
+        {% endif %}
+    {% when 'bottom_center' %}
+        {% assign content_position = ' justify-center items-end' %}
+        {% assign button_position = 'justify-center' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-end sm:justify-center' %}
+        {% endif %}
+    {% when 'center_left' %}
+        {% assign content_position = ' justify-start items-center' %}
+        {% assign button_position = 'justify-start' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-center sm:justify-start' %}
+        {% endif %}
+    {% when 'center_right' %}
+        {% assign content_position = ' items-center justify-end' %}
+        {% assign button_position = 'justify-end' %}
+        {% if stack_on_mobile == true %}
+            {% assign content_position = ' justify-center sm:items-center sm:justify-end' %}
+        {% endif %}
+    {% else %}
+        {% assign content_position = ' items-center justify-center' %}
+        {% assign button_position = 'justify-center' %}
+{% endcase %}
+
+{% assign content_class = ' pointer-events-none absolute p-5 sm:p-10 inset-0' | append: content_position %}
+{% assign content_class_outside = ' inset-0 ' | append: content_position %}
+{% if stack_on_mobile == true %}
+    {% assign content_class = ' sm:pointer-events-none sm:absolute inset-0 px-3 pt-2.5 sm:p-10' | append: content_position %}
+    {% assign content_class_outside = ' inset-0 px-3 pt-2.5' | append: content_position %}
+{% endif %}
+
+{% capture styles %}
+  {% if block.settings.image_max_w %}
+      max-width: {{ block.settings.image_max_w | append: 'px' }};
+  {% endif %}
+  {% if block.settings.image_max_h %}
+      max-height: {{ block.settings.image_max_h | append: 'px' }};
+  {% endif %}
+{% endcapture %}
+
+<div role="group" aria-label="product" class="image-card {{ grid_columns }} sm:max-h-full {{ padding_bot | default: 'pb-0' }} {{ image_card_class }}">
+    {% case block.settings.image_layout %}
+        {% when 'layout-1' %}
+            {% render 'image-card-text-inline', block: block, image: image, heading_size: heading_size, 
+                subheading_color: subheading_color, content_class: content_class, stack_on_mobile: stack_on_mobile
+                heading_color: heading_color, button_position: button_position, styles: styles  %}
+        {% else %}
+            {% render 'image-card-text-outside', block: block, image: image, heading_size: heading_size, 
+                subheading_color: subheading_color, content_class: content_class_outside, stack_on_mobile: stack_on_mobile,
+                heading_color: heading_color, button_position: button_position, styles: styles %}
+    {% endcase %}
+</div>

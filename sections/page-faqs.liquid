@@ -1,0 +1,326 @@
+{% capture container %}
+    {{ section.settings.container }}
+{% endcapture %}
+{% case section.settings.bg_color_selector %}
+{% when 'color_section1_bg' %}
+{%- assign bg_color = settings.color_section1_bg -%}
+{% when 'color_section2_bg' %}
+{%- assign bg_color = settings.color_section2_bg -%}
+{% when 'color_section3_bg' %}
+{%- assign bg_color = settings.color_section3_bg -%}
+{% when 'color_section4_bg' %}
+{%- assign bg_color = settings.color_section4_bg -%}
+{% when 'color_section5_bg' %}
+{%- assign bg_color = settings.color_section5_bg -%}
+{% when 'color_section6_bg' %}
+{%- assign bg_color = settings.color_section6_bg -%}
+{% else %}
+{%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+{%- if section.settings.bg_color_override -%}
+{%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+{%- assign st = section.settings -%}
+
+<section class="sf__pages-other  page-custom-faqs{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}" 
+  data-section-id="{{ section.id }}" data-section-type="page-faqs"
+  style="background-color:{{ bg_color }};">
+
+  <div class="{{ container }} {% if container == 'w-full' %} px-4{% endif %} pb-7 xl:pb-15">
+    <div class="flex flex-col-reverse lg:flex-row">
+      {% if section.settings.menu != blank %}
+        <div class="lg:w-3/12 lg:pr-24 mt-6 lg:mt-0">
+          <ul class="sf__list-row sf__list-row-border">
+            {%- for link in linklists[section.settings.menu].links -%}
+            <li{% if link.active %} class="active" {% endif %}><a href="{{ link.url }}"><span>{{ link.title }}</span></a>
+              </li>
+              {%- endfor -%}
+          </ul>
+        </div>
+      {% endif %}
+      <div class="{% if section.settings.menu != blank %}lg:w-9/12{% else %}w-full{% endif %}">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'content' %}
+              {% if block.settings.content != blank %}
+                <div class="{% if forloop.index == 1 %}mb-10{% else %}my-10{% endif %}">
+                  {{ block.settings.content }}
+                </div>
+              {% endif %}
+            {% when 'title' %}
+              {% if block.settings.title != blank %}
+                <div id="{{ block.settings.anchor_point }}" class="mb-3 faq-title"
+                  style="text-align:{{ block.settings.alignment }};padding-top:{{ block.settings.p_top }}px;padding-bottom:{{ block.settings.p_bottom }}px;">
+                  {% render 'heading-tag' 
+                    heading: block.settings.type,
+                    content: block.settings.title
+                  %}
+                </div>
+              {% endif %}
+            {% else %}
+              {% if block.settings.title != blank and block.settings.content != blank %}
+                <div class="sf__accordio-blocks sf__custom-accordion">
+                  <div class="sf__accordion-item {% if block.settings.open %} open{% endif %}">
+                    <button aria-label="Accordion button"class="sf__accordion-button sf__accordion-buttonFaq text-lg" tabindex="0">{{ block.settings.title }}</button>
+                    <div class="sf__accordion-content sf__accordion-contentFaq text-base text-color-subtext">{{ block.settings.content }}</div>
+                  </div>
+                </div>
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% style %}
+  .page-custom-faqs{
+    padding: 0px 0px 0px 88px;
+  }
+  .faqNeedHelp{
+    padding:0px 81px;
+    border-right: 1px solid black;
+  }
+  .faqNeedHelp p{
+    width: 400px;
+    margin-top:24px;
+  }
+  .mediaPressInquiry{
+    padding:0px 81px;
+  }
+  .mediaPressInquiry p{
+    margin-top:24px;
+    width: 400px;
+  }
+  .sf__custom-accordion .sf__accordion-item .sf__accordion-buttonFaq{
+  padding: 13px 0px 13px 34px;
+  }
+  .sf__accordion-buttonFaq { 
+    border: none !important;
+}
+
+ @media (max-width: 767px){
+  .page-custom-faqs{
+    padding:0px;
+  }
+  .faqNeedHelp{
+    padding:20px 0px;
+    border-right: none;
+    border-bottom: 1px solid black;
+  }
+  .faqNeedHelp p{
+    margin-top:16px;
+    width: 100%; 
+  }
+  .mediaPressInquiry{
+    padding:20px 0px;
+  }
+  .mediaPressInquiry p{ 
+    margin-top:16px;
+     width: 100%;
+  }
+
+  .sf__custom-accordion .sf__accordion-item.open .sf__accordion-button{
+    margin-bottom: 0px;
+  }
+  .sf__accordion-item {
+    text-align: left;
+  }
+  .sf__accordion-contentFaq{
+    text-align: left;
+  }
+  .faq-title{
+   padding-top: 48px !important;
+   padding-bottom: 32px !important;
+   margin: 0px !important;
+  }
+}
+  {% endstyle %}
+{% schema %}
+{
+  "name": "FAQs",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Hide on Desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_tablet",
+      "label": "Hide on Tablet",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Hide on Mobile",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg_color_selector",
+      "label": "Section Background",
+      "default": "color_section1_bg",
+      "options": [
+        { "value": "color_section1_bg", "label": "Section 1" },
+        { "value": "color_section2_bg", "label": "Section 2" },
+        { "value": "color_section3_bg", "label": "Section 3" },
+        { "value": "color_section4_bg", "label": "Section 4" },
+        { "value": "color_section5_bg", "label": "Section 5" },
+        { "value": "color_section6_bg", "label": "Section 6" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_color_override",
+      "label": "Override Background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f5f1ed"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Select menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content",
+      "name": "Custom content",
+      "settings": [
+        {
+          "type": "html",
+          "id": "content",
+          "label": "Content",
+          "info": "Allow html code"
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Title"
+        },
+        {
+          "type": "text",
+          "id": "anchor_point",
+          "label": "Anchor point",
+          "info": "For anchor links only."
+        },
+        {
+          "type": "select",
+          "id": "type",
+          "label": "Header Type",
+          "default": "h3",
+          "options": [
+            { "value": "p", "label": "Paragraph" },
+            { "value": "heading-1-seo", "label": "SEO H1" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" },
+            { "value": "p-xsmall", "label": "Extra small paragraph" },
+            { "value": "p-small", "label": "Small paragraph" },
+            { "value": "p-medium", "label": "Medium paragraph" },
+            { "value": "p-large", "label": "Large paragraph" },
+            { "value": "p-xlarge", "label": "Extra large paragraph" },
+            { "value": "quote-1", "label": "Quote 1" },
+            { "value": "quote-2", "label": "Quote 2" },
+            { "value": "quote-3", "label": "Quote 3" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Text alignment",
+          "default": "left",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "range",
+          "id": "p_top",
+          "label": "Padding Top",
+          "default": 0,
+          "min": 0,
+          "max": 60,
+          "step": 5
+        },
+        {
+          "type": "range",
+          "id": "p_bottom",
+          "label": "Padding Bottom",
+          "default": 0,
+          "min": 0,
+          "max": 60,
+          "step": 5
+        }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Accordion item",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Heading",
+          "default": "Question Name"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Answer Content</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open Tab By Default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQs"
+    }
+  ]
+}
+{% endschema %}

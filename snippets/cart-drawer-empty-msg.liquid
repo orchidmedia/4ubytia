@@ -1,0 +1,26 @@
+<div class="scd-empty-msg flex flex-col gap-8 mt-4 px-0 opacity-100 transition-opacity duration-300 delay-300">
+    {% if settings.cart_drawer_empty_text != blank %}
+        <div class="text-{{ settings.cart_drawer_empty_text_alignment }} w-7/12 mx-auto">
+            {% render 'heading-tag'
+                heading: settings.cart_drawer_empty_text_heading,
+                content: settings.cart_drawer_empty_text
+            %}
+        </div>
+    {% else %}
+        {{ 'cart.general.empty' | t }}
+    {% endif %}
+
+    {% if settings.cart_drawer_continue_shopping_label != blank %}
+        <div class="w-full">
+            <div class="flex justify-{{ settings.cart_drawer_continue_shopping_alignment }}">
+                {% render 'button-link'
+                link: settings.cart_drawer_continue_shopping_link,
+                style: settings.cart_drawer_continue_shopping_style,
+                text: settings.cart_drawer_continue_shopping_label,
+                override_width: settings.cart_drawer_continue_shopping_override_width,
+                width: settings.cart_drawer_continue_shopping_width
+                %}
+            </div>
+        </div>
+    {% endif %}
+</div>

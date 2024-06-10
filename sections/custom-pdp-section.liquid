@@ -1,0 +1,658 @@
+<!-- Custom section starts -->
+{%assign ss = section.settings%}
+<div class="pdp-custom-section flex" 
+    style="background-color:{{ss.cust_background_color}};padding:{{ss.cust_dp_top}}px {{ss.cust_dp_right}}px {{ss.cust_dp_bottom}}px {{ss.cust_dp_left}}px;
+    justify-content:{{ss.cust_div_alignment}};margin:{{ss.cust_m_top}}px {{ss.cust_m_right}}px {{ss.cust_m_bottom}}px {{ss.cust_m_left}}px;
+    width:100%;flex-wrap:wrap"
+    >
+    {% for block in section.blocks %}
+        {% assign bs = block.settings %}
+        <div class="pdp-custom-block flex" data-section-id="{{ block.id }}"
+            style="width:{%if ss.cust_product_layout == "fifty_fifty" %} 50% {% elsif ss.cust_product_layout == "thirty_three" %} 33%{%else%}100%{%endif%};
+            justify-content:{{bs.justify_content_alignment}};gap:{{bs.gap_btw_img_text}}px;
+            flex-direction:{{bs.custom_sec_layout}};align-items:{{bs.justify_content_alignment}};
+            margin:{{bs.cust_sec_m_top}}px {{bs.cust_sec_m_right}}px {{bs.cust_sec_m_bottom}}px {{bs.cust_sec_m_left}}px;">
+              {% if bs.cust_image_svg != blank %}
+                      <img src="{{bs.cust_image_svg }}"  class="cust_pdp_img bg-cover bg-no-repeat bg-center"  />
+                    {% else %}
+                       <img src="{{ bs.image | img_url: 'master' }}"  alt="{{ bs.image.alt | escape }}"  class="cust_pdp_img bg-cover bg-no-repeat bg-center" />
+                    {% endif %}
+           
+            
+            <div class="pdp-custom-section-content" style="width:350px">
+                {%if bs.cust_sec_title%}
+                    <h1 class="flex" style="color:{{bs.cust_title_color}};justify-content:{{bs.cust_heading_alignment}};
+                    font-size:{{bs.cust_heading_font_size}}px;font-weight:{{bs.cust_heading_font_weight}};
+                    padding:{{bs.cust_heading_top}}px {{bs.cust_heading_right}}px {{bs.cust_heading_bottom}}px {{bs.cust_heading_left}}px;">
+                    {{bs.cust_sec_title}}
+                    </h1>
+                {%endif%}
+                {%if bs.cust_sec_content%}
+                <p class="flex" style="color:{{bs.cust_desc_color}};justify-content:{{bs.cust_desc_alignment}};
+                    font-size:{{bs.cust_desc_font_size}}px;font-weight:{{bs.cust_desc_font_weight}};
+                    padding:{{bs.cust_desc_dp_top}}px {{bs.cust_desc_dp_right}}px {{bs.cust_desc_dp_bottom}}px {{bs.cust_desc_dp_left}}px;text-align:{{bs.cust_desc_text_alignment}}">
+                {{bs.cust_sec_content}}
+                </p>
+                {%endif%}
+            </div>
+        </div>
+    {%endfor%}
+</div>
+<!-- Custom section ends -->
+<style>
+.pdp-custom-section-img{
+    width:100px;
+    height:100px;
+}
+.cust_pdp_img{
+    height:66px;
+    width:61px; 
+}
+.pdp-custom-section-content h1{
+    font-family: 'Franklin Gothic Cond ITC';
+} 
+.pdp-custom-section-content  p{
+         font-family: RhymesDisplay;
+         
+}
+ @media (max-width: 500px){
+   .pdp-custom-section{
+      flex-direction:column !important;
+      padding:36px 26px !important;
+      }
+    .pdp-custom-block{
+        width:100% !important;
+        margin:40px 0px 40px 0px
+    }
+
+ }
+</style>
+{% schema %}
+{
+    "name": "Custom Product Section",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },        
+        {
+            "type": "select",
+            "id": "cust_product_layout",
+            "label": "Product Columns Layout", 
+            "default": "fifty_fifty",
+            "options": [
+                {
+                  "value": "fifty_fifty",
+                  "label": "50% Each Section"
+                },
+                {
+                    "value": "full_width",
+                    "label": "Full Width"
+                },
+                {
+                    "value": "thirty_three",
+                    "label": "33% Each Section"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "cust_div_alignment",
+            "label": "Inner Section Alignment",
+            "default": "flex-start",
+            "options": [
+                {
+                    "value": "flex-start",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "flex-end",
+                    "label": "Right"
+                },
+                {
+                    "value": "space-between",
+                    "label": "Space Between"
+                },
+                {
+                    "value": "space-evenly",
+                    "label": "Space Evenly"
+                }
+                ]
+        },
+        {
+            "type": "color",
+            "id": "cust_background_color",
+            "label": "Background Color"
+        },
+        {
+            "type": "header",
+            "content": "Section Padding"
+            },
+            {
+                "type": "range",
+                "id": "cust_dp_top",
+                "label": "Top",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "cust_dp_right",
+                "label": "Right",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "cust_dp_bottom",
+                "label": "Bottom",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "cust_dp_left",
+                "label": "Left",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "header",
+                "content": "Section Margin"
+            },
+            {
+                "type": "range",
+                "id": "cust_m_top",
+                "label": "Top",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "cust_m_right",
+                "label": "Right",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "cust_m_bottom",
+                "label": "Bottom",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "cust_m_left",
+                "label": "Left",
+                "unit": "px",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "default": 0
+            }
+    ],
+    "blocks": [
+        {
+      "type": "pdp-custom-section",
+      "name": "Custom Section",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "select",
+          "id": "custom_sec_layout",
+          "label": "Layout",    
+          "default": "row",
+          "options": [
+            {
+              "value": "row",
+              "label": "Layout One"
+            },
+            {
+              "value": "column",
+              "label": "Layout Two"
+            },
+            {
+              "value": "row-reverse",
+              "label": "Layout Three"
+            },
+            {
+              "value": "column-reverse",
+              "label": "Layout Four"
+            }
+          ]
+        },
+         {
+          "type": "select",
+          "id": "justify_content_alignment",
+          "label": "Content position",
+          "default": "center",
+          "options": [
+            {
+              "value": "start",
+              "label": "Start"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "End"
+            }
+          ]
+        }, 
+           {
+          "type": "header",
+          "content": "Inner Section Margin"
+        },
+        {
+            "type": "range",
+            "id": "cust_sec_m_top",
+            "label": "Top",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_sec_m_right",
+            "label": "Right",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+             "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_sec_m_bottom",
+            "label": "Bottom",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_sec_m_left",
+            "label": "Left",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Description Customization"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+        },
+        {
+            "type": "text",
+            "id": "cust_image_svg",
+            "label": "Default Image - SVG",
+            "info": "Upload your SVG image to [Files](/admin/settings/files) to get the URL. SVG will be used as default image if available."
+        },
+        {
+            "type": "text",
+            "id": "cust_svg_alt_text",
+            "label": "Svg Alt Text"
+        },
+        {
+          "type": "text",
+          "id": "cust_sec_title",
+          "label": "Title",
+          "default": "Enter You Heading From Here"
+        },
+        {
+          "type": "textarea",
+          "id": "cust_sec_content",
+          "label": "Content",
+          "default": "Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store."
+        },
+         {
+            "type": "range",
+            "id": "gap_btw_img_text",
+            "label": "Space between Image & Content",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 16
+        },
+        {
+          "type": "header",
+          "content": "Heading Customization"
+        },
+        {
+            "type": "color",
+            "id": "cust_title_color",
+            "label": "Heading Color",
+            "default": "#000"
+        },
+        {
+            "type": "color",
+            "id": "cust_heading_color",
+            "label": "Heading hover Color",
+            "default": "#000"
+        },
+        {
+            "type": "select",
+            "id": "cust_heading_alignment",
+            "label": "Heading alignment",
+            "default": "flex-start",
+            "options": [
+                {
+                    "value": "flex-start",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "flex-end",
+                    "label": "Right"
+                }
+                ]
+        },
+        {
+            "type": "range",
+            "id": "cust_heading_font_size",
+            "label": "Font Size",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 16
+        },
+        {
+            "id": "cust_heading_font_weight",
+            "type": "select",
+            "label": "Font weight",
+            "default": "400",
+            "options": [
+                {
+                    "value": "100",
+                    "label": "Thin 100"
+                },
+                {
+                    "value": "200",
+                    "label": "Extra-light 200"
+                },
+                {
+                    "value": "300",
+                    "label": "Light 300"
+                },
+                {
+                    "value": "400",
+                    "label": "Regular 400"
+                },
+                {
+                    "value": "500",
+                    "label": "Medium 500"
+                },
+                {
+                    "value": "600",
+                    "label": "Semi-bold 600"
+                },
+                {
+                    "value": "700",
+                    "label": "Bold 700"
+                },
+                {
+                    "value": "800",
+                    "label": "Extra-bold 800"
+                },
+                {
+                    "value": "900",
+                    "label": "Black 900"
+                }
+                ]
+        },
+        {
+          "type": "header",
+          "content": "Heading Padding"
+        },
+        {
+            "type": "range",
+            "id": "cust_heading_top",
+            "label": "Top",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_heading_right",
+            "label": "Right",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+             "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_heading_bottom",
+            "label": "Bottom",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_heading_left",
+            "label": "Left",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Description Customization"
+        },
+        {
+            "type": "color",
+            "id": "cust_desc_color",
+            "label": "Heading Color",
+            "default": "#000"
+        },
+        {
+            "type": "color",
+            "id": "cust_desc_hove_color",
+            "label": "Heading hover Color",
+            "default": "#000"
+        },
+        {
+            "type": "select",
+            "id": "cust_desc_alignment",
+            "label": "Heading alignment",
+            "default": "flex-start",
+            "options": [
+                {
+                    "value": "flex-start",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "flex-end",
+                    "label": "Right"
+                }
+                ]
+        },
+        {
+            "type": "select",
+            "id": "cust_desc_text_alignment",
+            "label": "Description Text Alignment",
+            "default": "left",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+                ]
+        },
+        {
+            "type": "range",
+            "id": "cust_desc_font_size",
+            "label": "Font Size",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 16
+        },
+        {
+            "id": "cust_desc_font_weight",
+            "type": "select",
+            "label": "Font weight",
+            "default": "400",
+            "options": [
+                {
+                    "value": "100",
+                    "label": "Thin 100"
+                },
+                {
+                    "value": "200",
+                    "label": "Extra-light 200"
+                },
+                {
+                    "value": "300",
+                    "label": "Light 300"
+                },
+                {
+                    "value": "400",
+                    "label": "Regular 400"
+                },
+                {
+                    "value": "500",
+                    "label": "Medium 500"
+                },
+                {
+                    "value": "600",
+                    "label": "Semi-bold 600"
+                },
+                {
+                    "value": "700",
+                    "label": "Bold 700"
+                },
+                {
+                    "value": "800",
+                    "label": "Extra-bold 800"
+                },
+                {
+                    "value": "900",
+                    "label": "Black 900"
+                }
+                ]
+        },
+        {
+          "type": "header",
+          "content": "Description Text Padding"
+        },
+        {
+            "type": "range",
+            "id": "cust_desc_dp_top",
+            "label": "Top",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_desc_dp_right",
+            "label": "Right",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+             "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_desc_dp_bottom",
+            "label": "Bottom",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "cust_desc_dp_left",
+            "label": "Left",
+            "unit": "px",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 0
+        }
+      ]
+    }
+  ],
+    "presets": [
+        {
+            "name": "SUSTAINABILITY & INCLUSIVITY"
+        }
+    ],
+     "templates": ["product"]
+}
+{% endschema %}
+ 

@@ -1,0 +1,4 @@
+{% assign wishlist_app = settings.wishlist_app %}
+{% if wishlist_app == 'theme' %}
+  {% render 'tooltip', type: 'wishlist', product: product, class_name: class_name, style: style %}
+{% endif %}

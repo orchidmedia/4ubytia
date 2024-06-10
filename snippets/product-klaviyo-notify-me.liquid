@@ -1,0 +1,65 @@
+{% if settings.enable_klaviyo_notify_me %}
+    {% if product.selected_or_first_available_variant.available %}
+        {% assign show_form = "display: none;" %}
+        {% assign hide_content = "display: none;" %}
+    {% endif %}
+    
+    <div class="flex flex-col notify-me-header">
+        {% if settings.notify_me_sold_out != blank or settings.notify_me_coming_soon != blank %}
+            {% capture custom_styles %}
+                {{hide_content}} color: {{settings.notify_me_stock_color}};
+            {% endcapture %}
+
+            {% for variant in product.variants %}
+                {% if variant.metafields.enable.coming_soon == true %}
+                    {% assign stock_text = settings.notify_me_coming_soon %}
+                {% elsif product.metafields.enable.coming_soon == true %}
+                    {% assign stock_text = settings.notify_me_coming_soon %}
+                {% else %}   
+                    {% assign stock_text = settings.notify_me_sold_out %}
+                {% endif %}   
+            {% endfor %}
+            
+            {% render 'heading-tag'
+                heading: settings.notify_me_stock_tag,
+                content: stock_text,
+                custom_classes: 'notify-me-stock pb-7',
+                custom_styles: custom_styles
+            %}
+        {% endif %}
+
+        {% if settings.notify_me_label != blank %}
+            {% render 'heading-tag'
+                heading: settings.notify_me_label_tag,
+                content: settings.notify_me_label,
+                custom_classes: 'notify-me-label pb-4',
+                custom_styles: hide_content
+            %}
+        {% endif %}
+    </div>
+
+    <div class="prod__klaviyo-form" id="klaviyoBackInStock" style="{{ show_form }}">
+        <input type="hidden" class="kaviyo-form__variant-id">
+        <input type="email" name="" id="" class="klaviyo-form__email" placeholder="Enter Email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address. Example: name@youremail.com" required/>  
+        {% if settings.btn_notify_me != blank %}
+            {% render 'button-link'
+                type: 'button',
+                text: settings.btn_notify_me,
+                style: settings.btn_notify_me_style,
+                classes: 'klaviyo-form__submit mt-6',
+                extra_styles: 'width: 386px; height: 50px; pointer-events: auto;'
+            %}
+        {% endif %}
+
+        <span class="kaviyo-form__message pt-4 hidden" style="width: 386px; text-align: center;"></span>
+    </div>
+
+    {% if product.variants.size == 1 and product.available == false %}
+        <style>
+            .product-form[data-product-id="{{product.id}}"] .main-product__block .product-form__actions,
+            .quick-view__info .product-form[data-product-id="{{product.id}}"] .product-form__actions {
+                display: none;
+            }
+        </style>
+    {% endif %}
+{% endif %}

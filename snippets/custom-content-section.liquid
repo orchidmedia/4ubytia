@@ -1,0 +1,413 @@
+<!-- #region Section Setup -->
+{%- assign st = section.settings -%}
+
+{% liquid
+    if st.bg_color_override
+        assign bg_color = 'background-color: ' | append: st.background_color
+    endif
+    assign has_bg = false
+    unless bg_color == "rgba(0,0,0,0)" or bg_color == blank
+        assign has_bg = true
+    endunless 
+%}
+
+{% capture container %}
+    {{ st.container }}
+{% endcapture %}
+
+{%- assign scrollMobile = st.use_scroll_mobile -%}
+
+{% assign st = st %}
+{% capture hide_section %}
+    {% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}
+{% endcapture %}
+
+{% capture section_classes %}
+    {% if section.settings.use_bg_img %}
+        sf-custom__bg lazyload js bg-no-repeat bg-{{ bg_position }} bg-initial {% if parallax %}bg-fixed{% endif %}
+    {% else %}
+        sf-custom {% if section.blocks.size == 0 %}hidden{% endif %}
+    {% endif %}
+{% endcapture %}
+
+{% liquid
+    if st.image_svg != blank
+        assign data_bg = st.image_svg
+    else
+        assign data_bg = st.image | image_url
+    endif
+%}
+<!-- #endregion -->
+
+<!-- #region Styles -->
+{%- style -%}
+@media screen and (max-width: 991px) {
+    .op-mobile-{{ section.id }} {
+        padding-top: {{ st.mp_top }}px;
+        padding-right: {{ st.mp_right }}px;
+        padding-bottom: {{ st.mp_bottom }}px;
+        padding-left: {{ st.mp_left }}px;
+    }
+    .rte br,
+    .rte p br {
+        display: block;
+    }
+}
+@media screen and (min-width: 992px) {
+    .op-desktop-{{ section.id }} {
+        padding-top: {{ st.dp_top }}px;
+        padding-right: {{ st.dp_right }}px;
+        padding-bottom: {{ st.dp_bottom }}px;
+        padding-left: {{ st.dp_left }}px;
+    }
+}
+{%- endstyle -%}
+<!-- #endregion -->
+
+<section
+    id="sf-custom-{{ section.id }}"
+    class="section-pv-{{ section.settings.margin_vertical }} {{ st.bg_color_selector}} {{ hide_section }} {{ section.settings.custom_class }} {{ section_classes | strip }}"
+    data-section-type="custom-content"
+    data-section-id="{{ section.id }}"
+    {% if st.use_bg_img %}
+        data-bg="{{ data_bg }}"
+        {% if st.image_svg != blank %}
+            data-bgset="{{ st.image_svg }}"
+        {% else %}
+            data-bgset="{% render 'bgset', image: st.image %}"
+        {% endif %}
+        data-parent-fit="contain"
+        data-sizes="auto" data-image-loading
+    {% endif %}
+    style="--column-gap: {{ st.gap }}px; --column-gap-mobile: {{ st.gap_mobile }}px; {{ bg_color }}; background-size: {{ st.bg_size }}"
+>
+    {% if st.image_svg != blank %}
+        <span role="img" aria-label="[{{ st.svg_alt_text }}]"> </span>
+    {% endif %}
+    <div id="{{ st.custom_id }}" class="{{ container }}">
+        {%- assign block_width_mobile = '' -%}
+        {% if show_header %}
+            {% render 'index-section-header', section_settings: st %}
+        {% endif %}
+
+        {% if section.blocks.size > 0 %}
+
+        {% if section.settings.enable_load_more == true and section.blocks.size > section.settings.load_more_visible_number %}
+            {% assign load_more = true %}
+        {% else %}
+            {% assign load_more = false %}
+        {% endif %}
+        {% assign load_more_number_hidden = section.settings.load_more_visible_number | plus:1 %}
+        
+        <div style="position: relative;" class="{% if st.override_padding_mobile %}op-mobile-{{ section.id }}{% endif %} {% if scrollMobile %}swiperCustomContent{{section.id}}{% endif %} {% if st.override_padding_desktop %}op-desktop-{{ section.id }}{% endif%}">
+            <div class="sf-custom__grid flex {% unless scrollMobile %}justify-{{ st.content_alignment }} flex-wrap{% else %}swiper-placeholder-class{{section.id}} sf__ms-wrapper md:flex-wrap{% endunless %} {{ st.custom_grid_classes }}"
+                {% if st.mobile_grid == 'column' %}style="flex-direction:column;align-items:center;"{% endif %}>
+                {% for block in section.blocks %}
+                    {% assign vertical_alignment = st.vertical_alignment %}
+
+                    
+                    {% case block.settings.width %}
+                        {% when '16%' %}
+                            {%- assign block_width = 'lg:w-1/6' -%}
+                            {%- assign block_width_mobile = 'w-1/2' -%}
+                        {% when '25%' %}
+                            {%- assign block_width = 'lg:w-1/4' -%}
+                            {%- assign block_width_mobile = 'w-1/2' -%}
+                        {% when '30%' %}
+                            {%- assign block_width = 'lg:w-30' -%}
+                            {%- assign block_width_mobile = 'w-full' -%}
+                        {% when '33%' %}
+                            {%- assign block_width = 'lg:w-1/3' -%}
+                            {%- assign block_width_mobile = 'w-full' -%}
+                        {% when '50%' %}
+                            {%- assign block_width = 'lg:w-1/2' -%}
+                            {%- assign block_width_mobile = 'w-full' -%}
+                        {% when '66%' %}
+                            {%- assign block_width = 'lg:w-2/3' -%}
+                            {%- assign block_width_mobile = 'w-full' -%}
+                        {% when '75%' %}
+                            {%- assign block_width = 'lg:w-3/4' -%}
+                            {%- assign block_width_mobile = 'w-full' -%}
+                        {% when '83%' %}
+                            {%- assign block_width = 'lg:w-10/12' -%}
+                            {%- assign block_width_mobile = 'w-full' -%}
+                        {% when '100%' %}
+                            {%- assign block_width = 'lg:w-full' -%}
+                            {%- assign block_width_mobile = 'w-full' -%}
+                    {% endcase %}
+                    {%- comment -%}Set block background url{%- endcomment -%}
+                    {%- capture block_bg_url -%}
+                        {%- if block.settings.use_bg_img and block.settings.bg_image -%}
+                            background-image:url({{ block.settings.bg_image | image_url }});
+                        {%- endif -%}
+                    {%- endcapture -%}
+                    {%- comment -%}Set block background position{%- endcomment -%}
+                    {%- capture block_bg_position -%}
+                        {%- if block.settings.use_bg_img and block.settings.bg_image -%}
+                            {%- case block.settings.bg_position -%}
+                                {%- when 'top-left' -%}
+                                    background-position-x: left;
+                                    background-position-y: top;
+                                {%- when 'top-center' -%}
+                                    background-position-x: center;
+                                    background-position-y: top;
+                                {%- when 'top-right' -%}
+                                    background-position-x: right;
+                                    background-position-y: top;
+                                {%- when 'center-left' -%}
+                                    background-position-x: left;
+                                    background-position-y: center;
+                                {%- when 'center' -%}
+                                    background-position: center;
+                                {%- when 'center-right' -%}
+                                    background-position-x: right;
+                                    background-position-y: center;
+                                {%- when 'bottom-left' -%}
+                                    background-position-x: left;
+                                    background-position-y: bottom;
+                                {%- when 'bottom-center' -%}
+                                    background-position-x: center;
+                                    background-position-y: bottom;
+                                {%- when 'bottom-right' -%}
+                                    background-position-x: right;
+                                    background-position-y: bottom;
+                                {%- else -%}
+                                    background-position: center;
+                            {%- endcase -%}
+                        {%- endif -%}
+                    {%- endcapture -%}
+                    {%- comment -%}Set block background size{%- endcomment -%}
+                    {%- capture block_bg_size -%}
+                        {%- if block.settings.use_bg_img and block.settings.bg_image -%}
+                            {%- case block.settings.bg_size -%}
+                                {%- when 'auto' -%}
+                                    background-size: auto;
+                                {%- when 'inherit' -%}
+                                    background-size: inherit;
+                                {%- when 'cover' -%}
+                                    background-size: cover;
+                                {%- when 'contain' -%}
+                                    background-size: contain;
+                                {%- else -%}
+                                    background-size: cover;
+                            {%- endcase -%}
+                        {%- endif -%}
+                    {%- endcapture -%}
+                    {%- comment -%}Block background{%- endcomment -%}
+                    {%- capture block_bg -%}{{ block_bg_url }}{{ block_bg_position }}{{ block_bg_size }}{%- endcapture -%}
+                    {% if block_bg_url %}
+                      {% if block.settings.section_preload %}
+                          <link rel="preload" href="{{ block.settings.bg_image | image_url }}" as="image" fetchpriority='high'>
+                        {% endif %}
+                    {% endif %}
+                    {% if load_more == true and forloop.index == load_more_number_hidden %}
+                        <div class="flex" style="flex: 1 1 100%;justify-content:{{section.settings.load_more_alignment}};margin: {{section.settings.load_more_padding}}px 0;">
+                            <a href="#" id="load-more-button-{{section.id}}" class="button {{ section.settings.load_more_button_style }}">
+                                {{ section.settings.load_more_button_text }}
+                            </a>
+                        </div>
+                        <div
+                            id="load-more-container-{{section.id}}"
+                            class="sf-custom__grid flex {% unless scrollMobile %}justify-{{ st.content_alignment }} flex-wrap{% else %}swiper-placeholder-class{{section.id}} sf__ms-wrapper md:flex-wrap{% endunless %} {{ st.custom_grid_classes }}"
+                            style="display: none;">
+                    {% endif %}
+
+                    <div id="sf-custom__block--{{ block.id }}" 
+                        class="{% if block.type == "separator" and block.settings.hide_mobile %}hidden-mobile{% endif %} sf-custom__block {{ block.settings.block_custom_class }} sf-custom__block--{{ block.type }} flex {{ block_width }} {{ block_width_mobile }} bg-cover bg-no-repeat bg-center"
+                        {{ block.shopify_attributes }}
+                        style="{{ block_bg }};background-color:{{ block.settings.bg_color }};{% if block.settings.border_radius %}border-radius:{{ block.settings.border_radius }};{% endif %}">
+                        <div class="sf-custom__block-inner w-full align-self-{{ vertical_alignment }}">
+                            {% case block.type %}
+                                {% when 'breadcrumbs' %}
+                                    {% render 'breadcrumb' block: block, justify: block.settings.text_alignment, class: 'hide-mobile', bg_color:block.settings.background_color,link_color:block.settings.link_color,hover_link_color:block.settings.hover_link_color,active_link_color:block.settings.active_link_color,
+                                        link_icon:block.settings.breadcrumbicon , p_top:block.settings.dp_top_mb,p_right:block.settings.dp_right_mb,p_bottom:block.settings.dp_bottom_mb, p_left:block.settings.dp_left_mb,
+                                        active_link_font_weight:block.settings.bread_crumb_active_link_font_weight,link_font_weight:block.settings.bread_crumb_link_font_weight%}
+                                {% when 'image' %}
+                                    {% render 'custom-content-image' block: block %}
+                                {% when 'text' %}
+                                    {% render 'custom-content-text' block: block %}
+                                {% when 'video' %}
+                                    {% render 'custom-content-video' block: block %}
+                                {% when 'video_card' %}
+                                    {% render 'custom-content-video-card' block: block %}
+                                {% when "separator" %}
+                                    <div class="sep-pv-{{ block.settings.margin_vertical }} w-full flex justify-{{ block.settings.content_position }}">
+                                      {% render 'separator' style: block.settings.separator_style %}
+                                    </div>
+                                {% when 'product' %}
+                                    {% render 'custom-content-product' block: block %}
+                                {% when 'product_form' %}
+                                    {% render 'custom-content-product-form' block: block %}
+                                {% when 'image_card' %}
+                                    {% render 'custom-content-image-card' block: block %}
+                                {% when 'klaviyo_form' %}
+                                    {% render 'custom-content-klaviyo-form' block: block %}
+                                {% when 'product_bundles' %}
+                                    {% render 'custom-content-product-bundles' block: block %}
+                                {% when 'lookbook' %}
+                                    {% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    {% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    {% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    {% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    <div style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+                                        {% render 'lookbook-card', block: block, image_aspect_ratio: 'original', class: 'mb-0' %}
+                                    </div>
+                                {% when 'countdown' %}
+                                    {% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    {% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    {% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    {% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                    {% assign content_class = 'h-full items-' | append: vertical_alignment %}
+                                    <div style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+                                        {% render 'countdown-timer', settings: block.settings, containerId: block.id, content_class: content_class, align_item: block.settings.align_text %}
+                                    </div>
+                                {% when 'html' %}
+                                    {% if block.settings.code != blank %}
+                                        {% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                        {% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                        {% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                        {% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+                                        <div style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+                                            {{ block.settings.code }}
+                                        </div>
+                                    {% endif %}
+                                {% when 'newsletter' %}
+                                    {% render 'custom-content-newsletter' block: block %}
+                                {% when 'social' %}
+                                    {% render 'custom-content-social' block: block %}
+                                {%- when 'article' -%}
+                                    {% render 'custom-content-article' block: block %}
+                                {%- when 'list' -%}
+                                    {% render 'custom-content-list' block: block %}
+                                {%- when 'collapsibles' -%}
+                                    {% render 'custom-content-collapsibles' block: block %}
+                            {% endcase %}
+                        </div>
+                    </div>
+
+                    {% if load_more == true and forloop.last == true %}
+                        </div>
+                        <script>
+                            document.querySelector("#load-more-button-{{section.id}}").addEventListener("click", (e) => {
+                                e.preventDefault();
+                                const button = document.querySelector("#load-more-button-{{section.id}}");
+                                const section = document.querySelector("#load-more-container-{{section.id}}");
+                                if (section.style.display === "none") {
+                                    section.style.display = "flex";
+                                    button.innerText = "{{ section.settings.load_less_button_text }}";
+                                } else {
+                                    section.style.display = "none";
+                                    button.innerText = "{{ section.settings.load_more_button_text }}";
+                                }
+                            });
+                        </script>
+                    {% endif %}
+
+                {% endfor %}
+            </div>
+            {% if scrollMobile and st.scroll_type == 'nextprev' %}
+                <div class="hide-desktop swiper-button-prev custom-content-prev-btn swiperCustomContentPrev{{section.id}}"></div>
+                <div class="hide-desktop swiper-button-next custom-content-next-btn swiperCustomContentNext{{section.id}}"></div>
+            {% endif %}
+        </div>
+        {% if scrollMobile and st.scroll_type == 'scrollbar' %}<div style="position:relative;" class="hide-desktop swiper-scrollbar swiperCustomContentScrollbar{{section.id}}">{% endif %}
+        {% if scrollMobile and st.scroll_type == 'dots' %}<div style="position:relative;" class="hide-desktop swiper-pagination swiperCustomContentDots{{section.id}}"></div>{% endif %}
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .custom-content-prev-btn:after {
+        content: 'prev' !important;
+        color: black;
+    }
+
+    .custom-content-next-btn:after {
+        content: 'next' !important;
+        color: black;
+    }
+
+    @media (min-width: 992px) {
+        .custom-content-prev-btn,
+        .custom-content-next-btn {
+            display: none !important;
+        }
+    }
+
+    .swiperCustomContentDots{{section.id}} > span {
+        background-color: {{st.background_color}};
+        border: 2px solid {{st.background_color}};
+    }
+
+    .swiperCustomContentDots{{section.id}} .swiper-pagination-bullet-active {
+        background-color: #000;
+    }
+</style>
+
+{% if scrollMobile %}
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var slider{{section.id | replace: "-", ""}}Instance;
+        const initSlider{{section.id | replace: "-", ""}} = () => {
+            if ( window.innerWidth < 992 ) {
+                if (!slider{{section.id | replace: "-", ""}}Instance) {
+                    const wrapper = document.querySelector(".swiper-placeholder-class{{section.id}}");
+                    wrapper.classList.add("swiper-wrapper");
+        
+                    [...wrapper.children].forEach(r => r.classList.add("swiper-slide"))
+        
+                    const customContentSwiper{{section.id | replace: "-", ""}} = document.querySelector('.swiperCustomContent{{section.id}}');
+                    const customContentScrollbar{{section.id | replace: "-", ""}} = document.querySelector('.swiperCustomContentScrollbar{{section.id}}');
+                    const customContentDots{{section.id | replace: "-", ""}} = document.querySelector('.swiperCustomContentDots{{section.id}}');
+                    const customContentPrev{{section.id | replace: "-", ""}} = document.querySelector('.swiperCustomContentPrev{{section.id}}');
+                    const customContentNext{{section.id | replace: "-", ""}} = document.querySelector('.swiperCustomContentNext{{section.id}}');
+                
+                    slider{{section.id | replace: "-", ""}}Instance = new Swiper(customContentSwiper{{section.id | replace: "-", ""}}, {
+                        direction: "horizontal",
+                        slidesPerView: 1,
+                        freeMode: true,
+                        {% if st.scroll_type == 'scrollbar' %}
+                        scrollbar: {
+                            el: customContentScrollbar{{section.id | replace: "-", ""}},
+                            draggable: true,
+                            hide: false,
+                            snapOnRelease: false
+                        },
+                        {% endif %}
+                        {% if st.scroll_type == 'dots' %}
+                        pagination: {
+                            el: customContentDots{{section.id | replace: "-", ""}},
+                            clickable: true
+                        },
+                        {% endif %}
+                        {% if st.scroll_type == 'nextprev' %}
+                        navigation: {
+                            nextEl: customContentNext{{section.id | replace: "-", ""}},
+                            prevEl: customContentPrev{{section.id | replace: "-", ""}}
+                        },
+                        observer: true,
+                        observeParents: true,
+        
+                        {% endif %}
+                        mousewheel: {
+                        forceToAxis: true,
+                        },
+                        a11y: false,
+                    });
+                }
+            } else {
+                if (slider{{section.id | replace: "-", ""}}Instance) {
+                    slider{{section.id | replace: "-", ""}}Instance.destroy(true);
+                    slider{{section.id | replace: "-", ""}}Instance = null;
+                    const wrapper = document.querySelector(".swiper-placeholder-class{{section.id}}");
+                    wrapper.classList.remove("swiper-wrapper");
+                    wrapper.querySelectorAll(".swiper-slide").forEach(slide => slide.classList.remove("swiper-slide"));
+                }
+            }
+        }
+
+        initSlider{{section.id | replace: "-", ""}}();
+        window.onresize = initSlider{{section.id | replace: "-", ""}};
+    }, false);
+</script>
+{% endif %}

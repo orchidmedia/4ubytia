@@ -1,0 +1,508 @@
+{% case section.settings.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+{%- if section.settings.bg_color_override -%}
+  {%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+{% assign has_bg = false %}
+
+{% unless bg_color == "rgba(0,0,0,0)" or bg_color == blank %}
+    {% assign has_bg = true %}
+{% endunless %}
+
+{% capture container %}
+    {{ section.settings.container }}
+    {% if section.settings.container != 'w-full' %}
+    {% endif %}
+{% endcapture %}
+
+{% if section.settings.width == blank %}
+    {% assign width = '100%' %}
+{% else %}
+    {% assign width = section.settings.width %}
+{% endif %}
+
+{% style %}
+    .sf-video__container--{{ section.id }} {
+        width: {{- width -}}
+    }
+{% endstyle %}
+
+{%- assign st = section.settings -%}
+
+<section
+  id="sf-video-{{ section.id }}"
+  class="sf-video section-pv-{{ section.settings.margin_vertical }} {{ section.settings.custom_class }} -mx-4 lg:mx-0{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="video-section"
+  {% if has_bg %}
+    data-bg="{{ bg_color | color_to_hsl }}"
+  {% endif %}
+  style="background-color: {{ bg_color }};"
+>
+  <div class="{{ container | strip }}">
+      {%- if section.settings.video_link != blank -%}
+          <div class="sf-video__container sf-video__container--{{ section.id }} mx-auto">
+              <div class="sf-video__wrapper sf-video__wrapper--{{ section.id }}" style="--aspect-ratio: {{ section.settings.ratio | replace: ':', '/' }}">
+                  {%- if section.settings.video_link != blank -%}
+                      <div id="sf-video__player-{{ section.id }}" class="plyr__video-embed" data-video-ratio="{{ section.settings.ratio | default: '16:9' }}" data-autoplay="{{ section.settings.autoplay }}" data-loop="{{ section.settings.loop }}">
+                          <iframe
+                              src="https://www.youtube.com/embed/{{ section.settings.video_link.id }}?iv_load_policy=3&amp;modestbranding=0&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+                              allowfullscreen
+                              allowtransparency
+                              allow="autoplay"
+                          ></iframe>
+                      </div>
+                  {%- endif -%}
+                  {%- if section.settings.image != blank -%}
+                      <div class="sf-video__cover bg-center" style="background-image: url({{ section.settings.image | img_url: '1920x' }})">
+                      </div>
+                  {%- endif -%}
+                  <div class="sf-video__inner text-center">
+                      <button type="button" class="sf-video__play sf-video__play--style-{{ section.settings.play_style }} sf-video__play--size-{{ section.settings.play_size }}"
+                        {% if section.settings.text_color != 'rgba(0,0,0,0)' %}style="color:{{ section.settings.text_color }};"{% endif %}
+                        data-plyr="play" 
+                        aria-label="Play">
+                        <svg viewBox="0 0 18 18">
+                          <path d="M15.562 8.1L3.87.225c-.818-.562-1.87 0-1.87.9v15.75c0 .9 1.052 1.462 1.87.9L15.563 9.9c.584-.45.584-1.35 0-1.8z" fill="currentColor"></path>
+                        </svg>
+                        <span class="plyr__sr-only">{{ 'sections.video.play' | t }}</span>
+                      </button>
+                      {%- unless section.settings.video_title == blank -%}
+                        {% capture custom_classes %}sf-video__title text-xl hidden md:block {% endcapture %}
+                        {%- capture custom_styles -%}
+                          {%- if section.settings.text_color !='rgba(0,0,0,0)' and section.settings.text_color != blank -%}
+                            color:{{ section.settings.text_color }};
+                          {%- endif -%}
+                        {%- endcapture -%}
+
+                        {% render 'heading-tag' 
+                          heading: section.settings.video_title_tag,
+                          content: section.settings.video_title,
+                          custom_classes: custom_classes,
+                          custom_styles: custom_styles
+                        %}
+                      {%- endunless -%}
+                  </div>
+              </div>
+          </div>
+      {%- else -%}
+          <div class="placeholder-noblocks text-center">
+              {{ 'homepage.onboarding.no_content' | t }}
+          </div>
+      {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": {
+    "cs": "Video",
+    "da": "Video",
+    "de": "Video",
+    "en": "Video",
+    "es": "Video",
+    "fi": "Video",
+    "fr": "Vidéo",
+    "it": "Video",
+    "ja": "動画",
+    "ko": "동영상",
+    "nb": "Video",
+    "nl": "Video",
+    "pl": "Film",
+    "pt-BR": "Vídeo",
+    "pt-PT": "Vídeo",
+    "sv": "Video",
+    "th": "วิดีโอ",
+    "tr": "Video",
+    "vi": "Video",
+    "zh-CN": "视频",
+    "zh-TW": "影片"
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Hide on Desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_tablet",
+      "label": "Hide on Tablet",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Hide on Mobile",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "margin_vertical",
+      "label": "Section margin (vertical)",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ]
+    },
+    {
+        "type": "select",
+        "id": "container",
+        "label": "Container type",
+        "default": "container-fluid",
+        "options": [
+            {
+                "value": "container-fluid",
+                "label": "Default"
+            },
+            {
+                "value": "w-full",
+                "label": "Full width"
+            },
+            {
+                "value": "container",
+                "label": "Use container box"
+            }
+        ]
+    },
+    {
+      "type": "select",
+      "id": "bg_color_selector",
+      "label": "Section Background",
+      "default": "color_section1_bg",
+      "options": [
+        {
+          "value": "color_section1_bg",
+          "label": "Section 1"
+        },
+        {
+          "value": "color_section2_bg",
+          "label": "Section 2"
+        },
+        {
+          "value": "color_section3_bg",
+          "label": "Section 3"
+        },
+        {
+          "value": "color_section4_bg",
+          "label": "Section 4"
+        },
+        {
+          "value": "color_section5_bg",
+          "label": "Section 5"
+        },
+        {
+          "value": "color_section6_bg",
+          "label": "Section 6"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_color_override",
+      "label": "Override Background",
+      "default": false
+    },
+    {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color"
+    },
+    {
+      "type": "header",
+      "content": "Video settings"
+    },
+    {
+      "type": "video_url",
+      "id": "video_link",
+      "label": {
+        "cs": "Odkaz na video",
+        "da": "Videolink",
+        "de": "Video-Link",
+        "en": "Video link",
+        "es": "Enlace de video",
+        "fi": "Videolinkki",
+        "fr": "Lien de la vidéo",
+        "it": "Link video",
+        "ja": "ビデオリンク",
+        "ko": "동영상 링크",
+        "nb": "Videokobling",
+        "nl": "Videolink",
+        "pl": "Link filmu",
+        "pt-BR": "Link do vídeo",
+        "pt-PT": "Ligação do vídeo",
+        "sv": "Videolänk",
+        "th": "ลิงก์วิดีโอ",
+        "tr": "Video bağlantısı",
+        "vi": "Liên kết video",
+        "zh-CN": "视频链接",
+        "zh-TW": "影片連結"
+      },
+      "accept": [
+        "youtube"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+    },
+    {
+        "type": "select",
+        "id": "ratio",
+        "label": "Video ratio",
+        "default": "16:9",
+        "options": [
+            {
+                "value": "16:9",
+                "label": "16:9"
+            },
+            {
+                "value": "21:9",
+                "label": "21:9"
+            },
+            {
+                "value": "4:3",
+                "label": "4:3"
+            },
+            {
+              "value": "1:1",
+              "label": "1:1"
+            },
+            {
+              "value": "9:16",
+              "label": "9:16"
+            }
+        ]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": {
+        "cs": "Titulní obrázek",
+        "da": "Coverbillede",
+        "de": "Titelbild",
+        "en": "Cover image",
+        "es": "Imagen de portada",
+        "fi": "Kansikuva",
+        "fr": "Image de couverture",
+        "it": "Immagine di copertina",
+        "ja": "表紙画像",
+        "ko": "커버 이미지",
+        "nb": "Forsidebilde",
+        "nl": "Coverafbeelding",
+        "pl": "Obraz w tle",
+        "pt-BR": "Imagem de capa",
+        "pt-PT": "Imagem de capa",
+        "sv": "Omslagsbild",
+        "th": "รูปภาพหน้าปก",
+        "tr": "Kapak görseli",
+        "vi": "Ảnh bìa",
+        "zh-CN": "封面图片",
+        "zh-TW": "封面圖片"
+      },
+      "info": {
+        "en": "Leave blank to use video thumbnail"
+      }
+    },
+    {
+      "type": "select",
+      "id": "video_title_tag",
+      "label": "Heading tag",
+      "default": "h2",
+      "options": [
+        { "value": "p", "label": "Paragraph" },
+        { "value": "heading-1-seo", "label": "SEO H1" },
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" },
+        { "value": "p-xsmall", "label": "Extra small paragraph" },
+        { "value": "p-small", "label": "Small paragraph" },
+        { "value": "p-medium", "label": "Medium paragraph" },
+        { "value": "p-large", "label": "Large paragraph" },
+        { "value": "p-xlarge", "label": "Extra large paragraph" },
+        { "value": "quote-1", "label": "Quote 1" },
+        { "value": "quote-2", "label": "Quote 2" },
+        { "value": "quote-3", "label": "Quote 3" }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "video_title",
+      "label": {
+        "cs": "Nadpis",
+        "da": "Overskrift",
+        "de": "Überschrift",
+        "en": "Heading",
+        "es": "Título",
+        "fi": "Otsake",
+        "fr": "En-tête",
+        "it": "Heading",
+        "ja": "見出し",
+        "ko": "제목",
+        "nb": "Overskrift",
+        "nl": "Kop",
+        "pl": "Nagłówek",
+        "pt-BR": "Título",
+        "pt-PT": "Título",
+        "sv": "Rubrik",
+        "th": "ส่วนหัว",
+        "tr": "Başlık",
+        "vi": "Tiêu đề",
+        "zh-CN": "标题",
+        "zh-TW": "標題"
+      }
+    },
+    {
+        "type":"select",
+        "id":"text_color",
+        "label":"Text color",
+        "options":[
+            {
+                "label":"Dark",
+                "value":"black"
+            },
+            {
+                "label":"Light",
+                "value":"white"
+            }
+        ],
+        "default": "white"
+    },
+    {
+        "type":"select",
+        "id":"play_style",
+        "label":"Play button style",
+        "options":[
+            {
+                "label":"Outline",
+                "value":"outline"
+            },
+            {
+                "label":"Solid",
+                "value":"solid"
+            }
+        ],
+        "default": "solid"
+    },
+    {
+        "type":"select",
+        "id":"play_size",
+        "label":"Play button size",
+        "options":[
+            {
+                "label":"Medium",
+                "value":"medium"
+            },
+            {
+                "label":"Large",
+                "value":"large"
+            }
+        ],
+        "default": "medium"
+    },
+    {
+        "type":"text",
+        "id":"width",
+        "label":"Video width",
+        "default": "650px"
+    },
+    {
+        "type": "checkbox",
+        "id": "autoplay",
+        "label": "Autoplay",
+        "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "loop",
+        "label": "Loop",
+        "default": false
+    },
+    {
+        "type": "text",
+        "id": "custom_class",
+        "label": "Custom classes"
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "cs": "Video",
+        "da": "Video",
+        "de": "Video",
+        "en": "Video",
+        "es": "Video",
+        "fi": "Video",
+        "fr": "Vidéo",
+        "it": "Video",
+        "ja": "動画",
+        "ko": "동영상",
+        "nb": "Video",
+        "nl": "Video",
+        "pl": "Film",
+        "pt-BR": "Vídeo",
+        "pt-PT": "Vídeo",
+        "sv": "Video",
+        "th": "วิดีโอ",
+        "tr": "Video",
+        "vi": "Video",
+        "zh-CN": "视频",
+        "zh-TW": "影片"
+      },
+      "category": {
+        "cs": "Video",
+        "da": "Video",
+        "de": "Video",
+        "en": "Video",
+        "es": "Video",
+        "fi": "Video",
+        "fr": "Vidéo",
+        "it": "Video",
+        "ja": "動画",
+        "ko": "동영상",
+        "nb": "Video",
+        "nl": "Video",
+        "pl": "Film",
+        "pt-BR": "Vídeo",
+        "pt-PT": "Vídeo",
+        "sv": "Video",
+        "th": "วิดีโอ",
+        "tr": "Video",
+        "vi": "Video",
+        "zh-CN": "视频",
+        "zh-TW": "影片"
+      }
+    }
+  ]
+}
+{% endschema %}

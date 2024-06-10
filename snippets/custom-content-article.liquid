@@ -1,0 +1,64 @@
+{% capture p_top %}{% if block.settings.padding_top %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_right %}{% if block.settings.padding_right %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_bottom %}{% if block.settings.padding_bottom %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{% capture p_left %}{% if block.settings.padding_left %}var(--column-gap){% else %}0{% endif %}{% endcapture %}
+{%- assign article = articles[block.settings.article] -%}
+{% assign conver_image = '' %}
+<div style="padding:{{ p_top }} {{ p_right }} {{ p_bottom }} {{ p_left }}">
+  {%- if article != empty -%}
+    {% render 'article-card', 
+      article: article,
+       view: 'grid', 
+       items_per_row: 1,
+       article_show_date: block.settings.article_show_date,
+       article_show_author: block.settings.article_show_author,
+       article_show_button: block.settings.article_show_button,
+       block_settings: block.settings
+      %}
+  {%- else -%}
+    <div class="article">
+      <a href="#" class="article__link article__link--fixed-overlay">
+        {%- if article.image and cover_image != 'none' -%}
+          <div class="article__grid-image-wrapper article__grid-image-wrapper--{{ cover_image }} article-image-wrapper">
+            <div class="article__grid-image-container">
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <h2 class="article__title h3">{{ 'homepage.onboarding.blog_title' | t }}</h2>
+      </a>
+
+      {%- if block.settings.show_author or block.settings.show_date -%}
+        <div class="article__meta">
+          {%- if block.settings.show_author -%}
+            {%- assign author_name = 'homepage.onboarding.blog_author' | t -%}
+            <span class="article__author">{{ 'blogs.article.by_author' | t: author: author_name }}</span>
+          {%- endif -%}
+
+          {%- if block.settings.show_date -%}
+            <span class="article__date">
+              {{ "now" | time_tag: format: 'date' }}
+            </span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="rte rte--article">{{ 'homepage.onboarding.blog_excerpt' | t }}</div>
+
+      <ul class="list--inline article__meta-buttons">
+        <li>
+          <a href="#" class="btn btn--tertiary btn--small">
+            {{ 'blogs.article.read_more' | t }}
+          </a>
+        </li>
+
+        <li>
+          <a href="#" class="article__comment-count btn btn--tertiary btn--small">
+            {{ 'blogs.comments.comments_with_count' | t: count: 1 }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  {%- endif -%}
+</div>

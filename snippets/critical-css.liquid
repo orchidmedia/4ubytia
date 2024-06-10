@@ -1,0 +1,382 @@
+<style media="print" id="mn-critical-css">
+  html {
+    font-size: calc(var(--font-base-size, 16) * 1px)
+  }
+
+  body {
+    font-family: var(--font-stack-body);
+    font-weight: var(--font-weight-body);
+    font-style: var(--font-style-body);
+    color: var(--color-body-text);
+    font-size: calc(var(--font-base-size, 16) * 1px);
+    line-height: calc(var(--base-line-height) * 1px);
+    scroll-behavior: smooth
+  }
+/* Justify center */
+.sf-hero--fullscreen .w-max .justify-center {
+  margin-top: 0px;
+}
+
+/* Justify center */
+#shopify-section-template--17568757481712__dea2a6a4-7f12-47db-9a38-2bab9e7b3afb
+  .w-max
+  .justify-center {
+  margin-top: 15px;
+}
+  body .h1,
+  body h1 {
+    font-size: calc(((var(--font-h1-mobile))/ (var(--font-base-size))) * 1rem)
+  }
+
+  body .h2,
+  body h2 {
+    font-size: calc(((var(--font-h2-mobile))/ (var(--font-base-size))) * 1rem)
+  }
+
+  body .h3,
+  body h3 {
+    font-size: calc(((var(--font-h3-mobile))/ (var(--font-base-size))) * 1rem)
+  }
+
+  body .h4,
+  body h4 {
+    font-size: calc(((var(--font-h4-mobile))/ (var(--font-base-size))) * 1rem)
+  }
+
+  body .h5,
+  body h5 {
+    font-size: calc(((var(--font-h5-mobile))/ (var(--font-base-size))) * 1rem)
+  }
+
+  body .h6,
+  body h6 {
+    font-size: calc(((var(--font-h6-mobile))/ (var(--font-base-size))) * 1rem);
+  }
+
+  @media only screen and (min-width:768px) {
+
+    body .h1,
+    body h1 {
+      font-size: calc(((var(--font-h1-desktop))/ (var(--font-base-size))) * 1rem)
+    }
+
+    body .h2,
+    body h2 {
+      font-size: calc(((var(--font-h2-desktop))/ (var(--font-base-size))) * 1rem)
+    }
+
+    body .h3,
+    body h3 {
+      font-size: calc(((var(--font-h3-desktop))/ (var(--font-base-size))) * 1rem)
+    }
+
+    body .h4,
+    body h4 {
+      font-size: calc(((var(--font-h4-desktop))/ (var(--font-base-size))) * 1rem)
+    }
+
+    body .h5,
+    body h5 {
+      font-size: calc(((var(--font-h5-desktop))/ (var(--font-base-size))) * 1rem)
+    }
+
+    body .h6,
+    body h6 {
+      font-size: calc(((var(--font-h6-desktop))/ (var(--font-base-size))) * 1rem)
+    }
+  }
+
+  .swiper-wrapper {
+    display: flex
+  }
+
+  .swiper-container:not(.swiper-container-initialized) .swiper-slide {
+    width: calc(100% / var(--items, 1));
+    flex: 0 0 auto
+  }
+
+  @media (max-width:1023px) {
+    .swiper-container:not(.swiper-container-initialized) .swiper-slide {
+      min-width: 40vw;
+      flex: 0 0 auto
+    }
+  }
+
+  @media (max-width:767px) {
+    .swiper-container:not(.swiper-container-initialized) .swiper-slide {
+      min-width: 66vw;
+      flex: 0 0 auto
+    }
+  }
+
+  .opacity-0 {
+    opacity: 0
+  }
+
+  .opacity-100 {
+    opacity: 1;
+  }
+
+  .placeholder-background {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    pointer-events: none
+  }
+
+  .placeholder-background--animation {
+    background-color: #000;
+    animation: placeholder-background-loading 1.5s infinite linear
+  }
+
+  [data-image-loading] {
+    position: relative
+  }
+
+  [data-image-loading]:after {
+    content: '';
+    background-color: #000;
+    animation: placeholder-background-loading 1.5s infinite linear;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1
+  }
+
+  [data-image-loading] img.lazyload {
+    opacity: 0
+  }
+
+  [data-image-loading] img.lazyloaded {
+    opacity: 1
+  }
+
+  .no-js [data-image-loading] {
+    animation-name: none
+  }
+
+  .lazyload--fade-in {
+    opacity: 0;
+    transition: .25s all
+  }
+
+  .lazyload--fade-in.lazyloaded {
+    opacity: 1
+  }
+
+  @media (min-width: 992px) {
+    .hidden.md\:block {
+      display: block;
+    }
+
+    .hidden.md\:flex {
+      display: flex;
+    }
+
+    .hidden.md\:grid {
+      display: grid;
+    }
+  }
+
+  @media (min-width:1024px) {
+    .hidden.lg\:block {
+      display: block;
+    }
+
+    .hidden.lg\:flex {
+      display: flex;
+    }
+
+    .hidden.lg\:grid {
+      display: grid;
+    }
+  }
+
+  @media (min-width:1280px) {
+    .hidden.xl\:block {
+      display: block;
+    }
+
+    .hidden.xl\:flex {
+      display: flex;
+    }
+
+    .hidden.xl\:grid {
+      display: grid;
+    }
+  }
+
+  h1, .h1,
+  h2, .h2,
+  h3, .h3,
+  h4, .h4,
+  h5, .h5,
+  h6, .h6 {
+    letter-spacing: {{ settings.type_header_spacing }}px;
+  }
+/* before and after */
+  .before-after {
+  position: relative;
+  width: 655px;
+  height: 600px;
+  background-color: #00c389;
+  overflow: hidden;
+}
+
+.before-after .text-wrapper {
+  position: absolute;
+  width: 232px;
+  top: -476px;
+  left: 451px;
+  font-family: "4U Sans 450 Display-450", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 23px;
+  letter-spacing: 0;
+  line-height: 25.3px;
+  white-space: nowrap;
+}
+
+.before-after .div {
+  position: absolute;
+  width: 232px;
+  top: -476px;
+  left: 34px;
+  font-family: "4U Sans 450 Display-450", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 23px;
+  letter-spacing: 0;
+  line-height: 25.3px;
+  white-space: nowrap;
+}
+
+.before-after .group {
+  position: absolute;
+  width: 417px;
+  height: 121px;
+  top: 157px;
+  left: 128px;
+}
+
+.before-after .group-2 {
+  position: absolute;
+  width: 419px;
+  height: 43px;
+  top: 0;
+  left: 0;
+}
+
+.before-after .early-menopause-cau-wrapper {
+  position: absolute;
+  width: 97px;
+  height: 43px;
+  top: 0;
+  left: 0;
+}
+
+.before-after .early-menopause-cau {
+  position: absolute;
+  width: 95px;
+  top: 0;
+  left: 0;
+  font-family: var(--body-desktop-headers-desktop-h1-font-family);
+  font-weight: var(--body-desktop-headers-desktop-h1-font-weight);
+  color: var(--black);
+  font-size: var(--body-desktop-headers-desktop-h1-font-size);
+  text-align: right;
+  letter-spacing: var(--body-desktop-headers-desktop-h1-letter-spacing);
+  line-height: var(--body-desktop-headers-desktop-h1-line-height);
+  white-space: nowrap;
+  font-style: var(--body-desktop-headers-desktop-h1-font-style);
+}
+
+.before-after .text-wrapper-2 {
+  position: absolute;
+  width: 282px;
+  top: 0;
+  left: 135px;
+  font-family: var(--body-desktop-headers-desktop-h5-font-family);
+  font-weight: var(--body-desktop-headers-desktop-h5-font-weight);
+  color: #000000;
+  font-size: var(--body-desktop-headers-desktop-h5-font-size);
+  letter-spacing: var(--body-desktop-headers-desktop-h5-letter-spacing);
+  line-height: var(--body-desktop-headers-desktop-h5-line-height);
+  font-style: var(--body-desktop-headers-desktop-h5-font-style);
+}
+
+.before-after .group-3 {
+  position: absolute;
+  width: 419px;
+  height: 43px;
+  top: 78px;
+  left: 0;
+}
+
+.before-after .group-4 {
+  position: absolute;
+  width: 436px;
+  height: 122px;
+  top: 313px;
+  left: 109px;
+}
+
+.before-after .group-5 {
+  position: absolute;
+  width: 419px;
+  height: 43px;
+  top: 0;
+  left: 19px;
+}
+
+.before-after .group-6 {
+  position: absolute;
+  width: 438px;
+  height: 43px;
+  top: 79px;
+  left: 0;
+}
+
+.before-after .div-wrapper {
+  position: absolute;
+  width: 116px;
+  height: 43px;
+  top: 0;
+  left: 0;
+}
+
+.before-after .early-menopause-cau-2 {
+  position: absolute;
+  width: 114px;
+  top: 0;
+  left: 0;
+  font-family: var(--body-desktop-headers-desktop-h1-font-family);
+  font-weight: var(--body-desktop-headers-desktop-h1-font-weight);
+  color: var(--black);
+  font-size: var(--body-desktop-headers-desktop-h1-font-size);
+  text-align: right;
+  letter-spacing: var(--body-desktop-headers-desktop-h1-letter-spacing);
+  line-height: var(--body-desktop-headers-desktop-h1-line-height);
+  white-space: nowrap;
+  font-style: var(--body-desktop-headers-desktop-h1-font-style);
+}
+
+.before-after .said-they-feel-like {
+  position: absolute;
+  width: 282px;
+  top: 0;
+  left: 154px;
+  font-family: var(--body-desktop-headers-desktop-h5-font-family);
+  font-weight: var(--body-desktop-headers-desktop-h5-font-weight);
+  color: #000000;
+  font-size: var(--body-desktop-headers-desktop-h5-font-size);
+  letter-spacing: var(--body-desktop-headers-desktop-h5-letter-spacing);
+  line-height: var(--body-desktop-headers-desktop-h5-line-height);
+  font-style: var(--body-desktop-headers-desktop-h5-font-style);
+}
+/* before and after */
+</style>

@@ -1,0 +1,85 @@
+{% assign pcard_default_image = settings.pcard_default_image %}
+{% if image_ratio == nil or image_ratio == blank %}
+  {%- assign image_ratio = settings.pcard_image_ratio | default: '1/1' -%}
+{% endif %}
+
+{%- assign preview_image = product.media[0].preview_image -%}
+{%- if section.settings.change_product_variant_on_fitlering == true and product.selected_variant.image != nil -%}
+  {%- assign preview_image = product.selected_variant.image -%}
+{%- endif -%}
+
+{%- if image_ratio == 'original' -%}
+  {%- assign image_ratio = product.media[0].aspect_ratio | default: '1/1' -%}
+{%- endif -%}
+
+{%- assign second_media = '' -%}
+{% if settings.show_second_media and product.media.size > 1 and product.media[1] != blank %}
+  {%- assign second_media = product.media[1] -%}
+{% endif %}
+
+{%- assign image_attributes = 'alt="' | append: product.title | append: '"' -%}
+
+{%- if template.name == "collection" -%}
+  {%- capture query -%}
+    /?collection_handle={{- collection.handle -}}&collection_title={{ collection.title | url_encode }}
+  {%- endcapture -%}
+{%- endif -%}
+
+<div class="flex justify-center items-center">
+  <a href="{{ product.url }}{{- query -}}" class="block w-full" onclick="dataLayer.push({ 'event': 'productClick', 'ecommerce': {
+    'currencyCode': 'USD', 'click': {
+    'actionField': {'list': 'single-product'},
+    'products': [{
+    'name': `{{ product.title }}`,
+    'id': {{ product.id }},
+    'price': {{ product.selected_or_first_available_variant.price | money_without_currency | remove: ',' }},
+    'brand': '{{ product.vendor }}',
+    'variant': '{{ product.selected_or_first_available_variant.title }}'
+    }] }
+    } });">
+      {% if preview_image != blank %}
+        <div class="spc__main-img{% if product.images.size < 2 %} spc__img-only{% endif %}">
+          {% render 'responsive-image',
+              image: preview_image,
+              aspect_ratio: image_ratio,
+              image_class: 'se-out w-full h-full',
+              image_attributes: image_attributes,
+              productOrderNumber: productOrderNumber
+          %}
+        </div>
+
+        {%- if second_media != blank -%}
+          <div class="spc__hover-img">
+            {% if second_media.media_type == 'video' %}
+              {% render 'responsive-video',
+                  video: second_media
+              %}
+            {% else %}
+              {% render 'responsive-image',
+                  image: second_media,
+                  aspect_ratio: image_ratio,
+                  image_class: 'se-out w-full h-full',
+                  image_attributes: image_attributes
+              %}
+            {% endif %}
+
+            {% if settings.show_quickview_button and settings.pcard_layout == '5'%}
+            {% render 'product-card-tooltips',
+              product: product, position: 'top',
+              tooltips: 'quickview',
+              card_style: "5"
+            %}
+            {% endif %}
+          </div>
+        {%- endif -%}
+      {% else %}
+        {% if pcard_default_image != blank %}
+          {% render 'responsive-image', image: pcard_default_image, aspect_ratio: image_ratio, image_class: 'se-out w-full h-full', image_attributes: image_attributes %}
+        {% else %}
+          <div style="--aspect-ratio: {{ image_ratio }}">
+            <img src="https://dummyimage.com/408x535/ddd/aaa" alt="{{ product.title }}{{- query -}}" loading="lazy" />
+          </div>
+        {% endif %}
+      {% endif %}
+  </a>
+</div>

@@ -1,0 +1,917 @@
+{%- assign item = section.settings -%}
+{%- paginate blog.articles by item.blog_list -%}
+{% capture container %}
+    {{ item.container }}
+{% endcapture %}
+{% case item.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+
+{%- if item.bg_color_override -%}
+  {%- assign bg_color = item.background_color -%}
+{%- endif -%}
+<section
+  data-section-type="blog-template"
+  data-section-id="{{ section.id }}"
+  class="section-pv-{{ section.settings.margin_vertical }} {% if item.hide_mobile %} hide-mobile{% endif %}{% if item.hide_tablet %} hide-tablet{% endif %}{% if item.hide_desktop %} hide-desktop{% endif %}">
+  <div class="{{ container }}">
+    <div class="mx-auto">
+        {% if item.show_sidebar and section.blocks != blank %}
+          {%- case item.layout -%}
+            {%- when 'left_column' -%}
+            <div class="flex flex-wrap flex-row-reverse -mx-4">
+              <div class="w-full lg:w-9/12">
+                  <div class="grid grid-cols-1 {% if section.settings.view == 'grid' %}grid-cols-2 md:grid-cols-{{ section.settings.show_item_per_row | minus: 1 }} lg:grid-cols-{{ section.settings.show_item_per_row }}{% endif %} gap-8">
+                    {%- for article in blog.articles -%}
+                        {% render 'article-card', article: article, view: item.view %}
+                    {% endfor %}
+                  </div>
+                {%- if paginate.pages > 1 -%}
+                <div class="flex justify-center my-7 lg:my-16">
+                  {%- render 'pagination', paginate: paginate -%}
+                </div>
+                {%- endif -%}
+              </div>
+              <div class="w-full lg:w-3/12 {% if item.design == "layout3"%}sidebar-design-03{% endif %}">
+                {% render 'blog-sidebar' %}
+              </div>
+            </div>
+            {%- else -%}
+            <div class="flex flex-wrap -mx-0 md:-mx-0">
+              <div class="w-full lg:w-9/12 w-73 menoguides-categories">
+                    <div>
+                      {%- capture custom_styles -%}
+                      {%- if item.category_color !='rgba(0,0,0,0)' and item.category_color != blank -%}
+                          color:{{ item.category_color }};
+                      {%- endif -%}
+                      {%- endcapture -%}
+
+                      {% if canonical_url contains 'tagged'%}
+                        {% assign tag = canonical_url | split: '/' | last | replace: '-', ' ' | capitalize %}
+                        {% render 'heading-tag'
+                        heading: item.category_tag,
+                        content: tag,
+                        custom_classes: 'capitalize',
+                        custom_styles: custom_styles
+                        %}
+                      {% else %}
+                        {% render 'heading-tag'
+                          heading: item.category_tag,
+                          content: blog.title,
+                          custom_styles: custom_styles
+                          %}
+                      {% endif %}
+
+                      {% render 'separator' style: item.separator_style %}
+                    </div>
+                  
+                  <div id="product-grid" data-id="{{ section.id }}" {%- if paginate.pages > 1 -%}data-next-url="{{paginate.next.url}}"{%- endif -%} class="grid grid-cols-1 {% if section.settings.view == 'grid' %}md:grid-cols-{{ section.settings.show_item_per_row | minus: 1 }} lg:grid-cols-{{ section.settings.show_item_per_row }}{% endif %} gap-9 mt-8 mb-10">
+                      {%- for article in blog.articles -%}
+                        {% render 'article-card', article: article, view: item.view %}
+                      {% endfor %}
+                  </div>
+                  {%- if paginate.pages > 1 -%}
+                    <div class="load-more text-center">
+                      <a class="load-more_btn text-center button button-1" onclick="loadMoreProducts()">Load More Guides</a>
+                      <div class="load-more_spinner hidden">
+                        <img
+                                src="{{ 'loading-animation.svg' | asset_url }}"
+                                alt="{{ 'accessibility.loading' | t }}"
+                                class="bl-core-loading-animation__img"
+                                width="50"
+                            />
+                      </div>
+                    </div>
+                  {%- endif -%}
+                <!-- {%- if paginate.pages > 1 -%}
+                <div class="flex justify-center my-7 lg:my-16">
+                  {%- render 'pagination', paginate: paginate -%}
+                </div>
+                {%- endif -%} -->
+              </div>
+              <div class="w-full lg:w-3/12 {% if item.design == "layout3"%}sidebar-design-03 w-25{% endif %}">
+                {% render 'blog-sidebar' %}
+              </div>
+            </div>
+          {%- endcase -%}
+        {% else %}
+            <div class="grid grid-cols-1 {% if section.settings.view == 'grid' %}grid-cols-2 md:grid-cols-{{ section.settings.show_item_per_row | minus: 1 }} lg:grid-cols-{{ section.settings.show_item_per_row }}{% endif %} gap-8">
+                {%- for article in blog.articles -%}
+                    {% render 'article-card', article: article, view: item.view %}
+                {% endfor %}
+            </div>
+          {%- if paginate.pages > 1 -%}
+          <div class="flex justify-center mt-7 lg:mt-15">
+            {%- render 'pagination', paginate: paginate -%}
+          </div>
+          {%- endif -%}
+        {% endif %}
+    </div>
+  </div>
+</section>
+{%- endpaginate -%}
+
+
+<script>
+  const products_on_page = document.getElementById('product-grid');
+  let next_url = products_on_page.dataset.nextUrl;
+
+  const load_more_btn = document.getElementsByClassName('load-more_btn')[0];
+  const load_more_spinner = document.getElementsByClassName('load-more_spinner')[0];
+  async function getNextPage() {
+    try {
+      let res = await fetch(next_url);
+      return await res.text();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function loadMoreProducts() {
+    load_more_btn.style.display = 'none';
+    load_more_spinner.style.display = 'block';
+    let nextPage = await getNextPage();
+
+    const parser = new DOMParser();
+    const nextPageDoc = parser.parseFromString(nextPage, 'text/html');
+
+    load_more_spinner.style.display = 'none';
+
+    const productgrid = nextPageDoc.getElementById('product-grid');
+    const new_products = productgrid.getElementsByClassName('sf__blog-card');
+    const new_url = productgrid.dataset.nextUrl;
+    if (new_url) {
+      load_more_btn.style.display = 'flex';
+    }
+    next_url = new_url;
+    for (let i = 0; i < new_products.length; i++) {
+      products_on_page.appendChild(new_products[i]);
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Blog pages",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Hide on Desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_tablet",
+      "label": "Hide on Tablet",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Hide on Mobile",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "margin_vertical",
+      "label": "Section margin (vertical)",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ]
+    },
+    {
+        "type": "select",
+        "id": "container",
+        "label": "Container type",
+        "default": "container-fluid",
+        "options": [
+            {
+                "value": "container-fluid",
+                "label": "Default"
+            },
+            {
+                "value": "w-full",
+                "label": "Full width"
+            },
+            {
+                "value": "container",
+                "label": "Use container box"
+            }
+        ]
+    },
+    {
+      "type": "header",
+      "content": "Category Settings"
+    },
+    {
+      "type": "color",
+      "id": "category_color",
+      "label": "Category color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "category_tag",
+      "label": "Category tag",
+      "default": "h3",
+      "info": "Category text is picked up automatically from Blog Post Tags.",
+        "options": [
+          { "value": "p", "label": "Paragraph" },
+          { "value": "heading-1-seo", "label": "SEO H1" },
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" },
+          { "value": "h4", "label": "H4" },
+          { "value": "h5", "label": "H5" },
+          { "value": "h6", "label": "H6" },
+          { "value": "p-xsmall", "label": "Extra small paragraph" },
+          { "value": "p-small", "label": "Small paragraph" },
+          { "value": "p-medium", "label": "Medium paragraph" },
+          { "value": "p-large", "label": "Large paragraph" },
+          { "value": "p-xlarge", "label": "Extra large paragraph" },
+          { "value": "quote-1", "label": "Quote 1" },
+          { "value": "quote-2", "label": "Quote 2" },
+          { "value": "quote-3", "label": "Quote 3" }
+        ]
+    },
+    {
+      "type": "select",
+      "id": "separator_style",
+      "label": "Separator style",
+      "info": "Separator styling available on 'Theme Settings' inside the 'SEPARATORS' dropdown.",
+      "options": [
+        {
+          "value": "separator",
+          "label": "Primary"
+        },
+        {
+          "value": "separator-1",
+          "label": "Separator 1"
+        },
+        {
+          "value": "separator-2",
+          "label": "Separator 2"
+        },
+        {
+          "value": "separator-3",
+          "label": "Separator 3"
+        },
+        {
+          "value": "separator-4",
+          "label": "Separator 4"
+        },
+        {
+          "value": "separator-5",
+          "label": "Separator 5"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Article Card Settings"
+    },
+    {
+      "type": "color",
+      "id": "topic_color",
+      "label": "Topic color",
+      "default": "#356687"
+    },
+    {
+      "type": "select",
+      "id": "topic_tag",
+      "label": "Topic tag",
+      "default": "p-large",
+      "info": "Topic text is picked up automatically from Blog Post - Metafields: Topic.",
+        "options": [
+          { "value": "p", "label": "Paragraph" },
+          { "value": "heading-1-seo", "label": "SEO H1" },
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" },
+          { "value": "h4", "label": "H4" },
+          { "value": "h5", "label": "H5" },
+          { "value": "h6", "label": "H6" },
+          { "value": "p-xsmall", "label": "Extra small paragraph" },
+          { "value": "p-small", "label": "Small paragraph" },
+          { "value": "p-medium", "label": "Medium paragraph" },
+          { "value": "p-large", "label": "Large paragraph" },
+          { "value": "p-xlarge", "label": "Extra large paragraph" },
+          { "value": "quote-1", "label": "Quote 1" },
+          { "value": "quote-2", "label": "Quote 2" },
+          { "value": "quote-3", "label": "Quote 3" }
+        ]
+    },
+    {
+      "type": "color",
+      "id": "article_title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "article_title_tag",
+      "label": "Title tag",
+      "default": "h5",
+      "info": "Title text is picked up automatically from Blog Post Title.",
+        "options": [
+          { "value": "p", "label": "Paragraph" },
+          { "value": "heading-1-seo", "label": "SEO H1" },
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" },
+          { "value": "h4", "label": "H4" },
+          { "value": "h5", "label": "H5" },
+          { "value": "h6", "label": "H6" },
+          { "value": "p-xsmall", "label": "Extra small paragraph" },
+          { "value": "p-small", "label": "Small paragraph" },
+          { "value": "p-medium", "label": "Medium paragraph" },
+          { "value": "p-large", "label": "Large paragraph" },
+          { "value": "p-xlarge", "label": "Extra large paragraph" },
+          { "value": "quote-1", "label": "Quote 1" },
+          { "value": "quote-2", "label": "Quote 2" },
+          { "value": "quote-3", "label": "Quote 3" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "article_excerpt_color",
+      "label": "Excerpt color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "article_excerpt_tag",
+      "label": "Excerpt tag",
+      "default": "excerpt-custom",
+      "info": "Article excerpt will be picked from Blog Post Excerpt. If field is empty, it will automatically pick an excerpt from Blog Post Content.",
+        "options": [
+          { "value": "excerpt-custom", "label": "Custom" },
+          { "value": "p", "label": "Paragraph" },
+          { "value": "heading-1-seo", "label": "SEO H1" },
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" },
+          { "value": "h4", "label": "H4" },
+          { "value": "h5", "label": "H5" },
+          { "value": "h6", "label": "H6" },
+          { "value": "p-xsmall", "label": "Extra small paragraph" },
+          { "value": "p-small", "label": "Small paragraph" },
+          { "value": "p-medium", "label": "Medium paragraph" },
+          { "value": "p-large", "label": "Large paragraph" },
+          { "value": "p-xlarge", "label": "Extra large paragraph" },
+          { "value": "quote-1", "label": "Quote 1" },
+          { "value": "quote-2", "label": "Quote 2" },
+          { "value": "quote-3", "label": "Quote 3" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "article_author_color",
+      "label": "Author color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "article_author_tag",
+      "label": "Author tag",
+      "default": "p-large",
+      "info": "Article author will be picked from Blog. Author can be enabled/disabled on Theme Settings - Article Card.",
+        "options": [
+          { "value": "p", "label": "Paragraph" },
+          { "value": "heading-1-seo", "label": "SEO H1" },
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" },
+          { "value": "h4", "label": "H4" },
+          { "value": "h5", "label": "H5" },
+          { "value": "h6", "label": "H6" },
+          { "value": "p-xsmall", "label": "Extra small paragraph" },
+          { "value": "p-small", "label": "Small paragraph" },
+          { "value": "p-medium", "label": "Medium paragraph" },
+          { "value": "p-large", "label": "Large paragraph" },
+          { "value": "p-xlarge", "label": "Extra large paragraph" },
+          { "value": "quote-1", "label": "Quote 1" },
+          { "value": "quote-2", "label": "Quote 2" },
+          { "value": "quote-3", "label": "Quote 3" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sidebar",
+      "label": "Show sidebar",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Placement",
+      "default": "right_column",
+      "options": [
+        {
+          "value": "left_column",
+          "label": "Left column"
+        },
+        {
+          "value": "right_column",
+          "label": "Right column"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "design",
+      "label": "Layout",
+      "options": [
+      {
+          "label": "Layout 1",
+          "value": "layout1"
+      },
+      {
+          "label": "Layout 2",
+          "value": "layout2"
+      },
+      {
+        "label": "Layout 3",
+        "value": "layout3"
+    }],
+      "default": "layout3"
+  },
+    {
+      "type": "header",
+      "content": "layout"
+    },
+    {
+      "type": "select",
+      "id": "view",
+      "label": "Layout",
+      "default": "grid",
+      "options": [
+        {
+          "label": "Grid",
+          "value": "grid"
+        },
+        {
+          "label": "List",
+          "value": "list"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "blog_list",
+      "label": "Posts to show",
+      "default": 6,
+      "min":2,
+      "max":12,
+      "step":1
+    },
+    {
+      "type":"range",
+      "id":"show_item_per_row",
+      "label":"Posts per row",
+      "min":2,
+      "max":6,
+      "step":1,
+      "default":3
+    }
+  ],
+  "blocks": [
+      {
+        "type": "categories",
+        "name": "Widget categories",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title",
+                "default": "Categories"
+            },
+            {
+                "type": "link_list",
+                "id": "list_blog",
+                "label": "Select categories menu"
+            },
+            {
+              "type": "select",
+              "id": "custom_links",
+              "label": "Links style",
+              "options": [
+                { "value": "link-1", "label": "Link 1" },
+                { "value": "link-2", "label": "Link 2" },
+                { "value": "link-3", "label": "Link 3" },
+                { "value": "link-4", "label": "Link 4" },
+                { "value": "link-5", "label": "Link 5" }
+                ],
+              "default": "link-1"
+            }
+        ]
+    },
+    {
+      "type": "tagged-categories",
+      "name": "Latest Articles (Tags)",
+      "limit": 5,
+      "settings": [
+          {
+            "type": "text",
+            "id": "tag",
+            "label": "Blog Tag",
+            "default": "The Basics"
+          },
+          {
+              "type": "text",
+              "id": "title",
+              "label": "Title",
+              "info": "Overwrite the tag title"
+          },
+          {
+            "type": "select",
+            "id": "link_style",
+            "label": "Link style",
+            "options": [
+              { "value": "link-1", "label": "Link 1" },
+              { "value": "link-2", "label": "Link 2" },
+              { "value": "link-3", "label": "Link 3" },
+              { "value": "link-4", "label": "Link 4" },
+              { "value": "link-5", "label": "Link 5" }
+              ],
+            "default": "link-5"
+          }
+      ]
+  },
+    {
+      "type": "banner",
+      "name": "Widget banner",
+      "limit": 1,
+      "settings": [
+          {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background Color"
+          }, 
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "select",
+            "id": "subheading_tag",
+            "label": "Subheading tag",
+            "default": "h3",
+            "options": [
+              { "value": "p", "label": "Paragraph" },
+              { "value": "heading-1-seo", "label": "SEO H1" },
+              { "value": "h1", "label": "H1" },
+              { "value": "h2", "label": "H2" },
+              { "value": "h3", "label": "H3" },
+              { "value": "h4", "label": "H4" },
+              { "value": "h5", "label": "H5" },
+              { "value": "h6", "label": "H6" },
+              { "value": "p-xsmall", "label": "Extra small paragraph" },
+              { "value": "p-small", "label": "Small paragraph" },
+              { "value": "p-medium", "label": "Medium paragraph" },
+              { "value": "p-large", "label": "Large paragraph" },
+              { "value": "p-xlarge", "label": "Extra large paragraph" },
+              { "value": "quote-1", "label": "Quote 1" },
+              { "value": "quote-2", "label": "Quote 2" },
+              { "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+          "type": "color",
+          "id": "subheading_color",
+          "label": "Subheading color",
+          "default": "#000000"
+        },
+        {
+            "type": "html",
+            "id": "subheading",
+            "label": "Subheading"
+        },
+        {
+            "type": "select",
+            "id": "description_tag",
+            "label": "Description tag",
+            "default": "p-small",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+          "type": "color",
+          "id": "description_color",
+          "label": "Description color",
+          "default": "#000000"
+        },
+        {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description"
+        },
+          {
+              "type": "text",
+              "id": "button_text",
+              "label": "Button label",
+              "default": "Shop Now"
+          },
+          {
+              "type": "url",
+              "id": "button_link",
+              "label": "Button link"
+          },
+          {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+                { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                { "value": "button button-1", "label": "Button 1" },
+                { "value": "button button-2", "label": "Button 2" },
+                { "value": "button button-3", "label": "Button 3" },
+                { "value": "button button-4", "label": "Button 4" },
+                { "value": "button button-5", "label": "Button 5" },
+                { "value": "button button-6", "label": "Button 6" },
+                { "value": "button button-7", "label": "Button 7" }
+            ],
+            "default": "button button-7"  
+          },
+            {
+              "type": "select",
+              "id": "text_align",
+              "label": "Text Align",
+              "default": "text-center",
+              "options": [		    
+                  {
+                      "value": "text-left",
+                      "label": "Left"
+                  },
+                  {
+                      "value": "text-center",
+                      "label": "Center"
+                  },
+                  {
+                      "value": "text-right",
+                      "label": "right"
+                  }
+              ]
+          },
+            {
+            "type": "checkbox",
+            "id": "flip_content",
+            "label": "Flip content",
+            "default": false
+          }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Widget social",
+      "limit": 1,
+      "settings": [
+          {
+              "type": "text",
+              "id": "title",
+              "label": "Title",
+              "default": "Share this page"
+          },
+          {
+              "type": "select",
+              "id": "icon_select",
+              "label": "Icons",
+              "options": [
+                  { "value": "icon-1", "label": "Icon 1" },
+                  { "value": "icon-2", "label": "Icon 2" },
+                  { "value": "icon-3", "label": "Icon 3" }
+              ],
+              "default": "icon-1"
+          },
+          {
+              "type": "checkbox",
+              "id": "icon_size_override",
+              "label": "Override icon size",
+              "default": false
+          },
+          {
+              "type": "range",
+              "id": "icon_size",
+              "min": 10,
+              "max": 50,
+              "step": 1,
+              "unit": "px",
+              "label": "Icons size",
+              "default": 30
+          },
+          {
+              "type": "range",
+              "id": "icon_size_mobile",
+              "min": 10,
+              "max": 50,
+              "step": 1,
+              "unit": "px",
+              "label": "Icons size (mobile)",
+              "default": 20
+          }
+      ]
+    },
+    {
+      "type": "instagram",
+      "name": "Widget Instagram",
+      "limit": 1,
+      "settings": [
+          {
+              "type": "text",
+              "id": "title",
+              "label": "Title",
+              "default": "Instagram"
+          },
+          {
+            "type": "range",
+            "min": 4,
+            "max": 24,
+            "step": 1,
+            "id": "images_count",
+            "label": "Images to show",
+            "default": 4
+          }
+        ]
+      },
+      {
+        "type": "tags",
+        "name": "Widget tags",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title",
+                "default": "Tags"
+            },
+            {
+              "type": "select",
+              "id": "button_style",
+              "label": "Button style",
+              "options": [
+                  { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                  { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                  { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                  { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                  { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                  { "value": "button-1", "label": "Button 1" },
+                  { "value": "button-2", "label": "Button 2" },
+                  { "value": "button-3", "label": "Button 3" },
+                  { "value": "button-4", "label": "Button 4" },
+                  { "value": "button-5", "label": "Button 5" },
+                  { "value": "button-6", "label": "Button 6" },
+                  { "value": "button-7", "label": "Button 7" }
+              ],
+              "default": "button-7"
+          },
+          {
+            "type": "select",
+            "id": "button_style_active",
+            "label": "Button style active",
+            "options": [
+                { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                { "value": "button-1", "label": "Button 1" },
+                { "value": "button-2", "label": "Button 2" },
+                { "value": "button-3", "label": "Button 3" },
+                { "value": "button-4", "label": "Button 4" },
+                { "value": "button-5", "label": "Button 5" },
+                { "value": "button-6", "label": "Button 6" },
+                { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "button-6"
+          }
+        ]
+    },
+    {
+      "type": "recent_post",
+      "name": "Widget recent posts",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Recent Post"
+        },
+        {
+          "type": "blog",
+          "id": "sidebar_recent_blog_name",
+          "label": "Blog Name"
+        },
+        {
+          "type": "text",
+          "id": "sidebar_recent_blog_count",
+          "label": "Post Count",
+          "info": "Integer",
+          "default": "3"
+        },
+        {
+          "type": "checkbox",
+          "id": "blog_show_tags",
+          "label": "Show tags",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "blog_show_author",
+          "label": "Show author",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "blog_show_date",
+          "label": "Show date",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_excerpt",
+          "label": "Show excerpt",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "truncate",
+          "label": "Show Words",
+          "default": "15",
+          "info": "Integer"
+        }
+      ]
+    }
+  ],
+ "presets": [
+  {
+    "name":"Blog pages"
+  }
+ ]
+}
+{% endschema %}
+
+<script>
+  var currentTag = window.location.pathname.split('/').pop().toString().replace(/-/g," ");
+  document.querySelector('.current-tag').innerHTML = currentTag;
+</script>

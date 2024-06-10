@@ -1,0 +1,845 @@
+{%- assign show_overlay = section.settings.show_overlay -%}
+{%- assign parallax = section.settings.parallax -%}
+{%- assign st = section.settings -%}
+
+{%- if section.settings.hero_size == 'adapt' -%}
+  {%- if section.settings.image.aspect_ratio == blank -%}
+    {%- assign min_aspect_ratio = 2.333 -%}
+  {%- else -%}
+    {%- assign min_aspect_ratio = section.settings.image.aspect_ratio -%}
+  {%- endif -%}
+  {% assign wrapper_height = 100 | divided_by: min_aspect_ratio %}
+{%- endif -%}
+
+
+{%- assign bg_position = section.settings.bg_position -%}
+{%- assign content_positions = section.settings.content_position | split: ' ' -%}
+{%- assign text_horizontal_alignment = content_positions.first -%}
+{%- assign text_vertical_alignment = content_positions.last | strip -%}
+{%- assign container = section.settings.container -%}
+{%- assign image_link = section.settings.image_link -%}
+
+{% assign content_container = 'container-fluid' %}
+{% if section.settings.content_in_container == true %}
+    {% assign content_container = 'container' %}
+{% endif %}
+
+{% case section.settings.bg_color_selector %}
+  {% when 'color_section1_bg' %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+  {% when 'color_section2_bg' %}
+    {%- assign bg_color = settings.color_section2_bg -%}
+  {% when 'color_section3_bg' %}
+    {%- assign bg_color = settings.color_section3_bg -%}
+  {% when 'color_section4_bg' %}
+    {%- assign bg_color = settings.color_section4_bg -%}
+  {% when 'color_section5_bg' %}
+    {%- assign bg_color = settings.color_section5_bg -%}
+  {% when 'color_section6_bg' %}
+    {%- assign bg_color = settings.color_section6_bg -%}
+  {% else %}
+    {%- assign bg_color = settings.color_section1_bg -%}
+{% endcase %}
+{%- if section.settings.bg_color_override -%}
+  {%- assign bg_color = section.settings.background_color -%}
+{%- endif -%}
+
+<section id="sf__hero-{{ section.id }}" 
+    class="section-pv-{{ section.settings.margin_vertical }} {{ section.settings.custom_class }}{% if st.hide_mobile %} hide-mobile{% endif %}{% if st.hide_tablet %} hide-tablet{% endif %}{% if st.hide_desktop %} hide-desktop{% endif %}" 
+    data-section-type="hero" data-section-id="{{ section.id }}" data-parallax="{{ parallax }}"
+    style="background-color:{{ bg_color }};">
+    <div class="{{ container }}" {% if st.text_color != 'rgba(0,0,0,0)' %}style="--content-color: {{ st.text_color }};"{% endif %}>
+        <div
+            id="sf-hero-{{ section.id }}"
+            class="sf-hero {% if image_link != blank %}sf-hero--has-link{% endif %} {% if section.settings.mb_image != blank %}sf-hero__mobile-no-overlay{% endif %} sf-hero--{{ section.settings.hero_size }}{% if show_overlay %} sf-hero--has-overlay{% endif %} {% if section.settings.mb_image != blank %}mb-10 md:mb-0{% endif %}"
+            {% if section.settings.hero_size == 'adapt' %}
+            data-min-aspect-ratio="{{ min_aspect_ratio }}"
+            style="--slide-height: {{- wrapper_height -}}vw;{% if st.text_color != 'rgba(0,0,0,0)' %}color:{{ st.text_color }};{% endif %}"
+            {% endif %}
+        >
+            {% unless section.settings.image != blank %}
+                <div class="hidden pc md:block absolute inset-0 overflow-hidden">
+                    {{ 'lifestyle-2' | placeholder_svg_tag: 'sf__placeholder-svg w-full h-full' }}
+                </div>
+            {% else %}
+                <div class="{% if section.settings.mb_image != blank %}hidden md:block{% endif %} sf-hero__bg lazyload js pointer-events-none bg-no-repeat bg-{{ bg_position }} bg-cover bg-no-repeat{% if parallax %} bg-fixed{% endif %}"
+                     data-bg="{{section.settings.image | img_url: '300x' }}"
+                     data-bgset="{% render 'bgset', image: section.settings.image %}"
+                     data-parent-fit="contain"
+                     data-sizes="auto" data-image-loading></div>
+            {% endunless %}
+
+            {% if image_link != blank %}
+              <a href="{{ image_link }}" class="sf-slider__link"></a>
+            {% endif %}
+            {% if section.settings.mb_image != blank %}
+                <div class="block md:hidden">{% render 'responsive-image', image: section.settings.mb_image %}</div>
+            {% endif %}
+
+            <div class="flex sf-hero__inner {% if section.settings.use_content_above %}absolute-centered{% endif %} {{ content_container }} {% if section.settings.mb_image != blank %} md:py-24{% else %}py-24{% endif %} sf-hero__inner--{{ text_vertical_alignment }}-{{ text_horizontal_alignment }}">
+                <div class="hidden md:block sf-hero__content w-max md:max-w-4xl  text-{{ section.settings.text_alignment }}">
+                    {% if section.settings.subtitle != blank %}
+                        {% capture custom_classes %}sf-hero__subtitle{% endcapture %}
+                        {%- capture custom_styles -%}
+                            {%- if st.text_color !='rgba(0,0,0,0)' and st.text_color != blank -%}
+                                color:{{ st.text_color }};
+                            {%- endif -%}
+                            padding: {{ st.subheading_padding}}px 0;
+                            display: block;
+                        {%- endcapture -%}
+
+                        {% render 'heading-tag' 
+                            heading: st.subtitle_tag,
+                            content: st.subtitle,
+                            custom_classes: custom_classes,
+                            custom_styles: custom_styles
+                        %}
+                    {% endif %}
+                    {% if section.settings.title != blank %}
+                        {% capture custom_classes %}2xl:leading-snug sf-hero__title{% endcapture %}
+                        {%- capture custom_styles -%}
+                            {%- if st.text_color !='rgba(0,0,0,0)' and st.text_color != blank -%}
+                                color:{{ st.text_color }};
+                            {%- endif -%}
+                            padding: {{ st.heading_padding}}px 0;
+                            display: block;
+                        {%- endcapture -%}
+
+                        {% render 'heading-tag' 
+                            heading: st.title_tag,
+                            content: st.title,
+                            custom_classes: custom_classes,
+                            custom_styles: custom_styles
+                        %}
+                    {% endif %}
+                    {% if section.settings.text != blank %}
+                        {% capture custom_classes %} {% endcapture %}
+                        {%- capture custom_styles -%}
+                            {%- if st.text_color !='rgba(0,0,0,0)' and st.text_color != blank -%}
+                                color:{{ st.text_color }};
+                            {%- endif -%}
+                            padding: {{ st.text_padding}}px 0;
+                            display: block;
+                        {%- endcapture -%}
+                      
+                        {% render 'heading-tag' 
+                            heading: st.text_tag,
+                            content: st.text,
+                            custom_classes: custom_classes,
+                            custom_styles: custom_styles
+                        %}
+                    {% endif %}
+                    {% if section.settings.button_label != blank %}
+                        <div class="flex justify-center mt-7">
+                            <a href="{{ section.settings.button_link }}" class="button {{ section.settings.button_style }}">{{ section.settings.button_label }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="block md:hidden sf-hero__content w-max md:max-w-4xl  text-{{ section.settings.text_alignment }}">
+                    {% if section.settings.subtitle != blank %}
+                        {% capture custom_classes %}sf-hero__subtitle {% if st.mb_image != blank %}text-color-body-text{% endif %}{% endcapture %}
+                        {%- capture custom_styles -%}
+                            {%- if st.text_color !='rgba(0,0,0,0)' and st.text_color != blank -%}
+                                color:{{ st.text_color }};
+                            {%- endif -%}
+                            padding: {{ st.subheading_padding}}px 0;
+                            display: block;
+                        {%- endcapture -%}
+
+                        {% render 'heading-tag' 
+                            heading: st.subtitle_tag,
+                            content: st.subtitle,
+                            custom_classes: custom_classes,
+                            custom_styles: custom_styles
+                        %}
+                    {% endif %}
+                    {% if section.settings.title != blank %}
+                        {% capture custom_classes %}2xl:leading-snug md:leading-snug sf-hero__title{% endcapture %}
+                        {%- capture custom_styles -%}
+                            {%- if st.text_color !='rgba(0,0,0,0)' and st.text_color != blank -%}
+                                color:{{ st.text_color }};
+                            {%- endif -%}
+                            padding: {{ st.heading_padding }}px 0;
+                            display: block;
+                        {%- endcapture -%}
+
+                        {% render 'heading-tag' 
+                            heading: st.title_tag,
+                            content: st.title,
+                            custom_classes: custom_classes,
+                            custom_styles: custom_styles
+                        %}
+                    {% endif %}
+                    {% if section.settings.text != blank %}
+                        {% capture custom_classes %} {% endcapture %}
+                        {%- capture custom_styles -%}
+                            {%- if st.text_color !='rgba(0,0,0,0)' and st.text_color != blank -%}
+                                color:{{ st.text_color }};
+                            {%- endif -%}
+                            padding: {{ st.text_padding}}px 0;
+                            display: block;
+                        {%- endcapture -%}
+                      
+                        {% render 'heading-tag' 
+                            heading: st.text_tag,
+                            content: st.text,
+                            custom_classes: custom_classes,
+                            custom_styles: custom_styles
+                        %}
+                    {% endif %}
+                    {% if section.settings.button_label != blank %}
+                        <div class="flex justify-center mt-6">
+                            <a href="{{ section.settings.button_link }}" class="button {{ section.settings.button_style }}">{{ section.settings.button_label }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    @media only screen and (max-width: 991px) {
+        .absolute-centered {
+            position: absolute;
+            top: 50%;
+            bottom: 50%;
+            transform: translate(0, -50%);
+        }
+    }
+</style>
+
+{% schema %}
+{
+    "name":{
+        "de":"Foto mit überlegtem Text",
+        "en":"Image with text overlay",
+        "es":"Imagen con texto",
+        "fr":"Image avec texte",
+        "it":"Immagine con testo",
+        "ja":"テキストオーバーレイ付き画像",
+        "nl":"Foto met tekstoverlay",
+        "pt-BR":"Imagem com texto",
+        "zh-CN":"带文本叠加的图片",
+        "zh-TW":"附文字疊加的圖片"
+    },
+    "settings":[
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_desktop",
+            "label": "Hide on Desktop",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_tablet",
+            "label": "Hide on Tablet",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_mobile",
+            "label": "Hide on Mobile",
+            "default": false
+        },
+        {
+          "type": "select",
+          "id": "margin_vertical",
+          "label": "Section margin (vertical)",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            }
+          ]
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "Container type",
+            "default": "w-full",
+            "options": [
+                {
+                    "value": "container-fluid",
+                    "label": "Default"
+                },
+                {
+                    "value": "w-full",
+                    "label": "Full width"
+                },
+                {
+                    "value": "container",
+                    "label": "Use container box"
+                }
+            ]
+        },
+        {
+            "type":"select",
+            "id":"hero_size",
+            "label":{
+                "de":"Bereichs-Höhe",
+                "en":"Section height",
+                "es":"Altura de la sección",
+                "fr":"Hauteur de la section",
+                "it":"Altezza sezione",
+                "ja":"セクションの高さ",
+                "nl":"Sectiehoogte",
+                "pt-BR":"Altura da seção",
+                "zh-CN":"分区高度",
+                "zh-TW":"區塊高度"
+            },
+            "default":"medium",
+            "options":[
+                {"label": {"en": "Adapt to image"},"value": "adapt"},
+                {"label": {"en": "Small"},"value": "small"},
+                {"label": {"en": "Medium"},"value": "medium"},
+                {"label": {"en": "Large"},"value": "large"},
+                {"label": {"en": "Full-screen"},"value": "fullscreen"}
+            ],
+            "default":"adapt"
+        },
+        {
+            "type":"checkbox",
+            "id":"show_overlay",
+            "label":"Show overlay",
+            "default":true
+        },
+        {
+          "type": "select",
+          "id": "bg_color_selector",
+          "label": "Section Background",
+          "default": "color_section1_bg",
+          "options": [
+            {
+              "value": "color_section1_bg",
+              "label": "Section 1"
+            },
+            {
+              "value": "color_section2_bg",
+              "label": "Section 2"
+            },
+            {
+              "value": "color_section3_bg",
+              "label": "Section 3"
+            },
+            {
+              "value": "color_section4_bg",
+              "label": "Section 4"
+            },
+            {
+              "value": "color_section5_bg",
+              "label": "Section 5"
+            },
+            {
+              "value": "color_section6_bg",
+              "label": "Section 6"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "bg_color_override",
+          "label": "Override Background",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background Color"
+        },
+        {
+            "type":"header",
+            "content":"Background settings"
+        },
+        {
+            "type":"image_picker",
+            "id":"image",
+            "label":{
+                "de":"Foto",
+                "en":"Image",
+                "es":"Imagen",
+                "fr":"Image",
+                "it":"Immagine",
+                "ja":"画像",
+                "nl":"Afbeelding",
+                "pt-BR":"Imagem",
+                "zh-CN":"图片",
+                "zh-TW":"圖片"
+            }
+        },
+        {
+            "type":"select",
+            "id":"bg_position",
+            "label":{
+                "de":"Fotoausrichtung",
+                "en":"Image alignment",
+                "es":"Alineación de imagen",
+                "fr":"Alignement de l'image",
+                "it":"Allineamento immagine",
+                "ja":"画像アラインメント",
+                "nl":"Afbeelding uitlijnen",
+                "pt-BR":"Alinhamento da imagem",
+                "zh-CN":"图片对齐方式",
+                "zh-TW":"圖片對齊"
+            },
+            "default":"center",
+            "options":[
+                {
+                    "label":{
+                        "en":"Top left"
+                    },
+                    "value":"left-top"
+                },
+                {
+                    "label":{
+                        "en":"Top center"
+                    },
+                    "value":"top"
+                },
+                {
+                    "label":{
+                        "en":"Top right"
+                    },
+                    "value":"right-top"
+                },
+                {
+                    "label":{
+                        "en":"Middle left"
+                    },
+                    "value":"left"
+                },
+                {
+                    "label":{
+                        "en":"Middle center"
+                    },
+                    "value":"center"
+                },
+                {
+                    "label":{
+                        "en":"Middle right"
+                    },
+                    "value":"right"
+                },
+                {
+                    "label":{
+                        "en":"Bottom left"
+                    },
+                    "value":"left-bottom"
+                },
+                {
+                    "label":{
+                        "en":"Bottom center"
+                    },
+                    "value":"bottom"
+                },
+                {
+                    "label":{
+                        "en":"Bottom right"
+                    },
+                    "value":"right-bottom"
+                }
+            ]
+        },
+        {
+            "type": "url",
+            "id": "image_link",
+            "label": "Image link"
+        },
+        {
+            "type":"checkbox",
+            "id":"parallax",
+            "label":{
+                "en":"Parallax effect"
+            },
+            "default":false
+        },
+        {
+            "type":"header",
+            "content":"Content"
+        },
+        {
+            "type": "checkbox",
+            "id": "content_in_container",
+            "label": "Content in container box",
+            "default": false
+        },
+        {
+            "type":"select",
+            "id":"content_position",
+            "label":{
+                "en":"Content position"
+            },
+            "default":"center middle",
+            "options":[
+                {
+                    "label":{
+                        "en":"Top left"
+                    },
+                    "value":"left top"
+                },
+                {
+                    "label":{
+                        "en":"Top center"
+                    },
+                    "value":"center top"
+                },
+                {
+                    "label":{
+                        "en":"Top right"
+                    },
+                    "value":"right top"
+                },
+                {
+                    "label":{
+                        "en":"Middle left"
+                    },
+                    "value":"left middle"
+                },
+                {
+                    "label":{
+                        "en":"Middle center"
+                    },
+                    "value":"center middle"
+                },
+                {
+                    "label":{
+                        "en":"Middle right"
+                    },
+                    "value":"right middle"
+                },
+                {
+                    "label":{
+                        "en":"Bottom left"
+                    },
+                    "value":"left bottom"
+                },
+                {
+                    "label":{
+                        "en":"Bottom center"
+                    },
+                    "value":"center bottom"
+                },
+                {
+                    "label":{
+                        "en":"Bottom right"
+                    },
+                    "value":"right bottom"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Content alignment",
+            "default": "center",
+            "options": [
+                {
+                    "value": "left",
+                    "label": {"en": "Left"}
+                },
+                {
+                    "value": "center",
+                    "label": {"en": "Center"}
+                },
+                {
+                    "value": "right",
+                    "label": {"en": "Right"}
+                }
+            ]
+        },
+        {
+            "type":"color",
+            "id":"text_color",
+            "label":"Text color",
+            "default":"#fff"
+        },
+        {
+            "type": "select",
+            "id": "title_tag",
+            "label": "Heading tag",
+            "default": "h2",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "heading_padding",
+            "label": "Heading Padding",
+            "default": 0,
+            "min": 0,
+            "max": 50,
+            "step": 1
+        },
+        {
+            "type":"textarea",
+            "id":"title",
+            "label":{
+                "de":"Titel",
+                "en":"Heading",
+                "es":"Título",
+                "fr":"En-tête",
+                "it":"Heading",
+                "ja":"見出し",
+                "nl":"Kop",
+                "pt-BR":"Título",
+                "zh-CN":"标题",
+                "zh-TW":"標題"
+            },
+            "default":{
+                "de":"Foto mit überlegtem Text",
+                "en":"Image with text overlay",
+                "es":"Imagen con texto",
+                "fr":"Image avec superposition de texte",
+                "it":"Immagine con testo",
+                "ja":"テキストオーバーレイ付き画像",
+                "nl":"Foto met tekstoverlay",
+                "pt-BR":"Imagem com sobreposição de texto",
+                "zh-CN":"带文本叠加的图片",
+                "zh-TW":"附文字疊加的圖片"
+            }
+        },
+        {
+            "type": "select",
+            "id": "subtitle_tag",
+            "label": "Subheading tag",
+            "default": "h3",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "subheading_padding",
+            "label": "Subheading Padding",
+            "default": 0,
+            "min": 0,
+            "max": 50,
+            "step": 1
+        },
+        {
+            "type":"text",
+            "id":"subtitle",
+            "label":{
+                "en":"Subheading"
+            },
+            "placeholder":{
+                "en":"New Arrivals"
+            }
+        },
+        {
+            "type": "select",
+            "id": "text_tag",
+            "label": "Text tag",
+            "default": "p-medium",
+            "options": [
+                { "value": "p", "label": "Paragraph" },
+                { "value": "heading-1-seo", "label": "SEO H1" },
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "p-xsmall", "label": "Extra small paragraph" },
+                { "value": "p-small", "label": "Small paragraph" },
+                { "value": "p-medium", "label": "Medium paragraph" },
+                { "value": "p-large", "label": "Large paragraph" },
+                { "value": "p-xlarge", "label": "Extra large paragraph" },
+                { "value": "quote-1", "label": "Quote 1" },
+                { "value": "quote-2", "label": "Quote 2" },
+                { "value": "quote-3", "label": "Quote 3" }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "text_padding",
+            "label": "Text Padding",
+            "default": 0,
+            "min": 0,
+            "max": 50,
+            "step": 1
+        },
+        {
+            "type":"textarea",
+            "id":"text",
+            "label":{
+                "de":"Text",
+                "en":"Text",
+                "es":"Texto",
+                "fr":"Texte",
+                "it":"Testo",
+                "ja":"テキスト",
+                "nl":"Tekst",
+                "pt-BR":"Texto",
+                "zh-CN":"文本",
+                "zh-TW":"文字"
+            },
+            "default":{
+                "de":"<p>Nutzen Sie überlegten Text, um Kunden über Ihre Marke zu informieren. Wählen Sie Fotos und Text aus, die zu Ihrer Marke passen.</p>",
+                "en":"<p>Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story.</p>",
+                "es":"<p>Usa el texto superpuesto para darles información a tus clientes sobre tu marca. Selecciona imágenes y textos que se relacionen con tu estilo e historia.</p>",
+                "fr":"<p>Utilisez la superposition de texte pour donner un aperçu de votre marque à vos clients. Utilisez une image et du texte qui se rapportent au style et à l'histoire de votre marque.</p>",
+                "it":"<p>Utilizza il testo in sovrapposizione per dare ai clienti informazioni sul tuo brand. Seleziona immagini e testo legati al tuo stile e alla tua storia.</p>",
+                "ja":"<p>オーバーレイテキストを使用して、お客様があなたのブランドについてよく理解できるようにします。あなたのスタイルやストーリーに関連する画像やテキストを選択してください。</p>",
+                "nl":"<p>Gebruik overlay-tekst om uw klanten inzicht te geven in uw merk. Selecteer afbeeldingen en tekst die betrekking hebben op uw stijl en verhaal.</p>",
+                "pt-BR":"<p>Use o texto de sobreposição para apresentar informações sobre sua marca aos clientes. Selecione imagens e textos que reflitam seu estilo e sua história.</p>",
+                "zh-CN":"<p>使用叠加文本让客户深入了解您的品牌。选择与您的风格和故事相关的图片和文本。</p>",
+                "zh-TW":"<p>運用文字疊加讓客戶更加瞭解您的品牌。選擇與您風格和品牌故事相關的圖像和文字。</p>"
+            }
+        },
+        {
+            "type":"text",
+            "id":"button_label",
+            "label":{
+                "de":"Button-Etikett",
+                "en":"Button label",
+                "es":"Etiqueta de botón",
+                "fr":"Texte du bouton",
+                "it":"Etichetta pulsante",
+                "ja":"ボタンラベル",
+                "nl":"Knoplabel",
+                "pt-BR":"Etiqueta do botão",
+                "zh-CN":"按钮标签",
+                "zh-TW":"按鈕標籤"
+            },
+            "default": "Shop now"
+        },
+        {
+            "type":"url",
+            "id":"button_link",
+            "label":{
+                "de":"Button-Etikett",
+                "en":"Button link",
+                "es":"Enlace de botón",
+                "fr":"Lien du bouton",
+                "it":"Link pulsante",
+                "ja":"ボタンリンク",
+                "nl":"Knoplink",
+                "pt-BR":"Link do botão",
+                "zh-CN":"按钮链接",
+                "zh-TW":"按鈕連結"
+            }
+        },
+        {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+                { "value": "sf__btn sf__btn-primary", "label": "Primary" },
+                { "value": "sf__btn sf__btn-secondary", "label": "Secondary" },
+                { "value": "sf__btn sf__btn-blank-light", "label": "Transparent (light)" },
+                { "value": "sf__btn sf__btn-blank-dark", "label": "Transparent (dark)" },
+                { "value": "sf__btn sf__btn-link", "label": "Underline" },
+                { "value": "button-1", "label": "Button 1" },
+                { "value": "button-2", "label": "Button 2" },
+                { "value": "button-3", "label": "Button 3" },
+                { "value": "button-4", "label": "Button 4" },
+                { "value": "button-5", "label": "Button 5" },
+                { "value": "button-6", "label": "Button 6" },
+                { "value": "button-7", "label": "Button 7" }
+            ],
+            "default": "sf__btn sf__btn-primary"
+        },
+        {
+            "type": "header",
+            "content": "Mobile settings"
+        },
+        {
+            "type": "image_picker",
+            "id": "mb_image",
+            "label": "Image"
+        },
+        {
+            "type": "checkbox",
+            "id": "use_content_above",
+            "label": "Use content above image",
+            "default": false
+        },
+        {
+          "type": "header",
+          "content": "Advanced settings"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "Custom classes"
+        }
+    ],
+    "presets":[
+        {
+            "name":{
+                "de":"Foto mit überlegtem Text",
+                "en":"Image with text overlay",
+                "es":"Imagen con texto",
+                "fr":"Image avec superposition de texte",
+                "it":"Immagine con testo",
+                "ja":"テキストオーバーレイ付き画像",
+                "nl":"Foto met tekstoverlay",
+                "pt-BR":"Imagem com sobreposição de texto",
+                "zh-CN":"带文本叠加的图片",
+                "zh-TW":"附文字疊加的圖片"
+            },
+            "category":{
+                "de":"Foto",
+                "en":"Image",
+                "es":"Imagen",
+                "fr":"Image",
+                "it":"Immagine",
+                "ja":"画像",
+                "nl":"Afbeelding",
+                "pt-BR":"Imagem",
+                "zh-CN":"图片",
+                "zh-TW":"圖片"
+            }
+        }
+    ]
+}
+{% endschema %}

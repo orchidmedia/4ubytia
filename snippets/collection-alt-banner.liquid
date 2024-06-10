@@ -1,0 +1,138 @@
+{% for block in section.blocks %}
+    {%- assign selected_collection = collections[block.settings.collection] -%}
+    {% if selected_collection.handle == collection.handle %}
+    {% assign background_color = block.settings.background_color %}
+    {% assign banner_image = block.settings.image %}
+    {% assign banner_image_mobile = block.settings.image_mobile %}
+    {% assign banner_placement = block.settings.banner_placement %}
+    {% assign banner_width = block.settings.banner_width %}
+    {% assign block_title = block.settings.title %}
+    {% assign block_title_heading = block.settings.heading_tag %}
+    {% assign block_subtitle = block.settings.subheading %}
+    {% assign block_subtitle_heading = block.settings.subheading_tag %}
+    {% assign block_title_heading_mobile = block.settings.heading_tag_mobile %}
+    {% assign block_subtitle_heading_mobile = block.settings.subheading_tag_mobile %}
+    {%- assign title_color = block.settings.title_color -%}
+    {%- assign subtitle_color = block.settings.subheading_color -%}
+    {% assign button_text = block.settings.button_text %}
+    {%- assign button_style = block.settings.button_style -%}
+    {%- assign button_link = block.settings.button_link -%}
+    {%- assign image_placement = block.settings.image_placement -%}
+    {%- assign image_placement_mobile = block.settings.image_placement_mobile -%}
+    {%- assign text_align = block.settings.text_align -%}
+    {%- assign text_align_mobile = block.settings.text_align_mobile -%}
+    {% endif %}
+    {% if banner_image %}
+    {% assign has_banner_image = true %}
+    <link rel="preload" href="{{ banner_image | img_url: 'large' }}" as="image" fetchpriority='high'>
+    {% endif %}
+    {% if banner_image_mobile %}
+    {% assign has_banner_image_mobile = true %}
+    <link rel="preload" href="{{ banner_image_mobile | img_url: 'large' }}" as="image" fetchpriority='high'>
+    {% endif %}
+
+{% if selected_collection.handle == collection.handle %}
+<div id="sf__collection-alt-banner-{{block.id}}"
+class="sf__col-item sf__collection-alt-banner w-full 
+{% if banner_width == "25" %} w-single mx-2 xl:mx-3
+{% elsif banner_width == "50" %} w-double 
+{% elsif banner_width == "100-grid" %} w-full-alt 
+{% elsif banner_width == "100-page" %} w-break
+{% endif %}" style="order: {{banner_placement}} !important; background: {{background_color}};">
+    <div class="sf__alt-banner-content sf__alt-banner-text flex justify-center flex-col
+    {% if image_placement == "right"%} order-first
+    {% elsif image_placement == "left" %} order-1 
+    {% endif %}
+    ">
+        {% render 'heading-tag' 
+            heading: block_title_heading,
+            content: block_title,
+            custom_classes: 'hide-tablet hide-mobile sf__alt-banner-title'
+        %}
+
+        {% render 'heading-tag' 
+            heading: block_subtitle_heading,
+            content: block_subtitle,
+            custom_classes: 'hide-tablet hide-mobile sf__alt-banner-subtitle'
+        %}
+
+        {% render 'heading-tag' 
+        heading: block_title_heading_mobile,
+        content: block_title,
+        custom_classes: 'hide-desktop sf__alt-banner-title'
+        %}
+
+        {% render 'heading-tag' 
+        heading: block_subtitle_heading_mobile,
+        content: block_subtitle,
+        custom_classes: 'hide-desktop sf__alt-banner-subtitle'
+        %}
+
+        {%if button_text %}<a href="{{button_link}}" class="{{button_style}}" role="button">{{button_text}}</a>{% endif %}
+
+        
+    </div>
+    <div class="sf__alt-banner-content hide-desktop
+    {% if image_placement == "right"%} order-1 
+    {% elsif image_placement == "left" %} order-first
+    {% endif %}
+    " >
+        {% render 'responsive-image', image: banner_image_mobile, image_class: 'w-full h-full', has_banner_image_mobile: has_banner_image_mobile %}
+
+    </div>
+    <div class="sf__alt-banner-content hide-tablet hide-mobile
+    {% if image_placement == "right"%} order-1 
+    {% elsif image_placement == "left" %} order-first
+    {% endif %}
+    " >
+        {% render 'responsive-image', image: banner_image, image_class: 'w-full h-full', has_banner_image: has_banner_image %}
+
+    </div>
+</div>
+{% endif %}
+
+
+
+<style>
+    #sf__collection-alt-banner-{{block.id}} .sf__alt-banner-title {
+        color: {{title_color}};
+    }
+
+    #sf__collection-alt-banner-{{block.id}} .sf__alt-banner-subtitle {
+        color: {{subtitle_color}};
+    }
+
+    #sf__collection-alt-banner-{{block.id}} .sf__alt-banner-text{
+        text-align: {{text_align}}; 
+    {%if text_align == "left"%} 
+        align-items: flex-start;
+    {%elsif text_align == "right"%} 
+        align-items: flex-end;
+    {%elsif text_align == "center"%} 
+        align-items: center;
+    {% endif %}
+    }
+
+
+    @media screen and (max-width: 767px) {
+        #sf__collection-alt-banner-{{block.id}}  .template-collection .sf__collection-alt-banner {
+            {% if image_placement_mobile == "top" %}
+            flex-direction: column;
+            {% elsif image_placement_mobile == "bottom" %}
+            flex-direction: column-reverse;
+            {% endif %}
+        }
+
+        #sf__collection-alt-banner-{{block.id}} .sf__alt-banner-text{
+            text-align: {{text_align_mobile}}; 
+            {%if text_align_mobile == "left"%} 
+                align-items: flex-start;
+            {%elsif text_align_mobile == "right"%} 
+                align-items: flex-end;
+            {%elsif text_align_mobile == "center"%} 
+                align-items: center;
+            {% endif %}
+        }
+    }
+</style>
+{% endfor %}

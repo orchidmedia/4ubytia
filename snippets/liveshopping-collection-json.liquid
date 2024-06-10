@@ -1,0 +1,50 @@
+{%- assign liveshopping_collections = 'liveshopping' | split: ',' -%}
+
+<script>
+    document.data = {}
+    document.data.currency = {
+        symbol: {{ cart.currency.symbol | json }},
+        isoCode: {{ cart.currency.iso_code | json }}
+    }
+    document.data.liveshoppingCollections = [
+        {%- for liveshopping_collection in liveshopping_collections -%}
+        {
+            {%- assign collection = collections[liveshopping_collection] -%}
+            name: {{ collection.title | json }},
+            desc: {{ collection.description | strip_html | json }},
+            products: [
+                {%- for product in collection.products -%}
+                {% liquid
+                    assign gwp = false
+                    if product.tags contains "GWP"
+                        if product.variants.length > 1
+                            comment
+                                Only single variant GWPs
+                            endcomment
+                            continue
+                        endif
+                        assign gwp = true
+                    endif
+                    comment
+                        Just to be sure, only gwp products should be free...
+                    endcomment
+                    if product.price == 0
+                        unless gwp
+                            continue
+                        endunless
+                    endif
+                %}
+                {%- render 'liveshopping-product-json', prod: product, gwp: gwp -%},
+                {%- endfor -%}
+            ],
+            {%- assign img = collection.featured_image -%}
+            {%- if img -%}
+                img: {
+                    src: {{ img.src | json }},
+                    alt: {{ img.alt | json }},
+                },
+            {%- endif -%}
+        },
+        {%- endfor -%}
+    ]
+</script>

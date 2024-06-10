@@ -1,0 +1,69 @@
+{% if is_sticky_bar == nil %}
+  {% assign is_sticky_bar = false %}
+{% endif %}
+
+{% assign default = 'products.product.add_to_cart' | t %}
+{% if is_preorder == nil %}
+  {%- capture is_preorder -%}{%- render 'check-preorder', product: product -%}{%- endcapture -%}
+{% endif %}
+{%- assign is_preorder = is_preorder | append: '' -%}
+
+{% if is_preorder == "true" %}
+  {% capture btn_text %}{{ 'products.product.preorder' | t }}{% endcapture %}
+  {% if btn_text contains 'translation missing' %}
+    {% capture btn_text %}Pre-order{% endcapture %}
+  {% endif %}
+  <input type="hidden" name="properties[Pre-order item]" value="true">
+  <input type="hidden" name="properties[_beautyDiscount[plugin]]" value="PreOrder">
+  <input type="hidden" name="properties[_beautyDiscount[offer_id]]" value="{{ product.metafields.beauty.preorder.id }}">
+{% endif %}
+
+<script>
+  Shopify.themeProducts[{{product.id}}] = {{ product | json }};
+</script>
+
+{% for variant in product.variants %}
+  {% if product.selected_or_first_available_variant.available %}
+    {% capture btn_text %}{{settings.btn_single_product}}{% endcapture %}
+  {% elsif variant.metafields.enable.coming_soon == true  %}
+    {% capture btn_text %}{{settings.btn_coming_soon}}{% endcapture %}
+  {% elsif product.metafields.enable.coming_soon == true %}
+    {% capture btn_text %}{{settings.btn_coming_soon}}{% endcapture %}
+  {% elsif product.selected_or_first_available_variant.available == false %}
+    {% capture btn_text %}{{settings.btn_sold_out}}{% endcapture %}
+  {% endif %}
+
+  {% if product.selected_or_first_available_variant.available == false %}
+    {% if variant.metafields.enable.coming_soon == true or product.metafields.enable.coming_soon == true %}
+      {% capture coming_soon %}true{% endcapture %}
+    {% else %}
+      {% capture coming_soon %}false{% endcapture %}
+    {% endif %}
+  {% endif %}
+{% endfor %}  
+
+{% if product.selected_or_first_available_variant.available == false and is_sticky_bar == false and settings.enable_klaviyo_notify_me %}
+    {% assign show_btn = 'display: none; width: 386px; height: 50px;' %}
+{% endif %}
+
+<button
+  type="submit"
+  name="add"
+  class="add-to-cart button relative {{ class | default: 'button-2' }} h-[53px] {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}" 
+  data-atc-text="{{ btn_text }}" data-product-available="{{ product.selected_or_first_available_variant.available }}" data-product-coming-soon="{{coming_soon}}" style="{{ extra_styles }} {{ show_btn }}"
+  onclick="dataLayer.push({ 'event': 'addToCart', 'ecommerce': {
+    'currencyCode': 'USD', 'add': {
+    'products': [{
+    'name': `{{ product.title }}`,
+    'id': {{ product.id }},
+    'price': {{ product.selected_or_first_available_variant.price | money_without_currency | remove: ',' }},
+    'brand': '{{ product.vendor }}',
+    'variant': '{{ product.selected_or_first_available_variant.title }}'
+    }] }
+    } });"
+>
+  {% render 'atc-spinner' %}
+  <span class="not-change atc-text">
+    {{btn_text}}
+  </span>
+</button>

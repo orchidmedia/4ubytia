@@ -1,0 +1,7 @@
+<div class="flex {{ justify }} items-center sf-no-scroll-bar sf-menu-wrapper__desktop flex-2">
+    {%- if section.settings.header_design == "logo-left-menu-left-offset" -%}
+        {% render 'header-menu-items-offset', section: section, menu: menu %}
+    {%- else -%}
+        {% render 'header-menu-items', section: section, menu: menu %}
+    {%- endif -%}
+</div>

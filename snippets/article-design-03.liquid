@@ -1,0 +1,49 @@
+{%- assign item = section.settings -%}
+<div role="article" class="flex flex-col md:flex-row gap-8 article-design-03">
+    <article class="flex-1">
+        <div class="article-content">
+            {{ article.content }}
+        </div>
+        <div class="article-info">
+            {% if item.blog_show_author %}<span>Writen by:</span>{% endif %}
+                <span>{% if item.blog_show_author %}{{article.author}}{% endif %}{% if item.blog_show_author and item.blog_show_date %} | {% endif %}{% if item.blog_show_date %}{{article.published_at | date: " %b %d, %Y" }}{% endif %}</span>
+            {% if item.blog_show_reviewed_by %}
+                {% if article.metafields.single.reviewed_by != blank %}<span>This has been reviewed by {{article.metafields.single.reviewed_by}}</span>{% endif %}
+            {% endif %}
+        </div>
+        {%- if item.blog_show_social or item.blog_show_tags -%}
+            <div class="flex flex-col {% if item.blog_show_social and item.blog_show_tags %}justify-between{% else %}justify-start{% endif %} mb-10 gap-2 md:flex-row">
+                {% if article.tags.size > 0 and section.settings.blog_show_tags %}
+                    <div class="text-base">
+                        <span class="text-black">{{ 'blogs.article.tags' | t }}</span><br/>
+                        <ul class="inline-block">
+                            {% for tag in article.tags %}
+                            <li class="inline-block text-gray-500">
+                                <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% unless forloop.last %},
+                                {% endunless %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if section.settings.blog_show_social %}
+                    {% assign url = shop.url | append: article.url %}
+                    {% render 'social-sharing', 
+                        url: url, 
+                        class: 'flex items-center', 
+                        size: section.settings.icon_size, 
+                        size_mobile: section.settings.icon_size_mobile, 
+                        icon_size_override: section.settings.icon_size_override 
+                    %}
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if item.blog_show_pagination %}{%- render 'article-next-previous' -%}{% endif %}
+        {%- if item.blog_show_related -%}
+            <div class="mt-28">{%- render 'article-related-post', item: item -%}</div>
+        {% endif %}
+        {%- if item.blog_show_comment -%}
+            {%- render 'blog-comment' -%}
+        {%- endif -%}
+    </article>
+</div>

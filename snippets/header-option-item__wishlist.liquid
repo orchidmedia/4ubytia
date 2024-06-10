@@ -1,0 +1,20 @@
+{% if settings.wishlist_page != blank %}
+  {% assign url = pages[settings.wishlist_page].url %}
+{% else %}
+  {% assign url = '/pages/wishlist' %}
+{% endif %}
+
+{% assign wishlist_app = settings.wishlist_app %}
+{% if wishlist_app == 'theme' %}
+  <a href="{{ url }}" class="{{ box_size | default: 'relative px-2 py-3.5' }}">
+    {% if display_by == 'icon' %}
+      <span class="sf__tooltip-item block sf__tooltip-bottom sf__tooltip-style-2">
+          {% render 'icon', name: 'star', size: size, size_mobile: size_mobile, icon_size_override: icon_size_override %}
+          <span class="sf__tooltip-content">{{ 'layout.wishlist.title' | t }}</span>
+      </span>
+    {% else %}
+      {{ 'layout.wishlist.title' | t }}
+    {% endif %}
+    <sup class="sf-wishlist-count font-medium"></sup>
+  </a>
+{% endif %}

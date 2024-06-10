@@ -1,1 +1,147 @@
-{"sections":{"882bae97-0281-4134-9f69-5e06b58250d7":{"type":"custom-content","blocks":{"82faaac9-ce12-44ec-a67f-df30cb226804":{"type":"separator","settings":{"width":"16%","separator_style":"separator-2","content_position":"center","margin_vertical":"none","hide_mobile":false}},"template--15434415997065__882bae97-0281-4134-9f69-5e06b58250d7-16723385786d592cf8-0":{"type":"text","settings":{"hide_desktop":false,"hide_tablet":false,"hide_mobile":false,"heading_tag":"h3","title_padding":0,"title":"","subheading_tag":"h3","subtitle_padding":0,"subheading":"","text_tag":"p","text_padding":0,"text":"You can reach us by sending an email to <b>customerservice@4ubytia.com<\/b><br>\u2028Monday-Friday. We will get back to you within 24 hours.","width":"66%","align_text":"center","body_color":"#000000","heading_color":"#000000","text_color":"#000000","padding_top":false,"padding_right":false,"padding_bottom":false,"padding_left":false,"padding_top_custom":20,"padding_right_custom":20,"padding_bottom_custom":20,"padding_left_custom":20,"button_mt":16,"button_label":"","button_link":"","button_target":false,"button_style":"sf__btn sf__btn-primary","override_width":false,"button_width":"1\/2","show_second_button":false,"button_label_2":"","button_link_2":"","button_target_2":false,"button_style_2":"sf__btn sf__btn-primary","override_width_2":false,"button_width_2":"1\/2","buttons_gap":"sm","bg_color":"","use_bg_img":false,"bg_size":"cover","bg_position":"center","block_custom_class":"","section_preload":false}},"f48033df-f836-45f6-9b20-841b3749b2a2":{"type":"separator","disabled":true,"settings":{"width":"100%","separator_style":"separator","content_position":"center","margin_vertical":"lg","hide_mobile":false}}},"block_order":["82faaac9-ce12-44ec-a67f-df30cb226804","template--15434415997065__882bae97-0281-4134-9f69-5e06b58250d7-16723385786d592cf8-0","f48033df-f836-45f6-9b20-841b3749b2a2"],"settings":{"heading_color":"","subheading_color":"","description_color":"","heading_tag":"h1","heading_padding":0,"heading":"Customer Care","subheading_tag":"h3","subheading_padding":0,"subheading":"","description":"","text_padding":0,"header_alignment":"center","hide_desktop":false,"hide_tablet":false,"hide_mobile":false,"margin_vertical":"lg","container":"container","content_alignment":"start","vertical_alignment":"start","bg_color_selector":"background-color-2","bg_color_override":false,"background_color":"","gap_mb":30,"gap":30,"override_padding_desktop":false,"dp_top":80,"dp_right":80,"dp_bottom":80,"dp_left":80,"override_padding_mobile":true,"mp_top":0,"mp_right":0,"mp_bottom":0,"mp_left":0,"use_bg_img":false,"image_svg":"","svg_alt_text":"","bg_position":"center","bg_size":"auto","parallax":false,"mb_image_svg":"","mb_svg_alt_text":"","use_scroll_mobile":false,"scroll_type":"free","mobile_grid":"default","gap_mobile":16,"custom_class":"","custom_grid_classes":"","custom_id":"","enable_load_more":false,"load_more_visible_number":2,"load_more_button_style":"button-1","load_more_padding":0,"load_more_button_text":"Load More","load_less_button_text":"Load Less","load_more_alignment":"center"}}},"order":["882bae97-0281-4134-9f69-5e06b58250d7"]}
+{
+  "sections": {
+    "882bae97-0281-4134-9f69-5e06b58250d7": {
+      "type": "custom-content",
+      "blocks": {
+        "82faaac9-ce12-44ec-a67f-df30cb226804": {
+          "type": "separator",
+          "settings": {
+            "width": "16%",
+            "separator_style": "separator-2",
+            "content_position": "center",
+            "margin_vertical": "none",
+            "hide_mobile": false
+          }
+        },
+        "template--15434415997065__882bae97-0281-4134-9f69-5e06b58250d7-16723385786d592cf8-0": {
+          "type": "text",
+          "settings": {
+            "hide_desktop": false,
+            "hide_tablet": false,
+            "hide_mobile": false,
+            "heading_tag": "h3",
+            "title_padding": 0,
+            "title": "",
+            "subheading_tag": "h3",
+            "subtitle_padding": 0,
+            "subheading": "",
+            "text_tag": "p",
+            "text_padding": 0,
+            "text": "You can reach us by sending an email to <b>customerservice@4ubytia.com<\/b><br>\u2028Monday-Friday. We will get back to you within 24 hours.",
+            "width": "66%",
+            "align_text": "center",
+            "body_color": "#000000",
+            "heading_color": "#000000",
+            "text_color": "#000000",
+            "padding_top": false,
+            "padding_right": false,
+            "padding_bottom": false,
+            "padding_left": false,
+            "padding_top_custom": 20,
+            "padding_right_custom": 20,
+            "padding_bottom_custom": 20,
+            "padding_left_custom": 20,
+            "button_mt": 16,
+            "button_label": "",
+            "button_link": "",
+            "button_target": false,
+            "button_style": "sf__btn sf__btn-primary",
+            "override_width": false,
+            "button_width": "1\/2",
+            "show_second_button": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_target_2": false,
+            "button_style_2": "sf__btn sf__btn-primary",
+            "override_width_2": false,
+            "button_width_2": "1\/2",
+            "buttons_gap": "sm",
+            "bg_color": "",
+            "use_bg_img": false,
+            "bg_size": "cover",
+            "bg_position": "center",
+            "block_custom_class": "",
+            "section_preload": false
+          }
+        },
+        "f48033df-f836-45f6-9b20-841b3749b2a2": {
+          "type": "separator",
+          "disabled": true,
+          "settings": {
+            "width": "100%",
+            "separator_style": "separator",
+            "content_position": "center",
+            "margin_vertical": "lg",
+            "hide_mobile": false
+          }
+        }
+      },
+      "block_order": [
+        "82faaac9-ce12-44ec-a67f-df30cb226804",
+        "template--15434415997065__882bae97-0281-4134-9f69-5e06b58250d7-16723385786d592cf8-0",
+        "f48033df-f836-45f6-9b20-841b3749b2a2"
+      ],
+      "settings": {
+        "heading_color": "",
+        "subheading_color": "",
+        "description_color": "",
+        "heading_tag": "h1",
+        "heading_padding": 0,
+        "heading": "Customer Care",
+        "subheading_tag": "h3",
+        "subheading_padding": 0,
+        "subheading": "",
+        "description": "",
+        "text_padding": 0,
+        "header_alignment": "center",
+        "hide_desktop": false,
+        "hide_tablet": false,
+        "hide_mobile": false,
+        "margin_vertical": "lg",
+        "container": "container",
+        "content_alignment": "start",
+        "vertical_alignment": "start",
+        "bg_color_selector": "background-color-2",
+        "bg_color_override": false,
+        "background_color": "",
+        "gap_mb": 30,
+        "gap": 30,
+        "override_padding_desktop": false,
+        "dp_top": 80,
+        "dp_right": 80,
+        "dp_bottom": 80,
+        "dp_left": 80,
+        "override_padding_mobile": true,
+        "mp_top": 0,
+        "mp_right": 0,
+        "mp_bottom": 0,
+        "mp_left": 0,
+        "use_bg_img": false,
+        "image_svg": "",
+        "svg_alt_text": "",
+        "bg_position": "center",
+        "bg_size": "auto",
+        "parallax": false,
+        "mb_image_svg": "",
+        "mb_svg_alt_text": "",
+        "use_scroll_mobile": false,
+        "scroll_type": "free",
+        "mobile_grid": "default",
+        "gap_mobile": 16,
+        "custom_class": "",
+        "custom_grid_classes": "",
+        "custom_id": "",
+        "enable_load_more": false,
+        "load_more_visible_number": 2,
+        "load_more_button_style": "button-1",
+        "load_more_padding": 0,
+        "load_more_button_text": "Load More",
+        "load_less_button_text": "Load Less",
+        "load_more_alignment": "center"
+      }
+    }
+  },
+  "order": [
+    "882bae97-0281-4134-9f69-5e06b58250d7"
+  ]
+}

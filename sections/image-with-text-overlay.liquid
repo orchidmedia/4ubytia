@@ -76,7 +76,7 @@
                 <div class="block md:hidden">{% render 'responsive-image', image: section.settings.mb_image %}</div>
             {% endif %}
 
-            <div class="flex sf-hero__inner {% if section.settings.use_content_above %}absolute-centered{% endif %} {{ content_container }} {% if section.settings.mb_image != blank %} md:py-24{% else %}py-24{% endif %} sf-hero__inner--{{ text_vertical_alignment }}-{{ text_horizontal_alignment }}">
+            <div class="flex sf-hero__inner {% if section.settings.use_content_above %}absolute-centered{% endif %} {{ content_container }} {% if section.settings.mb_image != blank %} md:py-24{% else %}py-0{% endif %} sf-hero__inner--{{ text_vertical_alignment }}-{{ text_horizontal_alignment }}">
                 <div class="hidden md:block sf-hero__content w-max md:max-w-4xl  text-{{ section.settings.text_alignment }}">
                     {% if section.settings.subtitle != blank %}
                         {% capture custom_classes %}sf-hero__subtitle{% endcapture %}

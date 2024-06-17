@@ -63,7 +63,7 @@
                 </div>
             {% else %}
                 <div class="{% if section.settings.mb_image != blank %}hidden md:block{% endif %} sf-hero__bg lazyload js pointer-events-none bg-no-repeat bg-{{ bg_position }} bg-cover bg-no-repeat{% if parallax %} bg-fixed{% endif %}"
-                     data-bg="{{section.settings.image | img_url: '300x' }}"
+                     data-bg="{{section.settings.image | img_url: '1440x' }}"
                      data-bgset="{% render 'bgset', image: section.settings.image %}"
                      data-parent-fit="contain"
                      data-sizes="auto" data-image-loading></div>

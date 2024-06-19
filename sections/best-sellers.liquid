@@ -1,0 +1,100 @@
+<section class="m-24">
+    <div class="flex justify-between items-center mb-8">
+    <h2 class="text-2xl font-bold">Best Sellers</h2>
+    <a href="#" class="text-gray-600">SHOP ALL</a>
+    </div>
+    <div class="grid grid-cols-4 gap-4">
+    <div class="col-span-1">
+        <div class="h-[56rem]  bg-cover bg-center text-white flex items-center text-center p-4" style="background-image: url('{{ section.settings.featured_image | img_url: 'master' }}');">
+        <h3 class="text-xl font-bold w-full line-clamp-2">{{ section.settings.featured_title }}</h3>
+        </div>
+    </div>
+    {% for block in section.blocks %}
+        <div class="col-span-1 group">
+        <div class="border p-4 flex flex-col items-center relative ">
+            {% if block.settings.product_image %}
+            <img src="{{ block.settings.product_image | img_url: 'master' }}" alt="{{ block.settings.product_name }}" class="h-[46rem] w-full object-cover">
+            {% else %}
+            <div class="fpo"></div>
+            {% endif %}
+            {% if block.settings.is_new %}
+            <div class="flex items-center justify-center bg-blue-300 w-24 h-24 text-center text-black font-normal px-2 py-1 rounded-full mt-2 absolute right-4">NEW</div>
+            {% endif %}
+            <a href="/cart/add?id={{ block.settings.product.selected_or_first_available_variant.id }}&quantity=1" class="hidden group-hover:flex items-center justify-center w-64 h-12 bg-[#00C389] rounded-3xl absolute bottom-12">
+            ADD TO BAG
+            </a>
+
+        </div>
+        <div class="text-center" >
+            <h3 class="text-lg font-semibold mt-4">{{ block.settings.product_name }}</h3>
+            <p class="text-sm text-gray-600 mt-2 w-1/2 m-auto">{{ block.settings.product_description }}</p>
+            <span class="text-gray-800 font-bold mt-2">{{ block.settings.product_price }}</span>
+        </div>
+        </div>
+    {% endfor %}
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "Best Sellers",
+    "settings": [
+    {
+      "type": "image_picker",
+      "id": "featured_image",
+      "label": "Featured Image"
+    },
+    {
+      "type": "text",
+      "id": "featured_title",
+      "label": "Featured Title",
+      "default": "Elevate Your Curls"
+    }
+    ],
+    "blocks": [
+    {
+        "type": "product",
+        "name": "Product",
+        "settings": [
+        {
+            "type": "image_picker",
+            "id": "product_image",
+            "label": "Product Image"
+        },
+        {
+            "type": "text",
+            "id": "product_name",
+            "label": "Product Name"
+        },
+        {
+            "type": "text",
+            "id": "product_description",
+            "label": "Product Description"
+        },
+        {
+            "type": "text",
+            "id": "product_price",
+            "label": "Product Price"
+        },
+        {
+            "type": "checkbox",
+            "id": "is_new",
+            "label": "New Product"
+        },
+        {
+            "type": "product",
+            "id": "product",
+            "label": "Product"
+        }
+
+        ]
+    }
+    ],
+    "presets": [
+    {
+        "name": "Best Sellers Orchid",
+        "category": "Featured"
+    }
+    ]
+}
+{% endschema %}

@@ -442,6 +442,8 @@
             "image": "shopify:\/\/shop_images\/14079dcfc320f7a5079a0d87d3113217.jpg",
             "image_svg": "",
             "svg_alt_text": "",
+            "image_max_w": 305,
+            "image_max_h": 384,
             "pcard_image_animation": "none",
             "link": "",
             "width": "25%",

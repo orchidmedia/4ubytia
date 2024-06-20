@@ -404,6 +404,31 @@
         "load_less_button_text": "Load Less",
         "load_more_alignment": "center"
       }
+    },
+    "instagram_CdNpJ8": {
+      "type": "instagram",
+      "settings": {
+        "heading": "",
+        "subheading": "",
+        "description": "",
+        "header_alignment": "center",
+        "hide_desktop": false,
+        "hide_tablet": false,
+        "hide_mobile": false,
+        "margin_vertical": "md",
+        "container": "container-fluid",
+        "bg_color_selector": "color_section1_bg",
+        "bg_color_override": false,
+        "background_color": "rgba(0,0,0,0)",
+        "layout": "grid",
+        "images_count": 4,
+        "grid_columns": 4,
+        "gap": 7,
+        "mobile_gap": 10,
+        "profile": "",
+        "button_label": "",
+        "custom_class": ""
+      }
     }
   },
   "order": [
@@ -415,6 +440,7 @@
     "image_with_text_overlay_3MkwCW",
     "product_review_slider_orchid_z44pTf",
     "custom_content_GNLLQU",
-    "custom_content_HCFF44"
+    "custom_content_HCFF44",
+    "instagram_CdNpJ8"
   ]
 }

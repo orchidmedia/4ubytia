@@ -44,7 +44,7 @@
         "button_style": "sf__btn sf__btn-blank-light",
         "mb_image": "shopify:\/\/shop_images\/1857_TIA_63B_4U_23.07_4U_Hair_2_Selena_After_Shot24_0240_ALT-07.jpg",
         "use_content_above": false,
-        "custom_class": ""
+        "custom_class": "sm:text-black"
       }
     },
     "custom_content_t8qGFA": {

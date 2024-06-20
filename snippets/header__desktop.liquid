@@ -15,8 +15,15 @@
 {% if container == 'w-full' %}
   {% assign container = container | append: ' px-4' %}
 {% endif %}
+
+{% style %}
+    .header_shadow{
+        fill: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.00) 20%, rgba(0, 0, 0, 0.00) 100%), url(<path-to-image>) lightgray -349.454px -99.977px / 129.047% 171.192% no-repeat, rgba(122, 73, 73, 0.20);
+    }
+{% endstyle %}
+
 <header
-    class="hidden lg:block bg-white sf-header__desktop {{ design }}"
+    class="hidden lg:block bg-white sf-header__desktop {{ design }} header_shadow"
     data-screen="sf-header__desktop"
     data-transparent="{{ transparent_on_top }}"
 >

@@ -13,7 +13,7 @@
       "type": "image-with-text-overlay",
       "settings": {
         "hide_desktop": false,
-        "hide_tablet": true,
+        "hide_tablet": false,
         "hide_mobile": false,
         "margin_vertical": "none",
         "container": "w-full",

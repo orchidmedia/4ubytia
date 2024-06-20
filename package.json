@@ -1,0 +1,17 @@
+{
+  "name": "4ubytia",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "shopify theme dev",
+    "watch": "npx tailwind -i ./assets/tailwind.css -o ./assets/application.css --watch",
+    "dev": "npm run watch & npm run start"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@shopify/prettier-plugin-liquid": "^1.5.0",
+    "tailwindcss": "^3.4.4"
+  }
+}

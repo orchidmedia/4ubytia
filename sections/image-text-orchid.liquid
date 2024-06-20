@@ -1,0 +1,56 @@
+<section class="flex justify-between items-center m-24  bg-yellow-400">
+    <div class="w-1/2 ">
+    {% if section.settings.product_image %}
+        <img src="{{ section.settings.product_image | img_url: 'master' }}" alt="Product Image" class="max-w-full max-h-full">
+    {% endif %}
+    </div>
+    <div class="w-1/2 h-max text-center">
+    <h2 class="text-gray-700 text-xs uppercase mb-2">{{ section.settings.top_text }}</h2>
+    <h1 class="text-5xl font-bold text-gray-800 mb-4">{{ section.settings.main_text }}</h1>
+    <a href="{{ section.settings.button_link }}" class="bg-white text-gray-800 font-semibold py-2 px-4 rounded-full">{{ section.settings.button_text }}</a>
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "Image With Text Orchid",
+    "settings": [
+    {
+        "type": "image_picker",
+        "id": "product_image",
+        "label": "Product Image"
+    },
+    {
+        "type": "text",
+        "id": "top_text",
+        "label": "Top Text",
+        "default": "Lorem ipsum dolor sit amet"
+    },
+    {
+        "type": "text",
+        "id": "main_text",
+        "label": "Main Text",
+        "default": "Lorem ipsum dolor Sit Amet"
+    },
+    {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link",
+        "default": "/collections/all"
+    },
+    {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text",
+        "default": "Shop Now"
+    }
+    ],
+    "presets":[
+        {
+            "name": "Image with text Orchid"
+        }
+]
+}
+{% endschema %}
+
+

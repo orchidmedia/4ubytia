@@ -1,0 +1,69 @@
+# Node.js dependencies
+node_modules/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Shopify specific
+.DS_Store
+.vscode/
+.idea/
+.sass-cache/
+.yarn/
+.editorconfig
+
+# Jekyll specific
+_site/
+
+# Ignore local settings
+config.yml
+config/*.json
+
+# Ignore built files
+dist/
+public/
+
+# Tailwind CSS specific
+*.css.map
+*.scss.map
+*.sass.map
+
+# Ignore environment variables file
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore MacOS specific files
+*.DS_Store
+
+# Ignore Windows specific files
+Thumbs.db
+ehthumbs.db
+
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore WebStorm/PhpStorm settings
+.idea/
+
+# Ignore temporary files created by editors
+*~
+*#
+
+# Ignore temporary files created by the system
+*.swp
+*.lock
+*.tmp
+
+# Ignore local Shopify files
+.shopify-cli/
+
+# Ignore Python cache
+__pycache__/
+
+# Ignore specific files and folders
+config/settings_data.json

@@ -1033,7 +1033,7 @@
               "heading_size": "p",
               "image_max": "",
               "description": "<p>4U by Tia is a natural hair care brand founded by Tia Mowry that puts curls first by offering a line with the safest, simplest, and most effective products for natural hair - powered by science.<\/p>",
-              "width": "10%",
+              "width": "15%",
               "flex_order": "2",
               "open_default": false,
               "hide_mobile": true
@@ -1045,7 +1045,7 @@
               "menu": "shop-footer",
               "title": "SHOP",
               "heading_size": "p",
-              "width": "10%",
+              "width": "15%",
               "flex_order": "3",
               "open_default": false
             }
@@ -1056,7 +1056,7 @@
               "menu": "help",
               "title": "HELP",
               "heading_size": "p",
-              "width": "10%",
+              "width": "15%",
               "flex_order": "4",
               "open_default": false
             }

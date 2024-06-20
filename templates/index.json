@@ -238,6 +238,8 @@
             "image": "shopify:\/\/shop_images\/84e4a1b7add2b0b580370d716364cde9.jpg",
             "image_svg": "",
             "svg_alt_text": "",
+            "image_max_w": 380,
+            "image_max_h": 570,
             "pcard_image_animation": "none",
             "link": "",
             "width": "50%",

@@ -1026,6 +1026,14 @@
               "flex_order": "7"
             }
           },
+          "spacing_WFUjgP": {
+            "type": "spacing",
+            "settings": {
+              "width": "25%",
+              "hide_mobile": false,
+              "flex_order": "5"
+            }
+          },
           "78bc61fe-34b1-4451-9e68-208dae12971f": {
             "type": "custom_text",
             "settings": {
@@ -1062,6 +1070,14 @@
               "open_default": false
             }
           },
+          "spacing_d8gYrQ": {
+            "type": "spacing",
+            "settings": {
+              "width": "10%",
+              "hide_mobile": false,
+              "flex_order": "5"
+            }
+          },
           "e8d8a53c-8331-40ac-8109-e6192cb7f2db": {
             "type": "menu",
             "settings": {
@@ -1071,6 +1087,14 @@
               "width": "10%",
               "flex_order": "6",
               "open_default": false
+            }
+          },
+          "spacing_yfcX6M": {
+            "type": "spacing",
+            "settings": {
+              "width": "10%",
+              "hide_mobile": false,
+              "flex_order": "5"
             }
           },
           "64ae10b0-9926-4b28-bcee-f630a5a8c698": {
@@ -1100,10 +1124,10 @@
               "disable_accordion": true
             }
           },
-          "spacing_WFUjgP": {
+          "spacing_bAqFR6": {
             "type": "spacing",
             "settings": {
-              "width": "25%",
+              "width": "10%",
               "hide_mobile": false,
               "flex_order": "5"
             }
@@ -1197,12 +1221,15 @@
         },
         "block_order": [
           "2f5ccc1b-8295-4b6e-9e0e-cb7806648378",
+          "spacing_WFUjgP",
           "78bc61fe-34b1-4451-9e68-208dae12971f",
           "ca379eea-9bc6-4fdb-adf8-c91a72387ef6",
           "83a3a4ab-e57e-405b-8ea9-158b31d437c0",
+          "spacing_d8gYrQ",
           "e8d8a53c-8331-40ac-8109-e6192cb7f2db",
+          "spacing_yfcX6M",
           "64ae10b0-9926-4b28-bcee-f630a5a8c698",
-          "spacing_WFUjgP",
+          "spacing_bAqFR6",
           "64d534c6-d4bc-4e88-8531-d19610235ac7",
           "d7ef2329-cbfe-496e-b1ad-c3fca853a791",
           "2b153066-78ca-4850-8d3d-40aeca7fc045",

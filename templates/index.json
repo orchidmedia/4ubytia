@@ -15,7 +15,7 @@
         "hide_desktop": false,
         "hide_tablet": false,
         "hide_mobile": false,
-        "margin_vertical": "none",
+        "margin_vertical": "lg",
         "container": "w-full",
         "hero_size": "fullscreen",
         "show_overlay": false,
@@ -42,7 +42,7 @@
         "button_label": "Shop Now",
         "button_link": "https:\/\/4ubytia.com\/products\/soft-curl-defining-mousse-6-7oz\/",
         "button_style": "sf__btn sf__btn-blank-light",
-        "use_content_above": false,
+        "use_content_above": true,
         "custom_class": ""
       }
     },

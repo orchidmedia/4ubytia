@@ -118,6 +118,53 @@
         "button_text": "Shop Now"
       }
     },
+    "best_sellers_HP3r9P": {
+      "type": "best-sellers",
+      "blocks": {
+        "product_crrEPm": {
+          "type": "product",
+          "settings": {
+            "product_image": "shopify:\/\/shop_images\/Curl_mist.jpg",
+            "product_name": "Curl Refresher Mist",
+            "product_description": "A lightweight leave-in cream thatads moisture and smooths frizz.",
+            "product_price": "$0.00",
+            "is_new": false,
+            "product": "curl-refresher-mist"
+          }
+        },
+        "product_pfRnz8": {
+          "type": "product",
+          "settings": {
+            "product_image": "shopify:\/\/shop_images\/Rectangle_10595.png",
+            "product_name": "Leave-In Cream",
+            "product_description": "A lightweight leave-in cream thatads moisture and smooths frizz.",
+            "product_price": "$0.00",
+            "is_new": false,
+            "product": "leave-in-curl-cream"
+          }
+        },
+        "product_Aa9ejH": {
+          "type": "product",
+          "settings": {
+            "product_image": "shopify:\/\/shop_images\/PDP_4u-by-tia-tia-s-favorite-39231326322928_1024x1024-min.jpg",
+            "product_name": "Tia’s Favorite",
+            "product_description": "A lightweight leave-in cream thatads moisture and smooths frizz.",
+            "product_price": "$0.00",
+            "is_new": true,
+            "product": "tias-favorite"
+          }
+        }
+      },
+      "block_order": [
+        "product_crrEPm",
+        "product_pfRnz8",
+        "product_Aa9ejH"
+      ],
+      "settings": {
+        "featured_image": "shopify:\/\/shop_images\/b79bc6ad19c5e6f794bc77c1c3823ec9.jpg",
+        "featured_title": "Elevate Your Curls"
+      }
+    },
     "custom_liquid_ztTUTJ": {
       "type": "custom-liquid",
       "settings": {
@@ -134,6 +181,7 @@
     "image_with_text_overlay_J7wQcJ",
     "custom_content_t8qGFA",
     "image_text_orchid_rQE9JK",
+    "best_sellers_HP3r9P",
     "custom_liquid_ztTUTJ"
   ]
 }

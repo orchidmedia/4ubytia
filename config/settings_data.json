@@ -1147,7 +1147,7 @@
               "mb_disposition": "flex-row",
               "mb_justify": "justify-between",
               "icon_size_mobile": 28,
-              "flex_order": "7",
+              "flex_order": "5",
               "enable_copyright": true,
               "copy_title": "© 2024 4U Products, LLC",
               "copy_heading_size": "p-small",
@@ -1159,7 +1159,7 @@
             "settings": {
               "width": "auto",
               "hide_mobile": true,
-              "flex_order": "5"
+              "flex_order": "6"
             }
           },
           "e72abf7e-e378-4269-b266-89a375f9d5d9": {

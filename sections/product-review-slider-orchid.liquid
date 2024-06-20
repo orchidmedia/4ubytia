@@ -1,0 +1,137 @@
+<section class="slider overflow-hidden justify-center items-center relative m-24">
+  <div class="slides flex transition-transform duration-500 w-full justify-center">
+    <div class="slide flex flex-col md:flex-row items-center bg-white shadow-lg justify-center">
+      <div class="w-full  h-[56rem] md:w-1/2 bg-[#FF5C39] text-center flex flex-col items-center justify-center px-12 text-black">
+        <h2 class="text-2xl font-bold mb-4">MOISTURIZING CONDITIONER</h2>
+        <p class="text-5xl w-1/2">“I love how this conditioner feels on my hair... like butter... and it smells great!”</p>
+        <p class="mt-4">- Jco</p>
+        <button class="mt-6 px-6 py-3 bg-white font-semibold rounded-3xl shadow-md hover:bg-gray-100">SHOP NOW</button>
+      </div>
+      <div class="w-full md:w-1/2  h-full  items-center justify-center ">
+        <div class="relative">
+          <img src="https://s3-alpha-sig.figma.com/img/49b3/ba4a/712967e987165b608941a3e88ec6678f?Expires=1719792000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Y3AakAhmRDyC6dF4c4781N4V8y9xQIE7VwtO8uBMW4k4M3uFayaU4ef3f790G6nrH8iwgKzYed086QzqccwV9oxWmFz5vANpsxQTykD5MIPVzbVsyJdjz0RYhuK770fLZscyK75OBc7PZZhWqKTIJPUMWLKI-kulRlWdDxDtrnqJw40GtYNIGXIYQWwU3Ss-WPLzDFmIDr5V3TNJswQ3jCsk5zG8no7i3oe0b3Q9lbkp7Bo0MwL6TdY9CjkZNbTAKCdIEJ2puUCCciPhEe10KnJ-oTUqVjxM3yE9f3txvRol~WqKOG4MUI9KYDjSAqG1AkdllNrhf5wPD9fAPahuIQ__" alt="Moisturizing Conditioner" class="w-full max-h-[56rem]">
+          <div class="absolute top-0 right-0 m-4 bg-blue-500 text-white px-2 py-1 rounded-full w-24 h-24 flex items-center text-center">BEST SELLER</div>
+        </div>
+        <div class="dots flex justify-center absolute bottom-8 right-1/4">
+            <!-- Dots will be inserted here dynamically -->
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+    /* Custom styles for the slider */
+    .slider {
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slide {
+      min-width: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .dot {
+      cursor: pointer;
+      height: 12px;
+      width: 12px;
+      margin: 0 4px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.6s ease;
+    }
+
+    .dot.active {
+      background-color: #717171;
+    }
+  </style>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelector('.slides');
+    const totalSlides = document.querySelectorAll('.slide').length;
+    const dotsContainer = document.querySelector('.dots');
+
+    // Create dots dynamically based on the number of slides
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('span');
+      dot.classList.add('dot');
+      dot.dataset.index = i;
+      dotsContainer.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+    dots[currentSlide].classList.add('active');
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        currentSlide = parseInt(dot.dataset.index);
+        updateSlidePosition();
+      });
+    });
+
+    function updateSlidePosition() {
+      slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dots.forEach(dot => dot.classList.remove('active'));
+      dots[currentSlide].classList.add('active');
+    }
+  </script>
+
+{% schema %}
+  {
+    "name": "Product Review Slider",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Moisturizing Conditioner"
+      },
+      {
+        "type": "textarea",
+        "id": "quote",
+        "label": "Quote",
+        "default": "“I love how this conditioner feels on my hair... like butter... and it smells great!”"
+      },
+      {
+        "type": "text",
+        "id": "author",
+        "label": "Author",
+        "default": "- Jo"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text",
+        "default": "Shop Now"
+      },
+      {
+        "type": "image_picker",
+        "id": "product_image",
+        "label": "Product Image"
+      },
+      {
+        "type": "text",
+        "id": "badge_text",
+        "label": "Badge Text",
+        "default": "Best Seller"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product Review Slider"
+      }
+    ]
+  }
+  {% endschema %}
+  
+  
+  

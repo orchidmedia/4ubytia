@@ -994,22 +994,6 @@
       "footer": {
         "type": "footer",
         "blocks": {
-          "1d45e529-6f7b-47d2-99fd-b7eb974fe630": {
-            "type": "spacing",
-            "settings": {
-              "width": "100%",
-              "hide_mobile": true,
-              "flex_order": "5"
-            }
-          },
-          "3add3d8c-7591-4e02-9160-3d9663170300": {
-            "type": "spacing",
-            "settings": {
-              "width": "5%",
-              "hide_mobile": true,
-              "flex_order": "5"
-            }
-          },
           "2f5ccc1b-8295-4b6e-9e0e-cb7806648378": {
             "type": "image_card",
             "settings": {
@@ -1069,7 +1053,6 @@
           },
           "83a3a4ab-e57e-405b-8ea9-158b31d437c0": {
             "type": "menu",
-            "disabled": true,
             "settings": {
               "menu": "shop-footer",
               "title": "SHOP",
@@ -1081,7 +1064,6 @@
           },
           "e8d8a53c-8331-40ac-8109-e6192cb7f2db": {
             "type": "menu",
-            "disabled": true,
             "settings": {
               "menu": "help",
               "title": "HELP",
@@ -1089,14 +1071,6 @@
               "width": "10%",
               "flex_order": "6",
               "open_default": false
-            }
-          },
-          "a72c1ef9-33dc-44df-9fe9-a706d75ae3d2": {
-            "type": "spacing",
-            "settings": {
-              "width": "5%",
-              "hide_mobile": true,
-              "flex_order": "5"
             }
           },
           "64ae10b0-9926-4b28-bcee-f630a5a8c698": {
@@ -1222,14 +1196,11 @@
           }
         },
         "block_order": [
-          "1d45e529-6f7b-47d2-99fd-b7eb974fe630",
-          "3add3d8c-7591-4e02-9160-3d9663170300",
           "2f5ccc1b-8295-4b6e-9e0e-cb7806648378",
           "78bc61fe-34b1-4451-9e68-208dae12971f",
           "ca379eea-9bc6-4fdb-adf8-c91a72387ef6",
           "83a3a4ab-e57e-405b-8ea9-158b31d437c0",
           "e8d8a53c-8331-40ac-8109-e6192cb7f2db",
-          "a72c1ef9-33dc-44df-9fe9-a706d75ae3d2",
           "64ae10b0-9926-4b28-bcee-f630a5a8c698",
           "spacing_WFUjgP",
           "64d534c6-d4bc-4e88-8531-d19610235ac7",

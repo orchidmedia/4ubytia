@@ -1218,7 +1218,7 @@
           "hide_footer_layout": false,
           "design": "footer-1",
           "container": "w-full",
-          "gap": 24,
+          "gap": 0,
           "bordered": false,
           "copyright": "",
           "show_currency_selector": true,

@@ -226,52 +226,26 @@
         "badge_text": "Best Seller"
       }
     },
-    "custom_content_JfHq8c": {
+    "custom_content_GNLLQU": {
       "type": "custom-content",
       "blocks": {
-        "image_LfTtLE": {
-          "type": "image",
-          "settings": {
-            "hide_desktop": false,
-            "hide_tablet": false,
-            "hide_mobile": false,
-            "image": "shopify:\/\/shop_images\/84e4a1b7add2b0b580370d716364cde9.jpg",
-            "image_svg": "",
-            "svg_alt_text": "",
-            "image_max_w": 380,
-            "image_max_h": 570,
-            "pcard_image_animation": "none",
-            "link": "",
-            "width": "50%",
-            "image_overlay": "",
-            "overlay_size": "100%",
-            "overlay_position": "left",
-            "padding_top": true,
-            "padding_right": true,
-            "padding_bottom": true,
-            "padding_left": true,
-            "bg_color": "",
-            "block_custom_class": "",
-            "section_preload": false
-          }
-        },
-        "text_KCziJk": {
+        "text_GTjRyH": {
           "type": "text",
           "settings": {
             "hide_desktop": false,
             "hide_tablet": false,
             "hide_mobile": false,
-            "heading_tag": "h3",
+            "heading_tag": "h1",
             "title_padding": 0,
-            "title": "Celebrate your curls with totally clean curl care ",
+            "title": "Lorem ipsum dolor Sit Amet",
             "subheading_tag": "h3",
             "subtitle_padding": 0,
             "subheading": "",
-            "text_tag": "h3",
+            "text_tag": "p-large",
             "text_padding": 0,
-            "text": "Our Founder, Tia Mowry, believes everyone deserves access to clean hair care—especially our kids. That’s why our products have sustainable ingredients you can pronounce. 4U is 100% safe for the entire family and the planet. ",
-            "width": "50%",
-            "align_text": "left",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "width": "100%",
+            "align_text": "center",
             "body_color": "#000",
             "heading_color": "#000",
             "text_color": "#000",
@@ -279,11 +253,15 @@
             "padding_right": true,
             "padding_bottom": true,
             "padding_left": true,
+            "padding_top_custom": 16,
+            "padding_right_custom": 150,
+            "padding_bottom_custom": 16,
+            "padding_left_custom": 150,
             "button_mt": 16,
-            "button_label": "LEARN MORE",
-            "button_link": "shopify:\/\/pages\/our-philosophy",
+            "button_label": "",
+            "button_link": "",
             "button_target": false,
-            "button_style": "sf__btn sf__btn-blank-dark",
+            "button_style": "sf__btn sf__btn-primary",
             "override_width": false,
             "button_width": "1\/2",
             "show_second_button": false,
@@ -304,8 +282,7 @@
         }
       },
       "block_order": [
-        "image_LfTtLE",
-        "text_KCziJk"
+        "text_GTjRyH"
       ],
       "settings": {
         "heading_color": "",
@@ -313,7 +290,7 @@
         "description_color": "",
         "heading_tag": "h3",
         "heading_padding": 0,
-        "heading": "",
+        "heading": "Custom content",
         "subheading_tag": "h3",
         "subheading_padding": 0,
         "subheading": "",
@@ -375,6 +352,6 @@
     "image_text_image_overlay_orchid_TRzAJY",
     "image_with_text_overlay_3MkwCW",
     "product_review_slider_orchid_z44pTf",
-    "custom_content_JfHq8c"
+    "custom_content_GNLLQU"
   ]
 }

@@ -1009,7 +1009,7 @@
               "title": "<span class=\"hide-desktop\">ABOUT US<\/span>",
               "heading_size": "p-small",
               "heading_color": "",
-              "subtitle": "<span class=\"hide-desktop\">4U by Tia is a natural hair care brand founded by Tia Mowry that puts curls first by offering a line with the safest, simplest, and most effective products for natural hair - powered by science.<\/span>",
+              "subtitle": "",
               "subheading_color": "",
               "button_label": "",
               "button_link": "",
@@ -1039,26 +1039,14 @@
               "hide_mobile": true
             }
           },
-          "ca379eea-9bc6-4fdb-adf8-c91a72387ef6": {
-            "type": "menu",
-            "disabled": true,
-            "settings": {
-              "menu": "bundles-footer",
-              "title": "BUNDLES",
-              "heading_size": "p-small",
-              "width": "16%",
-              "flex_order": "4",
-              "open_default": false
-            }
-          },
           "83a3a4ab-e57e-405b-8ea9-158b31d437c0": {
             "type": "menu",
             "settings": {
               "menu": "shop-footer",
               "title": "SHOP",
               "heading_size": "p",
-              "width": "25%",
-              "flex_order": "5",
+              "width": "15%",
+              "flex_order": "3",
               "open_default": false
             }
           },
@@ -1068,8 +1056,8 @@
               "menu": "help",
               "title": "HELP",
               "heading_size": "p",
-              "width": "10%",
-              "flex_order": "6",
+              "width": "15%",
+              "flex_order": "4",
               "open_default": false
             }
           },
@@ -1198,7 +1186,6 @@
         "block_order": [
           "2f5ccc1b-8295-4b6e-9e0e-cb7806648378",
           "78bc61fe-34b1-4451-9e68-208dae12971f",
-          "ca379eea-9bc6-4fdb-adf8-c91a72387ef6",
           "83a3a4ab-e57e-405b-8ea9-158b31d437c0",
           "e8d8a53c-8331-40ac-8109-e6192cb7f2db",
           "64ae10b0-9926-4b28-bcee-f630a5a8c698",

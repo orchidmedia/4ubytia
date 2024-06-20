@@ -595,7 +595,7 @@
         "custom_grid_classes": "",
         "custom_id": "",
         "enable_load_more": false,
-        "load_more_visible_number": 2,
+        "load_more_visible_number": 4,
         "load_more_button_style": "button-1",
         "load_more_padding": 0,
         "load_more_button_text": "Load More",

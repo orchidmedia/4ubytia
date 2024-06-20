@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'Gelica';
+    src: url('{{ "gelica-regular.woff2" | asset_url }}') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans Display';
+    src:url('{{ "NotoSansDisplay-Regular.woff2" | asset_url }}') format('woff2'),
+    url('{{ "NotoSansDisplay-Regular.woff" | asset_url }}') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}

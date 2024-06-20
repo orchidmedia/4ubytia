@@ -2,7 +2,12 @@
 module.exports = {
   content: ['./**/*.{liquid,json}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'custom': ['Gelica'],
+        'noto': ['Noto Sans Display'],
+      },
+    },
   },
   plugins: [],
 }

@@ -1068,7 +1068,7 @@
               "menu": "help",
               "title": "HELP",
               "heading_size": "p",
-              "width": "25%",
+              "width": "16%",
               "flex_order": "6",
               "open_default": false
             }

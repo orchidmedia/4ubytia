@@ -175,6 +175,19 @@
         "hide_mobile": false,
         "margin_vertical": "none"
       }
+    },
+    "image_text_image_overlay_orchid_TRzAJY": {
+      "type": "image-text-image-overlay-orchid",
+      "settings": {
+        "image": "shopify:\/\/shop_images\/Rectangle_10592.png",
+        "image_left": "shopify:\/\/shop_images\/59a7631077aee014595088e2386f7307.jpg",
+        "title": "Lorem ipsum dolor",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "button_text": "Learn More",
+        "button_link": "shopify:\/\/collections\/all",
+        "overlay_text_large": "100%",
+        "overlay_text_small": "said their hair feels like it's growing healthier"
+      }
     }
   },
   "order": [
@@ -182,6 +195,7 @@
     "custom_content_t8qGFA",
     "image_text_orchid_rQE9JK",
     "best_sellers_HP3r9P",
-    "custom_liquid_ztTUTJ"
+    "custom_liquid_ztTUTJ",
+    "image_text_image_overlay_orchid_TRzAJY"
   ]
 }

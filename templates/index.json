@@ -212,7 +212,7 @@
         "button_label": "Shop now",
         "button_link": "",
         "button_style": "sf__btn sf__btn-blank-dark",
-        "use_content_above": true,
+        "use_content_above": false,
         "custom_class": ""
       }
     },

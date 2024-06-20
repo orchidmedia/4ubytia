@@ -361,7 +361,7 @@
         "hide_desktop": false,
         "hide_tablet": false,
         "hide_mobile": false,
-        "margin_vertical": "lg",
+        "margin_vertical": "sm",
         "container": "w-full",
         "content_alignment": "center",
         "vertical_alignment": "center",

@@ -178,6 +178,43 @@
         "overlay_text_small": "said their hair feels like it's growing healthier"
       }
     },
+    "image_with_text_overlay_3MkwCW": {
+      "type": "image-with-text-overlay",
+      "settings": {
+        "hide_desktop": false,
+        "hide_tablet": false,
+        "hide_mobile": false,
+        "margin_vertical": "none",
+        "container": "w-full",
+        "hero_size": "adapt",
+        "show_overlay": true,
+        "bg_color_selector": "color_section1_bg",
+        "bg_color_override": false,
+        "background_color": "",
+        "image": "shopify:\/\/shop_images\/643feb7ac2911ddc53632d7a38276cdb.jpg",
+        "bg_position": "center",
+        "image_link": "",
+        "parallax": false,
+        "content_in_container": false,
+        "content_position": "right middle",
+        "text_alignment": "left",
+        "text_color": "#000000",
+        "title_tag": "h2",
+        "heading_padding": 0,
+        "title": "Image with text overlay",
+        "subtitle_tag": "h3",
+        "subheading_padding": 0,
+        "subtitle": "",
+        "text_tag": "p-medium",
+        "text_padding": 0,
+        "text": "<p>Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story.<\/p>",
+        "button_label": "Shop now",
+        "button_link": "",
+        "button_style": "sf__btn sf__btn-primary",
+        "use_content_above": false,
+        "custom_class": ""
+      }
+    },
     "custom_liquid_ztTUTJ": {
       "type": "custom-liquid",
       "settings": {
@@ -196,6 +233,7 @@
     "image_text_orchid_rQE9JK",
     "best_sellers_HP3r9P",
     "image_text_image_overlay_orchid_TRzAJY",
+    "image_with_text_overlay_3MkwCW",
     "custom_liquid_ztTUTJ"
   ]
 }

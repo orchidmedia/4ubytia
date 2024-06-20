@@ -14,7 +14,7 @@
       "settings": {
         "hide_desktop": false,
         "hide_tablet": true,
-        "hide_mobile": true,
+        "hide_mobile": false,
         "margin_vertical": "none",
         "container": "w-full",
         "hero_size": "fullscreen",

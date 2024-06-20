@@ -448,7 +448,7 @@
         "image_svg": "",
         "svg_alt_text": "",
         "bg_position": "center",
-        "bg_size": "auto",
+        "bg_size": "cover",
         "parallax": false,
         "mb_image_svg": "",
         "mb_svg_alt_text": "",

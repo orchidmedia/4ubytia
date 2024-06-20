@@ -15,7 +15,7 @@
         "hide_desktop": false,
         "hide_tablet": false,
         "hide_mobile": false,
-        "margin_vertical": "sm",
+        "margin_vertical": "none",
         "container": "w-full",
         "hero_size": "fullscreen",
         "show_overlay": false,

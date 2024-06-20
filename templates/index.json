@@ -118,11 +118,22 @@
         "hide_mobile": false,
         "margin_vertical": "none"
       }
+    },
+    "image_text_orchid_rQE9JK": {
+      "type": "image-text-orchid",
+      "settings": {
+        "product_image": "shopify:\/\/shop_images\/Rectangle_10593.png",
+        "top_text": "Lorem ipsum dolor sit amet",
+        "main_text": "Lorem ipsum dolor Sit Amet",
+        "button_link": "shopify:\/\/collections\/all",
+        "button_text": "Shop Now"
+      }
     }
   },
   "order": [
     "image_with_text_overlay_J7wQcJ",
     "custom_content_t8qGFA",
-    "custom_liquid_ztTUTJ"
+    "custom_liquid_ztTUTJ",
+    "image_text_orchid_rQE9JK"
   ]
 }

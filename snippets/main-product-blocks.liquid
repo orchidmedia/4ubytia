@@ -303,7 +303,7 @@
               <div class="product__variant-picker product-options" 
               style="justify-content:{{block.settings.variant_alignment}};
               padding:{{block.settings.dp_top}}px {{block.settings.dp_right}}px {{block.settings.dp_bottom}}px {{block.settings.dp_left}}px;">
-                {% render 'product-option', product: product, size_title: size_title,variant_title_position:{{block.settings.variant_alignment}} %}
+                {% render 'product-option', product: product, size_title: size_title, variant_title_position: block.settings.variant_alignment %}
               </div>
             {%- endunless -%}
           {%- when 'buy_buttons' -%}
@@ -597,4 +597,15 @@
   {%- endfor -%}
   </div>
 {% endif %}
-{%- endform -%}
+{%- endform -%}{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'product-option', product: product, size_title: size_title,variant_title_position:{{block.settings.variant_alignment}}
+    %}"
+  to: "{% render 'product-option', product: product, size_title: size_title, variant_title_position:
+    block.settings.variant_alignment %}"
+  position: 17901..18030
+{%- endcomment -%}

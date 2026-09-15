@@ -76,9 +76,9 @@
                     assign bg_repeat = 'repeat-x'
                 when 'repeat-y'
                     assign bg_repeat = 'repeat-y'
-                when 'round':
+                when 'round'
                     assign bg_repeat = 'round'
-                when 'space':
+                when 'space'
                     assign bg_repeat = 'space'
                 else
                     assign bg_repeat = 'no-repeat'
@@ -773,3 +773,16 @@
         }]
     }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "                when 'round':"
+  to: "                when 'round'"
+  position: 3087..3115
+- from: "                when 'space':"
+  to: "                when 'space'"
+  position: 3163..3191
+{% endcomment %}

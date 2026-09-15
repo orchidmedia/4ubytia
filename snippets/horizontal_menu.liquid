@@ -22,10 +22,7 @@
         <a href="{{ link.url }}"
           {% if link.title contains '[new]' %}target="_blank"{% endif %}
         >
-          {% render 'heading-tag' 
-            heading: block.settings.heading_size,
-            content: link.title | split: '[' | first
-          %}
+          {% render 'heading-tag', heading: block.settings.heading_size, content: link.title, split: '[' %}
         </a>
       </li>
     {% endfor %}
@@ -33,4 +30,15 @@
   {% if block.settings.border_bottom %}
     <hr class="hr-hmenu" style="border:1px solid {{ block.settings.border }}" />
   {% endif %}
-</div>
+</div>{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'heading-tag' \n            heading: block.settings.heading_size,\n
+    \           content: link.title | split: '[' | first\n          %}"
+  to: "{% render 'heading-tag', heading: block.settings.heading_size, content: link.title,
+    split: '[' %}"
+  position: 851..948
+{%- endcomment -%}

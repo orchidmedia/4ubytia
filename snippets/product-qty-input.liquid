@@ -1,12 +1,28 @@
 <div class="quantity-input prod-atc-qty-input main-prod-qty-input h-[53px] flex {{ class }} {{ atc_mobile }}">
-  {% render 'overlay-select',
-    wrapper_class: "main-prod-qty-input",
-    options: "1,2,3,4,5",
-    classes: "quantity-input__element w-10 productQuantity  text-center flex-grow flex-shrink appearance-none",
-    id="quantity",
-    name: "quantity",
-    custom_styles: "background:none",
-    aria_label: "{{ 'products.product.product_quantity' | t }}",
-    custom_attributes: 'data-quantity-input data-product-id="{{ product.id }}"',
-    attach_body: true %}
+  {% render 'overlay-select', wrapper_class: "main-prod-qty-input", options: "1,2,3,4,5", classes: "quantity-input__element w-10 productQuantity  text-center flex-grow flex-shrink appearance-none", name: "quantity", custom_styles: "background:none", aria_label: "{{ 'products.product.product_quantity' | t }}", custom_attributes: 'data-quantity-input data-product-id="{{ product.id }}"', attach_body: true %}
 </div>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {% render 'overlay-select',
+        wrapper_class: "main-prod-qty-input",
+        options: "1,2,3,4,5",
+        classes: "quantity-input__element w-10 productQuantity  text-center flex-grow flex-shrink appearance-none",
+        id="quantity",
+        name: "quantity",
+        custom_styles: "background:none",
+        aria_label: "{{ 'products.product.product_quantity' | t }}",
+        custom_attributes: 'data-quantity-input data-product-id="{{ product.id }}"',
+        attach_body: true %}
+  to: '{% render ''overlay-select'', wrapper_class: "main-prod-qty-input", options:
+    "1,2,3,4,5", classes: "quantity-input__element w-10 productQuantity  text-center
+    flex-grow flex-shrink appearance-none", name: "quantity", custom_styles: "background:none",
+    aria_label: "{{ ''products.product.product_quantity'' | t }}", custom_attributes:
+    ''data-quantity-input data-product-id="{{ product.id }}"'', attach_body: true
+    %}'
+  position: 113..519
+{% endcomment %}

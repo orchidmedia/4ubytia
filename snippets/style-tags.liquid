@@ -1356,43 +1356,43 @@
 
 
 			case settings.accordion_item_open
-				when 'arrow-down':
+				when 'arrow-down'
 					assign accordion_open_white = settings.ei_arrow_down_svg_url_1
 					assign accordion_open_black = settings.ei_arrow_down_svg_url_2
-				when 'arrow-up':
+				when 'arrow-up'
 					assign accordion_open_white = settings.ei_arrow_up_svg_url_1
 					assign accordion_open_black = settings.ei_arrow_up_svg_url_2
-				when 'arrow-left':
+				when 'arrow-left'
 					assign accordion_open_white = settings.ei_arrow_left_svg_url_1
 					assign accordion_open_black = settings.ei_arrow_left_svg_url_2
-				when 'arrow-right':
+				when 'arrow-right'
 					assign accordion_open_white = settings.ei_arrow_right_svg_url_1
 					assign accordion_open_black = settings.ei_arrow_right_svg_url_2
-				when 'plus':
+				when 'plus'
 					assign accordion_open_white = settings.ei_plus_svg_url_1
 					assign accordion_open_black = settings.ei_plus_svg_url_2
-				when 'minus':
+				when 'minus'
 					assign accordion_open_white = settings.ei_minus_svg_url_1
 					assign accordion_open_black = settings.ei_minus_svg_url_2
 			endcase
 
 			case settings.accordion_item_close
-				when 'arrow-down':
+				when 'arrow-down'
 						assign accordion_close_white = settings.ei_arrow_down_svg_url_1
 						assign accordion_close_black = settings.ei_arrow_down_svg_url_2
-				when 'arrow-up':
+				when 'arrow-up'
 						assign accordion_close_white = settings.ei_arrow_up_svg_url_1
 						assign accordion_close_black = settings.ei_arrow_up_svg_url_2
-				when 'arrow-left':
+				when 'arrow-left'
 						assign accordion_close_white = settings.ei_arrow_left_svg_url_1
 						assign accordion_close_black = settings.ei_arrow_left_svg_url_2
-				when 'arrow-right':
+				when 'arrow-right'
 						assign accordion_close_white = settings.ei_arrow_right_svg_url_1
 						assign accordion_close_black = settings.ei_arrow_right_svg_url_2
-				when 'plus':
+				when 'plus'
 						assign accordion_close_white = settings.ei_plus_svg_url_1
 						assign accordion_close_black = settings.ei_plus_svg_url_2
-				when 'minus':
+				when 'minus'
 						assign accordion_close_white = settings.ei_minus_svg_url_1
 						assign accordion_close_black = settings.ei_minus_svg_url_2
 			endcase
@@ -1815,3 +1815,46 @@
 {% if request.path == '/challenge' %}
   {% render 'customer-challenge-style' %}
 {% endif %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "\t\t\t\twhen 'arrow-down':"
+  to: "\t\t\t\twhen 'arrow-down'"
+  position: 71007..71028
+- from: "\t\t\t\twhen 'arrow-up':"
+  to: "\t\t\t\twhen 'arrow-up'"
+  position: 71165..71184
+- from: "\t\t\t\twhen 'arrow-left':"
+  to: "\t\t\t\twhen 'arrow-left'"
+  position: 71317..71338
+- from: "\t\t\t\twhen 'arrow-right':"
+  to: "\t\t\t\twhen 'arrow-right'"
+  position: 71475..71497
+- from: "\t\t\t\twhen 'plus':"
+  to: "\t\t\t\twhen 'plus'"
+  position: 71636..71651
+- from: "\t\t\t\twhen 'minus':"
+  to: "\t\t\t\twhen 'minus'"
+  position: 71776..71792
+- from: "\t\t\t\twhen 'arrow-down':"
+  to: "\t\t\t\twhen 'arrow-down'"
+  position: 71969..71990
+- from: "\t\t\t\twhen 'arrow-up':"
+  to: "\t\t\t\twhen 'arrow-up'"
+  position: 72131..72150
+- from: "\t\t\t\twhen 'arrow-left':"
+  to: "\t\t\t\twhen 'arrow-left'"
+  position: 72287..72308
+- from: "\t\t\t\twhen 'arrow-right':"
+  to: "\t\t\t\twhen 'arrow-right'"
+  position: 72449..72471
+- from: "\t\t\t\twhen 'plus':"
+  to: "\t\t\t\twhen 'plus'"
+  position: 72614..72629
+- from: "\t\t\t\twhen 'minus':"
+  to: "\t\t\t\twhen 'minus'"
+  position: 72758..72774
+{% endcomment %}

@@ -136,10 +136,7 @@
                                                 <a href="{{ link.url }}"
                                                     {% if link.title contains '[new]' %}target="_blank"{% endif %}
                                                 >
-                                                    {% render 'heading-tag' 
-                                                    heading: block.settings.copy_heading_size,
-                                                    content: link.title | split: '[' | first
-                                                    %}
+                                                    {% render 'heading-tag', heading: block.settings.copy_heading_size, content: link.title, split: '[' %}
                                                 </a>
                                                 </li>
                                             {% endfor %}
@@ -201,3 +198,16 @@
     {% endstyle %}
 {% endif %}
 
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'heading-tag' \n                                                    heading:
+    block.settings.copy_heading_size,\n                                                    content:
+    link.title | split: '[' | first\n                                                    %}"
+  to: "{% render 'heading-tag', heading: block.settings.copy_heading_size, content:
+    link.title, split: '[' %}"
+  position: 9256..9358
+{% endcomment %}
